@@ -4,26 +4,29 @@ namespace MoneyMinder.Domain.Entities;
 
 public class User
 {
-    public Guid Id { get; private set; }
+    public UserLogin Login { get; private set; } // brak edycji -- natural Key - do encji dodawać Id ale tu nie potrzebne 
 
-    private UserLogin _login;
     private string _passwordHash;
-    private string _email;
-    private string _firstName;
-    private string _lastName;
-    private string _phoneNumber;
-    //private Gender _gender;
-    private DateTime _birthDate;
-    private string _address;
+    private UserEmail _email;
+    private UserName _name; // brak edycji
+    private UserPhoneNumber _phoneNumber;
+    //private Gender _gender; // brak edycji
+    private UserBirthDate _birthDate; //brak edycji
+    private UserAddress _address;
 
     private readonly List<BankAccount> _bankAccounts;
+    
     //private readonly List<SavingsAccount> _savingsAccounts;
     //private readonly List<CryptoAccount> _cryptoAccounts;
 
-    internal User(UserLogin login)
+    internal User(UserLogin login, UserEmail email, UserName name, UserPhoneNumber phoneNumber, UserBirthDate birthDate, UserAddress address)
     {
-
-        _login = login;
+        Login = login;
+        _email = email;
+        _name = name;
+        _phoneNumber = phoneNumber;
+        _birthDate = birthDate;
+        _address = address;
     }
 
 }
