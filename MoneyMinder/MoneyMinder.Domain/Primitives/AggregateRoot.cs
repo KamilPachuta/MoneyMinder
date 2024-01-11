@@ -12,7 +12,11 @@ public abstract class AggregateRoot : Entity
          => _domainEvents.Add(@domainEvent);
      
 
-     public void ClearDomainEvents() => _domainEvents.Clear();
+    public void ClearDomainEvents() => _domainEvents.Clear();
+
+    protected AggregateRoot()
+    {
+    }
     
     protected AggregateRoot(Guid id) : base(id)
     {

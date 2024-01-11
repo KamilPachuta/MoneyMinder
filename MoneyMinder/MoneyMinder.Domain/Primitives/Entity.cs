@@ -3,6 +3,10 @@ namespace MoneyMinder.Domain.Primitives;
 public abstract class Entity : IEquatable<Entity>
 {
     public Guid Id { get; private init; }
+
+    protected Entity()
+    {
+    }
     
     protected Entity(Guid id)
     {

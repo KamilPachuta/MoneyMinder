@@ -1,3 +1,4 @@
+using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
 using MoneyMinder.Domain.Primitives;
 
@@ -17,7 +18,12 @@ public class Balance : Entity
 
     public void ChangeAmount(Transaction transaction)
     {
-        
+        if (Amount + transaction.Amount < 0)
+        {
+            throw new InsufficientFundsException(transaction);
+        }
+
+        Amount += transaction.Amount;
     }
     
 }
