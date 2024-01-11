@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyMinder.Domain", "MoneyMinder.Domain\MoneyMinder.Domain.csproj", "{9AFAEB0F-0AD5-4E46-BC0A-C7C29E2DC3D8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DFF23963-B42D-4F17-BE38-F9B7542E38F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyMinder.Application", "MoneyMinder.Application\MoneyMinder.Application.csproj", "{31C95D66-9255-4E9F-BAF0-FE7E31154C6C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{9AFAEB0F-0AD5-4E46-BC0A-C7C29E2DC3D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AFAEB0F-0AD5-4E46-BC0A-C7C29E2DC3D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AFAEB0F-0AD5-4E46-BC0A-C7C29E2DC3D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31C95D66-9255-4E9F-BAF0-FE7E31154C6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31C95D66-9255-4E9F-BAF0-FE7E31154C6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31C95D66-9255-4E9F-BAF0-FE7E31154C6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31C95D66-9255-4E9F-BAF0-FE7E31154C6C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9AFAEB0F-0AD5-4E46-BC0A-C7C29E2DC3D8} = {DFF23963-B42D-4F17-BE38-F9B7542E38F2}
+		{31C95D66-9255-4E9F-BAF0-FE7E31154C6C} = {DFF23963-B42D-4F17-BE38-F9B7542E38F2}
 	EndGlobalSection
 EndGlobal

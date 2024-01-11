@@ -6,13 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="Accounts\" />
-      <Folder Include="Users\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="MediatR" Version="12.2.0" />
-    </ItemGroup>
-
 </Project>
