@@ -396,3 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+MoneyMinder/.idea/.idea.MoneyMinder/.idea/indexLayout.xml
+MoneyMinder/.idea/.idea.MoneyMinder/.idea/vcs.xml
