@@ -1,6 +1,6 @@
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 
-namespace MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
+namespace MoneyMinder.Domain.Users.ValueObjects;
 
 public record CategoryName
 {
