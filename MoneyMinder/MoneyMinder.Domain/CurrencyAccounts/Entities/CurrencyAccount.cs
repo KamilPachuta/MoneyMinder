@@ -28,5 +28,11 @@ public class CurrencyAccount : AggregateRoot
     
     //add new balance
     
+    // currency conversion
     
+    //add income (delete i edit?)
+    
+    //add payment (delete i edit?)
+    
+    //add budget
 }
