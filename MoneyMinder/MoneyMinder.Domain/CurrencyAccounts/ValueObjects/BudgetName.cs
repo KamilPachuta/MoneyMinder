@@ -22,3 +22,11 @@ public record BudgetName
 
     }
 }
+
+
+
+// public static AccountPasswordHash Create(string passwordHash)
+//     => new AccountPasswordHash(passwordHash);
+//     
+// public static implicit operator string(AccountPasswordHash hash)
+//     => hash.Value;
