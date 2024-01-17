@@ -16,6 +16,12 @@ public class Balance : Entity
         Amount = amount;
     }
 
+    
+    /// <summary>
+    /// Changes the balance amount based on the provided transaction.
+    /// </summary>
+    /// <param name="transaction">The transaction to be applied to the balance.</param>
+    /// <exception cref="InsufficientFundsException">Thrown when the transaction would result in a negative balance.</exception>
     public void ChangeAmount(Transaction transaction)
     {
         if (Amount + transaction.Amount < 0)

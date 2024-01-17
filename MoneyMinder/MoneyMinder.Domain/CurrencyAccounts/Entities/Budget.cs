@@ -23,6 +23,11 @@ public class Budget : Entity
         CheckUnique(expenses);
     }
 
+    /// <summary>
+    /// Checks if the provided collection of expenses contains unique items and adds them to the internal list.
+    /// </summary>
+    /// <param name="expenses">The collection of expenses to be checked for uniqueness.</param>
+    /// <exception cref="DuplicateExpensesException">Thrown when duplicate expenses are detected.</exception>
     private void CheckUnique(IEnumerable<Expense> expenses)
     {
         foreach (var expense in expenses)

@@ -21,7 +21,8 @@ public class CurrencyAccount : AggregateRoot
     {
     }
     
-    public CurrencyAccount(Guid id, CurrencyAccountName name) : base(id)
+    public CurrencyAccount(Guid id, CurrencyAccountName name) 
+        : base(id)
     {
         Name = name;
     }
@@ -30,9 +31,29 @@ public class CurrencyAccount : AggregateRoot
     
     // currency conversion
     
-    //add income (delete i edit?)
+    //add income (delete i edit name)
     
-    //add payment (delete i edit?)
+    //add payment (delete i edit name)
     
     //add budget
+    
+    
+    /// <summary>
+    /// Checks if the budget month matches the current month.
+    /// </summary>
+    /// <returns>
+    ///   <c>true</c> if the budget month matches the current month; otherwise, <c>false</c>.
+    /// </returns>
+    private bool BudgetMonthCheck()
+    {
+        if (Budget.Date.Date.Month == DateTime.Today.Month)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

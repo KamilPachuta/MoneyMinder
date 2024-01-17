@@ -10,6 +10,11 @@ public record Income : Transaction
     {
     }
 
+    /// <summary>
+    /// Checks if the specified amount is less than or equal to zero, and throws a <see cref="NegativeBalanceException"/> if not.
+    /// </summary>
+    /// <param name="amount">The amount to be checked.</param>
+    /// <exception cref="NegativeBalanceException">Thrown when the amount is less than or equal to zero.</exception>
     protected override void CheckAmount(decimal amount)
     {
         if (amount <= 0)
