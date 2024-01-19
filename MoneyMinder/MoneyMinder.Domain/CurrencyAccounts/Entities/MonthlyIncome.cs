@@ -3,10 +3,10 @@ using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
-public record MonthlyIncome : MonthlyTransaction
+public class MonthlyIncome : MonthlyTransaction
 {
-    public MonthlyIncome(MonthlyTransactionName monthlyTransactionName, Month monthlyTransactionDate, Currency currency, Amount amount) 
-        : base(monthlyTransactionName, monthlyTransactionDate, currency, amount)
+    public MonthlyIncome(MonthlyTransactionName monthlyTransactionName, Month monthlyTransactionMonth, Currency currency, Amount amount) 
+        : base(Guid.NewGuid(), monthlyTransactionName, monthlyTransactionMonth, currency, amount)
     {
     }
 

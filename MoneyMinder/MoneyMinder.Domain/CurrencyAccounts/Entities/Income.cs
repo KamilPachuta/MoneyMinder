@@ -1,12 +1,13 @@
+using MoneyMinder.Domain.CurrencyAccounts.Abstractions;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
-public record Income : Transaction
+public class Income : Transaction
 {
     public Income(TransactionName transactionName, DateTime transactionDate, Currency currency, Amount amount) 
-        : base(transactionName, transactionDate, currency, amount)
+        : base(Guid.NewGuid(), transactionName, transactionDate, currency, amount)
     {
     }
 

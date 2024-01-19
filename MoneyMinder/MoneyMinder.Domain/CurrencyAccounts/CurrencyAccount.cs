@@ -1,4 +1,5 @@
 using MoneyMinder.Domain.Abstractions;
+using MoneyMinder.Domain.CurrencyAccounts.Abstractions;
 using MoneyMinder.Domain.CurrencyAccounts.DomainEvents;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
@@ -155,7 +156,7 @@ public class CurrencyAccount : AggregateRoot
         
     }
 
-    public void EditMonthlyIncome(MonthlyTransactionName name, Amount amount)
+    public void EditMonthlyIncome(MonthlyIncome name, Amount amount)
     {
         
     }

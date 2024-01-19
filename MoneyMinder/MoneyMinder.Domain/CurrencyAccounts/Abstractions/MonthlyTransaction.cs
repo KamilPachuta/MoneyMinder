@@ -1,21 +1,23 @@
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
+using MoneyMinder.Domain.Primitives;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
-public abstract record MonthlyTransaction
+public abstract class MonthlyTransaction : Entity
 {
     
     public MonthlyTransactionName Name { get; }
-    public Month Date { get; }
+    public Month Month { get; }
     public Currency Currency { get; }
     public Amount Amount { get; }
     
 
-    protected MonthlyTransaction(MonthlyTransactionName name, Month date, Currency currency, Amount amount)
+    protected MonthlyTransaction(Guid id, MonthlyTransactionName name, Month month, Currency currency, Amount amount)
+        : base(id)
     {
         CheckAmount(amount);
         Name = name;
-        Date = date;
+        Month = month;
         Currency = currency;
         Amount = amount;
     }
@@ -23,7 +25,7 @@ public abstract record MonthlyTransaction
 
     public override string ToString()
     {
-        return $"TransactionName: '{Name.Name}'\nTransactionDate: '{Date}'\nCurrency: '{Currency}'\nAmount: '{Amount}'\n";
+        return $"TransactionName: '{Name.Name}'\nTransactionDate: '{Month}'\nCurrency: '{Currency}'\nAmount: '{Amount}'\n";
     }
     
 }

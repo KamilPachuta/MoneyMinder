@@ -1,4 +1,5 @@
 using MoneyMinder.Domain.Abstractions;
+using MoneyMinder.Domain.CurrencyAccounts.Abstractions;
 using MoneyMinder.Domain.CurrencyAccounts.Entities;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Exceptions;
