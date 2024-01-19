@@ -4,9 +4,10 @@ using MoneyMinder.Domain.Primitives;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
-public class Budget : Entity
+public sealed class Budget : Entity
 {
-    public BudgetName Name { get; init; }
+    public BudgetName Name { get; private set; }
+    public Currency Currency { get; init; }
     public decimal ExpectedIncome { get; init; }
     public BudgetDate Date { get; init; }
     
@@ -14,15 +15,21 @@ public class Budget : Entity
     
     private readonly List<Expense> _expenses = new();
     
-    public Budget(Guid id, BudgetName name, decimal expectedIncome, IEnumerable<Expense> expenses, BudgetDate date) : base(id)
+    public Budget(Guid id, BudgetName name, decimal expectedIncome, IEnumerable<Expense> expenses, BudgetDate date, Currency currency) : base(id)
     {
         Name = name;
         ExpectedIncome = expectedIncome;
         Date = date;
+        Currency = currency;
 
         CheckUnique(expenses);
     }
 
+    public void ChangeName(BudgetName name)
+    {
+        Name = name;
+    }
+    
     /// <summary>
     /// Checks if the provided collection of expenses contains unique items and adds them to the internal list.
     /// </summary>

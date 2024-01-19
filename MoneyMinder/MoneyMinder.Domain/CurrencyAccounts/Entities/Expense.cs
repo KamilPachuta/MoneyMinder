@@ -8,7 +8,8 @@ public class Expense : Entity
     public CategoryName Category { get; init; }
     public decimal Amount { get; init; }
 
-    public Expense(Guid id, CategoryName category, decimal amount) : base(id)
+    public Expense(Guid id, CategoryName category, decimal amount) 
+        : base(id)
     {
         Category = category;
         Amount = amount;
