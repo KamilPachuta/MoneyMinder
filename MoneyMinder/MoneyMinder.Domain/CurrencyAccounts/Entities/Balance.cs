@@ -8,12 +8,12 @@ public class Balance : Entity
 {
     public Currency Currency { get; init; }
     
-    public decimal Amount { get; set; }
+    public Amount Amount { get; set; }
     
-    public Balance(Guid id, Currency currency, decimal amount) : base(id)
+    public Balance(Currency currency) : base(Guid.NewGuid())
     {
         Currency = currency;
-        Amount = amount;
+        Amount = new Amount(0);
     }
 
     
@@ -22,14 +22,15 @@ public class Balance : Entity
     /// </summary>
     /// <param name="transaction">The transaction to be applied to the balance.</param>
     /// <exception cref="InsufficientFundsException">Thrown when the transaction would result in a negative balance.</exception>
-    public void ChangeAmount(Transaction transaction)
+    public void ChangeAmount(Amount amount)
     {
-        if (Amount + transaction.Amount < 0)
+        if (Amount.Value + amount.Value < 0)
         {
-            throw new InsufficientFundsException(transaction);
+            throw new InsufficientFundsException(Currency, amount);
         }
 
-        Amount += transaction.Amount;
+        Amount = new( Amount.Value + amount.Value );
+
     }
     
 }

@@ -11,7 +11,7 @@ public class CurrencyAccount : AggregateRoot
     
     public Budget Budget { get; private set; }
     
-    // public IEnumerable<Balance> Balances => _balances;
+    public IEnumerable<Balance> Balances => _balances;
     // public IEnumerable<Income> Incomes => _incomes;
     // public IEnumerable<Payment> Payments => _payments;
     // public IEnumerable<MonthlyIncome> MonthlyIncomes => _monthlyIncomes;
@@ -34,55 +34,12 @@ public class CurrencyAccount : AggregateRoot
     {
         Name = name;
     }
-
-    public void ChangeName(CurrencyAccountName name)
-    {
-        
-    }
     
-    public void AddIncome(Income income)
-    {
-        if (income.Date.Day > DateTime.Today.Day)
-        {
-            throw new TransactionDateLaterThanExpectedException(income);
-        }
-        
-        _incomes.Add(income);
-        
-        RaiseDomainEvent(new IncomeAddedDomainEvent(income, this));
-    }
     
-    public void RemoveIncome(TransactionName name)
-    {
-        var income = _incomes.FirstOrDefault(i => i.Name == name);
-
-        if (income is null)
-        {
-            throw new IncomeNotFoundException(name);
-        }
-
-        var balance = GetBalance(income.Currency);
-        
-        if (income.Amount > balance.Amount)
-        {
-            throw new InsufficientFundsToRemoveIncomeException(income);
-        }
-        
-        _incomes.Remove(income);
-    }
     
-    public void AddPayment(Payment payment)
-    {
-        if (payment.Date.Day > DateTime.Today.Day)
-        {
-            throw new TransactionDateLaterThanExpectedException(payment);
-        }
-        
-        _payments.Add(payment);
-        
-        RaiseDomainEvent(new PaymentAddedDomainEvent(payment, this));
-    }
-
+    private bool BalanceExist(Currency currency)
+        => _balances.Exists(b => b.Currency == currency);
+    
     private Balance GetBalance(Currency currency)
     {
         var balance = _balances.FirstOrDefault(b => b.Currency == currency);
@@ -95,6 +52,88 @@ public class CurrencyAccount : AggregateRoot
         return balance;
     }
     
+    private void ProcessTransaction(Transaction transaction)
+    {
+        Balance balance;
+        
+        if (BalanceExist(transaction.Currency))
+        {
+            balance = GetBalance(transaction.Currency);
+            balance.ChangeAmount(transaction.Amount);
+        }
+        else
+        {
+            balance = new Balance(transaction.Currency);
+            balance.ChangeAmount(transaction.Amount);
+            _balances.Add(balance);
+        }
+        
+        RaiseDomainEvent(new TransactionProcessedDomainEvent(transaction, this));
+    }
+
+    private void RollbackTransaction(Transaction transaction)
+    {
+        var balance = GetBalance(transaction.Currency);
+
+        var amount = new Amount(-transaction.Amount.Value);
+        
+        balance.ChangeAmount(amount);
+    }
+    
+    public void ChangeName(CurrencyAccountName name)
+    {
+        var oldName = Name;
+
+        Name = name;
+        
+        RaiseDomainEvent(new CurrencyAccountNameChangedDomainEvent(oldName, name, this));
+    }
+    
+    public void AddIncome(Income income)
+    {
+        if (income.Date.Day > DateTime.Today.Day)
+        {
+            throw new TransactionDateLaterThanExpectedException(income);
+        }
+        
+        ProcessTransaction(income);
+        
+        _incomes.Add(income);
+        
+        RaiseDomainEvent(new IncomeAddedDomainEvent(income, this));
+    }
+    
+    
+    
+    public void AddPayment(Payment payment)
+    {
+        if (payment.Date.Day > DateTime.Today.Day)
+        {
+            throw new TransactionDateLaterThanExpectedException(payment);
+        }
+        ProcessTransaction(payment);
+        
+        _payments.Add(payment);
+        
+        RaiseDomainEvent(new PaymentAddedDomainEvent(payment, this));
+    }
+
+    public void RemoveIncome(TransactionName name)
+    {
+        var income = _incomes.FirstOrDefault(i => i.Name == name);
+
+        if (income is null)
+        {
+            throw new IncomeNotFoundException(name);
+        }
+        
+        RollbackTransaction(income);
+        
+        _incomes.Remove(income);
+        
+        RaiseDomainEvent(new IncomeRemovedDomainEvent(income, this));
+    }
+    
     public void RemovePayment(TransactionName name)
     {
         var payment = _payments.FirstOrDefault(i => i.Name == name);
@@ -103,15 +142,12 @@ public class CurrencyAccount : AggregateRoot
         {
             throw new PaymentNotFoundException(name);
         }
-
-        var balance = GetBalance(payment.Currency);
         
-        if (payment.Amount > balance.Amount)
-        {
-            throw new InsufficientFundsToRemovePaymentException(payment);
-        }
+        RollbackTransaction(payment);
         
         _payments.Remove(payment);
+        
+        RaiseDomainEvent(new PaymentRemovedDomainEvent(payment, this));
     }
     
     public void AddMonthlyIncome(MonthlyIncome monthlyIncome)

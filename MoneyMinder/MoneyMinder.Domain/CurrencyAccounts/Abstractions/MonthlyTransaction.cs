@@ -8,10 +8,10 @@ public abstract record MonthlyTransaction
     public MonthlyTransactionName Name { get; }
     public Month Date { get; }
     public Currency Currency { get; }
-    public decimal Amount { get; }
+    public Amount Amount { get; }
     
 
-    protected MonthlyTransaction(MonthlyTransactionName name, Month date, Currency currency, decimal amount)
+    protected MonthlyTransaction(MonthlyTransactionName name, Month date, Currency currency, Amount amount)
     {
         CheckAmount(amount);
         Name = name;
@@ -19,7 +19,7 @@ public abstract record MonthlyTransaction
         Currency = currency;
         Amount = amount;
     }
-    protected abstract void CheckAmount(decimal amount);
+    protected abstract void CheckAmount(Amount amount);
 
     public override string ToString()
     {

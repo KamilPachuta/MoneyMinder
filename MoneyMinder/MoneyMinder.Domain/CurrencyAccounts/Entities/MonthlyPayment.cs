@@ -8,7 +8,7 @@ public record MonthlyPayment : MonthlyTransaction
 {
     public CategoryName CategoryName { get; set; }
     
-    public MonthlyPayment(MonthlyTransactionName name, Month date, Currency currency, decimal amount, CategoryName categoryName) 
+    public MonthlyPayment(MonthlyTransactionName name, Month date, Currency currency, Amount amount, CategoryName categoryName) 
         : base(name, date, currency, amount)
     {
         CategoryName = categoryName;
@@ -19,9 +19,9 @@ public record MonthlyPayment : MonthlyTransaction
     /// </summary>
     /// <param name="amount">The amount to be checked.</param>
     /// <exception cref="PositiveBalanceException">Thrown when the amount is not greater than or equal to zero.</exception>
-    protected override void CheckAmount(decimal amount)
+    protected override void CheckAmount(Amount amount)
     {
-        if (amount >= 0)
+        if (amount.Value >= 0)
         {
             throw new PositiveBalanceException(amount);
         }

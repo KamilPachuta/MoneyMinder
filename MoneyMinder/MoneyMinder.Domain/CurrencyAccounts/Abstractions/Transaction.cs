@@ -9,10 +9,10 @@ public abstract record Transaction
     public TransactionName Name { get; }
     public DateTime Date { get; }
     public Currency Currency { get; }
-    public decimal Amount { get; }
+    public Amount Amount { get; }
     
 
-    protected Transaction(TransactionName name, DateTime date, Currency currency, decimal amount)
+    protected Transaction(TransactionName name, DateTime date, Currency currency, Amount amount)
     {
         CheckAmount(amount);
         Name = name;
@@ -20,7 +20,7 @@ public abstract record Transaction
         Currency = currency;
         Amount = amount;
     }
-    protected abstract void CheckAmount(decimal amount);
+    protected abstract void CheckAmount(Amount amount);
 
     public override string ToString()
     {

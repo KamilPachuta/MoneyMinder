@@ -5,7 +5,7 @@ namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
 public record MonthlyIncome : MonthlyTransaction
 {
-    public MonthlyIncome(MonthlyTransactionName monthlyTransactionName, Month monthlyTransactionDate, Currency currency, decimal amount) 
+    public MonthlyIncome(MonthlyTransactionName monthlyTransactionName, Month monthlyTransactionDate, Currency currency, Amount amount) 
         : base(monthlyTransactionName, monthlyTransactionDate, currency, amount)
     {
     }
@@ -15,9 +15,9 @@ public record MonthlyIncome : MonthlyTransaction
     /// </summary>
     /// <param name="amount">The amount to be checked.</param>
     /// <exception cref="NegativeBalanceException">Thrown when the amount is less than or equal to zero.</exception>
-    protected override void CheckAmount(decimal amount)
+    protected override void CheckAmount(Amount amount)
     {
-        if (amount <= 0)
+        if (amount.Value <= 0)
         {
             throw new NegativeBalanceException(amount);
         }
