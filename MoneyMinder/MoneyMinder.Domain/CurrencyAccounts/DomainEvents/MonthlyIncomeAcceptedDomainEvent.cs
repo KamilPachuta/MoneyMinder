@@ -3,4 +3,4 @@ using MoneyMinder.Domain.CurrencyAccounts.Entities;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.DomainEvents;
 
-public record PaymentAddedDomainEvent(Payment Payment, CurrencyAccount CurrencyAccount) : IDomainEvent;
+public record MonthlyIncomeAcceptedDomainEvent(MonthlyIncome MonthlyIncome, Income Income, CurrencyAccount CurrencyAccount) : IDomainEvent;

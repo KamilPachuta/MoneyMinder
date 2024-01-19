@@ -3,13 +3,17 @@ using MoneyMinder.Domain.CurrencyAccounts.Abstractions;
 using MoneyMinder.Domain.CurrencyAccounts.DomainEvents;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
+using MoneyMinder.Domain.Users.ValueObjects;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
 public class CurrencyAccount : AggregateRoot
 {
+    //VO
     public CurrencyAccountName Name { get; private set; }
     
+    
+    //Entity
     public Budget Budget { get; private set; }
     
     public IEnumerable<Balance> Balances => _balances;
@@ -19,7 +23,7 @@ public class CurrencyAccount : AggregateRoot
     // public IEnumerable<MonthlyPayment> MonthlyPayments => _monthlyPayments;
 
     
-    
+    //Collections
     private readonly List<Balance> _balances = new();
     private readonly List<Income> _incomes = new();
     private readonly List<Payment> _payments = new();
@@ -34,13 +38,50 @@ public class CurrencyAccount : AggregateRoot
         : base(id)
     {
         Name = name;
+        
+        RaiseDomainEvent(new CurrencyAccountCreatedDomainEvent(DateTime.Now, this));
     }
     
     
-    
+    //// <summary>
+    /// Checks if a balance exists for a given currency.
+    /// </summary>
+    /// <param name="currency">The currency to check for a balance.</param>
+    /// <returns>True if a balance exists for the specified currency, otherwise false.</returns>
     private bool BalanceExist(Currency currency)
         => _balances.Exists(b => b.Currency == currency);
+
+    /// <summary>
+    /// Checks if a monthly income entry exists with a given name.
+    /// </summary>
+    /// <param name="name">The name of the monthly income to check.</param>
+    /// <returns>True if a monthly income with the specified name exists, otherwise false.</returns>
+    private bool MonthlyIncomeExist(TransactionName name) 
+        => _monthlyIncomes.Any(mi => mi.Name == name);
     
+    /// <summary>
+    /// Checks if a monthly payment entry exists with a given name.
+    /// </summary>
+    /// <param name="name">The name of the monthly payment to check.</param>
+    /// <returns>True if a monthly payment with the specified name exists, otherwise false.</returns>
+    private bool MonthlyPaymentExist(TransactionName name)
+        => _monthlyPayments.Any(mp => mp.Name == name);
+
+    /// <summary>
+    /// Checks if the budget is for the current month.
+    /// </summary>
+    /// <param name="month">The month associated with the budget to check.</param>
+    /// <returns>True if the budget is for the current month, otherwise false.</returns>
+    private bool BudgetMonthCheck(Month month)
+        => month.Date.Month == DateTime.Today.Month;
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="currency"></param>
+    /// <returns></returns>
+    /// <exception cref="BalanceNotFoundException"></exception>
     private Balance GetBalance(Currency currency)
     {
         var balance = _balances.FirstOrDefault(b => b.Currency == currency);
@@ -52,19 +93,57 @@ public class CurrencyAccount : AggregateRoot
 
         return balance;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    /// <exception cref="MonthlyIncomeNotFoundException"></exception>
+    private MonthlyIncome GetMonthlyIncome(TransactionName name)
+    {
+        var monthlyIncome = _monthlyIncomes.FirstOrDefault(mi => mi.Name == name);
+
+        if (monthlyIncome is null)
+        {
+            throw new MonthlyIncomeNotFoundException(name);
+        }
+
+        return monthlyIncome;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    /// <exception cref="MonthlyPaymentNotFoundException"></exception>
+    private MonthlyPayment GetMonthlyPayment(TransactionName name)
+    {
+        var monthlyPayment = _monthlyPayments.FirstOrDefault(mp => mp.Name == name);
+
+        if (monthlyPayment is null)
+        {
+            throw new MonthlyPaymentNotFoundException(name);
+        }
+
+        return monthlyPayment;
+    }
     
+    /// <summary>
+    /// Processes a financial transaction by updating or creating a balance for the associated currency.
+    /// </summary>
+    /// <param name="transaction">The transaction to be processed.</param>
     private void ProcessTransaction(Transaction transaction)
     {
-        Balance balance;
-        
         if (BalanceExist(transaction.Currency))
         {
-            balance = GetBalance(transaction.Currency);
+            var balance = GetBalance(transaction.Currency);
             balance.ChangeAmount(transaction.Amount);
         }
         else
         {
-            balance = new Balance(transaction.Currency);
+            var balance = new Balance(transaction.Currency);
             balance.ChangeAmount(transaction.Amount);
             _balances.Add(balance);
         }
@@ -72,6 +151,10 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new TransactionProcessedDomainEvent(transaction, this));
     }
 
+    /// <summary>
+    /// Reverses the effects of a transaction on the account balance.
+    /// </summary>
+    /// <param name="transaction">The transaction to rollback.</param>
     private void RollbackTransaction(Transaction transaction)
     {
         var balance = GetBalance(transaction.Currency);
@@ -83,6 +166,10 @@ public class CurrencyAccount : AggregateRoot
     
     
     
+    /// <summary>
+    /// Changes the name of the currency account.
+    /// </summary>
+    /// <param name="name">The new name for the account.</param>
     public void ChangeName(CurrencyAccountName name)
     {
         var oldName = Name;
@@ -92,8 +179,19 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new CurrencyAccountNameChangedDomainEvent(oldName, name, this));
     }
     
+    /// <summary>
+    /// Adds an income transaction to the account, validating its uniqueness and date.
+    /// </summary>
+    /// <param name="income">The income transaction to add.</param>
+    /// <exception cref="IncomeAlreadyExistException">Thrown if the income already exists.</exception>
+    /// <exception cref="TransactionDateLaterThanExpectedException">Thrown if the income date is later than expected.</exception>
     public void AddIncome(Income income)
     {
+        if (_incomes.Any(i => i == income))
+        {
+            throw new IncomeAlreadyExistException(income);
+        }
+        
         if (income.Date.Day > DateTime.Today.Day)
         {
             throw new TransactionDateLaterThanExpectedException(income);
@@ -106,12 +204,24 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new IncomeAddedDomainEvent(income, this));
     }
     
+    /// <summary>
+    /// Adds a payment transaction to the account, validating its uniqueness and date.
+    /// </summary>
+    /// <param name="payment">The payment transaction to add.</param>
+    /// <exception cref="PaymentAlreadyExistException">Thrown if the payment already exists.</exception>
+    /// <exception cref="TransactionDateLaterThanExpectedException">Thrown if the payment date is later than expected.</exception>
     public void AddPayment(Payment payment)
     {
+        if (_payments.Any(p => p == payment))
+        {
+            throw new PaymentAlreadyExistException(payment);
+        }
+        
         if (payment.Date.Day > DateTime.Today.Day)
         {
             throw new TransactionDateLaterThanExpectedException(payment);
         }
+        
         ProcessTransaction(payment);
         
         _payments.Add(payment);
@@ -119,6 +229,11 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new PaymentAddedDomainEvent(payment, this));
     }
 
+    /// <summary>
+    /// Removes an income transaction from the account.
+    /// </summary>
+    /// <param name="transaction">The income transaction to remove.</param>
+    /// <exception cref="IncomeNotFoundException">Thrown if the income is not found.</exception>
     public void RemoveIncome(Transaction transaction)
     {
         var income = _incomes.FirstOrDefault(i => i == transaction);
@@ -135,6 +250,11 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new IncomeRemovedDomainEvent(income, this));
     }
     
+    /// <summary>
+    /// Removes a payment transaction from the account.
+    /// </summary>
+    /// <param name="transaction">The payment transaction to remove.</param>
+    /// <exception cref="PaymentNotFoundException">Thrown if the payment is not found.</exception>
     public void RemovePayment(Transaction transaction)
     {
         var payment = _payments.FirstOrDefault(i => i == transaction);
@@ -151,42 +271,159 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new PaymentRemovedDomainEvent(payment, this));
     }
     
+    /// <summary>
+    /// Adds a recurring monthly income entry to the account, ensuring no duplicate entries.
+    /// </summary>
+    /// <param name="monthlyIncome">The monthly income to add.</param>
+    /// <exception cref="MonthlyIncomeAlreadyExistException">Thrown if the monthly income already exists.</exception>
     public void AddMonthlyIncome(MonthlyIncome monthlyIncome)
     {
+        if (MonthlyIncomeExist(monthlyIncome.Name))
+        {
+            throw new MonthlyIncomeAlreadyExistException(monthlyIncome.Name);
+        }
         
+        _monthlyIncomes.Add(monthlyIncome);
+        
+        RaiseDomainEvent(new MonthlyIncomeAddedDomainEvent(monthlyIncome, this));
     }
 
-    public void EditMonthlyIncome(MonthlyIncome name, Amount amount)
+    /// <summary>
+    /// Edits an existing monthly income entry.
+    /// </summary>
+    /// <param name="oldName">The current name of the monthly income.</param>
+    /// <param name="newName">The new name for the monthly income.</param>
+    /// <param name="amount">The new amount for the monthly income.</param>
+    /// <param name="currency">The new currency for the monthly income.</param>
+    /// <exception cref="MonthlyIncomeAlreadyExistException">Thrown if a monthly income with the new name already exists.</exception>
+    public void EditMonthlyIncome(TransactionName oldName, TransactionName newName, Amount amount, Currency currency)
     {
+        var monthlyIncome = GetMonthlyIncome(oldName);
+
+        if (MonthlyIncomeExist(newName))
+        {
+            throw new MonthlyIncomeAlreadyExistException(monthlyIncome.Name);
+        }
         
+        monthlyIncome.Name = newName;
+
+        var oldCurrency = monthlyIncome.Currency;
+        monthlyIncome.Currency = currency;
+
+        var oldAmount = monthlyIncome.Amount;
+        monthlyIncome.Amount = amount;
+        
+        RaiseDomainEvent(new MonthlyIncomeEditedDomainEvent(oldName, newName, oldAmount, amount, oldCurrency, currency, this));
+
     }
     
-    public void RemoveMonthlyIncome(MonthlyIncome monthlyIncome)
+    /// <summary>
+    /// Removes a monthly income entry from the account.
+    /// </summary>
+    /// <param name="name">The name of the monthly income to remove.</param>
+    public void RemoveMonthlyIncome(TransactionName name)
     {
+        var monthlyIncome = GetMonthlyIncome(name);
         
+        _monthlyIncomes.Remove(monthlyIncome);
+        
+        RaiseDomainEvent(new MonthlyIncomeDeletedDomainEvent(monthlyIncome, this));
     }
         
+    /// <summary>
+    /// Adds a recurring monthly payment entry to the account, ensuring no duplicate entries.
+    /// </summary>
+    /// <param name="monthlyPayment">The monthly payment to add.</param>
+    /// <exception cref="MonthlyPaymentAlreadyExistException">Thrown if the monthly payment already exists.</exception>
     public void AddMonthlyPayment(MonthlyPayment monthlyPayment)
     {
+        if (MonthlyPaymentExist(monthlyPayment.Name))
+        {
+            throw new MonthlyPaymentAlreadyExistException(monthlyPayment.Name);
+        }
         
+        _monthlyPayments.Add(monthlyPayment);
+        
+        RaiseDomainEvent(new MonthlyPaymentAddedDomainEvent(monthlyPayment, this));
     }
 
-    public void EditMonthlyPayment(MonthlyTransactionName name, Amount amount)
+    /// <summary>
+    /// Edits an existing monthly payment entry.
+    /// </summary>
+    /// <param name="oldName">The current name of the monthly payment.</param>
+    /// <param name="newName">The new name for the monthly payment.</param>
+    /// <param name="amount">The new amount for the monthly payment.</param>
+    /// <param name="currency">The new currency for the monthly payment.</param>
+    /// <param name="categoryName">The new category name for the monthly payment.</param>
+    /// <exception cref="MonthlyPaymentAlreadyExistException">Thrown if a monthly payment with the new name already exists.</exception>
+    public void EditMonthlyPayment(TransactionName oldName, TransactionName newName, Amount amount, Currency currency, CategoryName categoryName)
     {
+        var monthlyPayment = GetMonthlyPayment(oldName);
         
+        if (MonthlyPaymentExist(newName))
+        {
+            throw new MonthlyPaymentAlreadyExistException(monthlyPayment.Name);
+        }
+        
+        monthlyPayment.Name = newName;
+
+        var oldCurrency = monthlyPayment.Currency;
+        monthlyPayment.Currency = currency;
+
+        var oldAmount = monthlyPayment.Amount;
+        monthlyPayment.Amount = amount;
+
+        var oldCategoryName = monthlyPayment.CategoryName;
+        monthlyPayment.CategoryName = categoryName;
+        
+        
+        RaiseDomainEvent(new MonthlyPaymentEditedDomainEvent(oldName, newName, oldAmount, amount, oldCurrency, currency, oldCategoryName, categoryName , this));
     }
 
-    public void RemoveMonthlyPayment(MonthlyPayment monthlyPayment)
+    /// <summary>
+    /// Removes a monthly payment entry from the account.
+    /// </summary>
+    /// <param name="name">The name of the monthly payment to remove.</param>
+    public void RemoveMonthlyPayment(TransactionName name)
     {
+        var monthlyPayment = GetMonthlyPayment(name);
         
+        _monthlyPayments.Remove(monthlyPayment);
+        
+        RaiseDomainEvent(new MonthlyPaymentDeletedDomainEvent(monthlyPayment, this));
     }
-
-
-    public void AcceptMonthlyTransaction(MonthlyTransaction monthlyTransaction)
+    
+    /// <summary>
+    /// Accepts a monthly income entry by converting it into a regular income transaction.
+    /// </summary>
+    /// <param name="monthlyIncome">The monthly income to accept.</param>
+    public void AcceptMonthlyIncome(MonthlyIncome monthlyIncome)
     {
+        var monthlyIncomeStock = GetMonthlyIncome(monthlyIncome.Name);
+        var income = new Income(monthlyIncome.Name, monthlyIncome.Month.Date, monthlyIncome.Currency, monthlyIncome.Amount);
+
+        _monthlyIncomes.Remove(monthlyIncomeStock);
+        AddIncome(income);
         
+        RaiseDomainEvent(new MonthlyIncomeAcceptedDomainEvent(monthlyIncome, income, this));
+    }
+    
+    /// <summary>
+    /// Accepts a monthly payment entry by converting it into a regular payment transaction.
+    /// </summary>
+    /// <param name="monthlyPayment">The monthly payment to accept.</param>
+    public void AcceptMonthlyPayment(MonthlyPayment monthlyPayment)
+    {
+        var monthlyPaymentStock = GetMonthlyPayment(monthlyPayment.Name);
+        var payment = new Payment(monthlyPayment.Name, monthlyPayment.Month.Date, monthlyPayment.Currency, monthlyPayment.Amount, monthlyPayment.CategoryName);
+
+        _monthlyPayments.Remove(monthlyPaymentStock);
+        AddPayment(payment);
+        
+        RaiseDomainEvent(new MonthlyPaymentAcceptedDomainEvent(monthlyPayment, payment, this));
     }
 
+    
     public void CreateBudget(Budget budget)
     {
         //Czy budget jest na ten miesiac? czy poprzedni jest na ten? jesli tak to exception bo musi byc na poprzdedni
@@ -197,19 +434,6 @@ public class CurrencyAccount : AggregateRoot
         
     }
     
-    //add new balance
-    
-    // currency conversion
-    
-   
-    
-    //add monthly income (new) (delete, edit - name, amount)
-    
- 
-    
-    //add monthly payment (new) (delete, edit)
-    
-    //accept monthly transaction (current month transaction into next month transaction and added transaction)
     
     //add budget
     // edit budget name
@@ -217,22 +441,5 @@ public class CurrencyAccount : AggregateRoot
     // co z powiadomieniami
     
     
-    /// <summary>
-    /// Checks if the budget month matches the current month.
-    /// </summary>
-    /// <returns>
-    ///   <c>true</c> if the budget month matches the current month; otherwise, <c>false</c>.
-    /// </returns>
-    private bool BudgetMonthCheck()
-    {
-        if (Budget.Date.Date.Month == DateTime.Today.Month)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
 
 }

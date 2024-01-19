@@ -8,7 +8,7 @@ public class MonthlyPayment : MonthlyTransaction
 {
     public CategoryName CategoryName { get; set; }
     
-    public MonthlyPayment(MonthlyTransactionName name, Month month, Currency currency, Amount amount, CategoryName categoryName) 
+    public MonthlyPayment(TransactionName name, Month month, Currency currency, Amount amount, CategoryName categoryName) 
         : base(Guid.NewGuid(), name, month, currency, amount)
     {
         CategoryName = categoryName;

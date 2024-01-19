@@ -6,13 +6,13 @@ namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 public abstract class MonthlyTransaction : Entity
 {
     
-    public MonthlyTransactionName Name { get; }
-    public Month Month { get; }
-    public Currency Currency { get; }
-    public Amount Amount { get; }
+    public TransactionName Name { get; set;  }
+    public Month Month { get; protected set; }
+    public Currency Currency { get; set; }
+    public Amount Amount { get; set; }
     
 
-    protected MonthlyTransaction(Guid id, MonthlyTransactionName name, Month month, Currency currency, Amount amount)
+    protected MonthlyTransaction(Guid id, TransactionName name, Month month, Currency currency, Amount amount)
         : base(id)
     {
         CheckAmount(amount);

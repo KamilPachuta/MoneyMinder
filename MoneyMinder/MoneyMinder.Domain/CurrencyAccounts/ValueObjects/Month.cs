@@ -8,7 +8,7 @@ public record Month
 
     public Month(DateTime date)
     {
-        if (date.Month != DateTime.Now.Month || date.Month != (DateTime.Now + TimeSpan.FromDays(30)).Month) // Jak ustawic ze to ma byc kolejny miesiac?
+        if (date.Month != DateTime.Now.Month || date.Month != DateTime.Now.AddMonths(1).Month) 
         {
             throw new InvalidMonthException(date);
         }
