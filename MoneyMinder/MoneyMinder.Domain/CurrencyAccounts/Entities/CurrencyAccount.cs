@@ -80,6 +80,8 @@ public class CurrencyAccount : AggregateRoot
         balance.ChangeAmount(amount);
     }
     
+    
+    
     public void ChangeName(CurrencyAccountName name)
     {
         var oldName = Name;
@@ -103,8 +105,6 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new IncomeAddedDomainEvent(income, this));
     }
     
-    
-    
     public void AddPayment(Payment payment)
     {
         if (payment.Date.Day > DateTime.Today.Day)
@@ -118,13 +118,13 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new PaymentAddedDomainEvent(payment, this));
     }
 
-    public void RemoveIncome(TransactionName name)
+    public void RemoveIncome(Transaction transaction)
     {
-        var income = _incomes.FirstOrDefault(i => i.Name == name);
+        var income = _incomes.FirstOrDefault(i => i == transaction);
 
         if (income is null)
         {
-            throw new IncomeNotFoundException(name);
+            throw new IncomeNotFoundException(transaction);
         }
         
         RollbackTransaction(income);
@@ -134,13 +134,13 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new IncomeRemovedDomainEvent(income, this));
     }
     
-    public void RemovePayment(TransactionName name)
+    public void RemovePayment(Transaction transaction)
     {
-        var payment = _payments.FirstOrDefault(i => i.Name == name);
+        var payment = _payments.FirstOrDefault(i => i == transaction);
 
         if (payment is null)
         {
-            throw new PaymentNotFoundException(name);
+            throw new PaymentNotFoundException(transaction);
         }
         
         RollbackTransaction(payment);
@@ -155,7 +155,7 @@ public class CurrencyAccount : AggregateRoot
         
     }
 
-    public void EditMonthlyIncome(MonthlyTransactionName name, decimal amount)
+    public void EditMonthlyIncome(MonthlyTransactionName name, Amount amount)
     {
         
     }
@@ -170,7 +170,7 @@ public class CurrencyAccount : AggregateRoot
         
     }
 
-    public void EditMonthlyPayment(MonthlyTransactionName name, decimal amount)
+    public void EditMonthlyPayment(MonthlyTransactionName name, Amount amount)
     {
         
     }

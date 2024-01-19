@@ -24,7 +24,7 @@ Console.WriteLine($"Currency: '{balance.Currency}'\nAmount: '{balance.Amount}'\n
 currencyAccount.AddIncome(income2);
 Console.WriteLine($"Currency: '{balance.Currency}'\nAmount: '{balance.Amount}'\n");
 
-currencyAccount.RemoveIncome(income2.Name);
+currencyAccount.RemoveIncome(income2);
 Console.WriteLine($"Currency: '{balance.Currency}'\nAmount: '{balance.Amount}'\n");
 
 currencyAccount.AddPayment(payment);
@@ -39,7 +39,7 @@ Console.WriteLine($"Currency: '{balance.Currency}'\nAmount: '{balance.Amount}'\n
 currencyAccount.AddPayment(payment4);
 Console.WriteLine($"Currency: '{balance.Currency}'\nAmount: '{balance.Amount}'\n");
 
-currencyAccount.RemovePayment(payment.Name);
+currencyAccount.RemovePayment(payment);
 Console.WriteLine($"Currency: '{balance.Currency}'\nAmount: '{balance.Amount}'\n");
 
 

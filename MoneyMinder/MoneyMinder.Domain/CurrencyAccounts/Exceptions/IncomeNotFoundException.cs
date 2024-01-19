@@ -6,8 +6,8 @@ namespace MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 
 internal sealed class IncomeNotFoundException : MoneyMinderException
 {    
-    public IncomeNotFoundException(TransactionName name)
-        : base($"Income not found: {name}")
+    public IncomeNotFoundException(Transaction transaction)
+        : base($"Income not found: {transaction}")
     {
     }
 }
