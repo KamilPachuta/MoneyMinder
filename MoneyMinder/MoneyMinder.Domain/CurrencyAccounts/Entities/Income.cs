@@ -10,6 +10,7 @@ public class Income : Transaction
     public Income(TransactionName transactionName, DateTime transactionDate, Currency currency, Amount amount) 
         : base(Guid.NewGuid(), transactionName, transactionDate, currency, amount)
     {
+        CheckAmount(amount);
     }
 
     /// <summary>
@@ -17,7 +18,7 @@ public class Income : Transaction
     /// </summary>
     /// <param name="amount">The amount to be checked.</param>
     /// <exception cref="NegativeBalanceException">Thrown when the amount is less than or equal to zero.</exception>
-    protected override void CheckAmount(Amount amount)
+    protected void CheckAmount(Amount amount)
     {
         if (amount.Value <= 0)
         {

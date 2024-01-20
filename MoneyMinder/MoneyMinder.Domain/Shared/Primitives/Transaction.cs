@@ -15,14 +15,11 @@ public abstract class Transaction : Entity
     protected Transaction(Guid id, TransactionName name, DateTime date, Currency currency, Amount amount)
         : base(id)
     {
-        CheckAmount(amount);
         Name = name;
         Date = date;
         Currency = currency;
         Amount = amount;
     }
-    
-    protected abstract void CheckAmount(Amount amount);
 
     public override string ToString()
     {
