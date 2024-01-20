@@ -1,11 +1,9 @@
-using Microsoft.Extensions.DependencyInjection;
 using MoneyMinder.Domain.Abstractions;
-using MoneyMinder.Domain.Accounts.DomainEvents;
 using MoneyMinder.Domain.CurrencyAccounts.Abstractions;
 using MoneyMinder.Domain.CurrencyAccounts.DomainEvents;
+using MoneyMinder.Domain.CurrencyAccounts.Enums;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
-using MoneyMinder.Domain.Users.ValueObjects;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
@@ -41,7 +39,7 @@ public class CurrencyAccount : AggregateRoot
     {
         Name = name;
         
-        RaiseDomainEvent(new CurrencyAccountCreatedDomainEvent(DateTime.Now, this));
+        RaiseDomainEvent(new CurrencyAccountCreatedDomainEvent(DateTime.UtcNow, this));
     }
     
     
@@ -365,7 +363,7 @@ public class CurrencyAccount : AggregateRoot
     /// <param name="currency">The new currency for the monthly payment.</param>
     /// <param name="categoryName">The new category name for the monthly payment.</param>
     /// <exception cref="MonthlyPaymentAlreadyExistException">Thrown if a monthly payment with the new name already exists.</exception>
-    public void EditMonthlyPayment(TransactionName oldName, TransactionName newName, Amount amount, Currency currency, CategoryName categoryName)
+    public void EditMonthlyPayment(TransactionName oldName, TransactionName newName, Amount amount, Currency currency, Category categoryName)
     {
         var monthlyPayment = GetMonthlyPayment(oldName);
         
@@ -382,8 +380,8 @@ public class CurrencyAccount : AggregateRoot
         var oldAmount = monthlyPayment.Amount;
         monthlyPayment.Amount = amount;
 
-        var oldCategoryName = monthlyPayment.CategoryName;
-        monthlyPayment.CategoryName = categoryName;
+        var oldCategoryName = monthlyPayment.Category;
+        monthlyPayment.Category = categoryName;
         
         
         RaiseDomainEvent(new MonthlyPaymentEditedDomainEvent(oldName, newName, oldAmount, amount, oldCurrency, currency, oldCategoryName, categoryName , this));
@@ -424,7 +422,7 @@ public class CurrencyAccount : AggregateRoot
     public void AcceptMonthlyPayment(MonthlyPayment monthlyPayment)
     {
         var monthlyPaymentStock = GetMonthlyPayment(monthlyPayment.Name);
-        var payment = new Payment(monthlyPayment.Name, monthlyPayment.Month.Date, monthlyPayment.Currency, monthlyPayment.Amount, monthlyPayment.CategoryName);
+        var payment = new Payment(monthlyPayment.Name, monthlyPayment.Month.Date, monthlyPayment.Currency, monthlyPayment.Amount, monthlyPayment.Category);
 
         _monthlyPayments.Remove(monthlyPaymentStock);
         AddPayment(payment);
@@ -442,9 +440,9 @@ public class CurrencyAccount : AggregateRoot
         var income = new Income(new TransactionName("Currency conversion"), DateTime.UtcNow, to, new Amount(amount));
 
         var convertedAmount = new Amount(amount / coefficient);
-        
+
         var payment = new Payment(new TransactionName("Currency Conversion"), DateTime.UtcNow, from, convertedAmount,
-            new CategoryName("Currency conversion"));
+            Category.Entertainment);
 
 
         AddIncome(income);
@@ -461,7 +459,7 @@ public class CurrencyAccount : AggregateRoot
         }
 
         var payment = new Payment(new TransactionName("Currency Conversion"), DateTime.UtcNow, from, new Amount(-1 * amount),
-            new CategoryName("Currency conversion"));
+            Category.Entertainment);
 
         var convertedAmount = new Amount(amount * coefficient);
         

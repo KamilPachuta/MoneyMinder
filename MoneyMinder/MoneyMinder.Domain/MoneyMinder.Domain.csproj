@@ -12,6 +12,7 @@
       <Folder Include="Users\Entities\" />
       <Folder Include="Users\Exceptions\" />
       <Folder Include="Users\Repository\" />
+      <Folder Include="Users\ValueObjects\" />
     </ItemGroup>
 
     <ItemGroup>

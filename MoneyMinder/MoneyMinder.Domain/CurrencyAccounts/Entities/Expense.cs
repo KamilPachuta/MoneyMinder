@@ -1,16 +1,16 @@
+using MoneyMinder.Domain.CurrencyAccounts.Enums;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
 using MoneyMinder.Domain.Primitives;
-using MoneyMinder.Domain.Users.ValueObjects;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
 public class Expense : Entity
 {
-    public CategoryName Category { get; init; }
+    public Category Category { get; init; }
     public ExpenseAmount Amount { get; private set; }
 
-    public Expense(Guid id, CategoryName category, ExpenseAmount amount) 
+    public Expense(Guid id, Category category, ExpenseAmount amount) 
         : base(id)
     {
         Category = category;

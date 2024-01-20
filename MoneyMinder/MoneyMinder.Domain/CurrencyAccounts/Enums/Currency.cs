@@ -1,6 +1,6 @@
 namespace MoneyMinder.Domain.CurrencyAccounts.Enums;
 
-public enum SupportedCurrency
+public enum Currency
 {
     USD, // STANY
     EUR, // EUROPA 

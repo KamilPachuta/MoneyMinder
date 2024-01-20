@@ -1,17 +1,18 @@
+using MoneyMinder.Domain.CurrencyAccounts.Enums;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
-using MoneyMinder.Domain.Users.ValueObjects;
+
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
 public class MonthlyPayment : MonthlyTransaction
 {
-    public CategoryName CategoryName { get; set; }
+    public Category Category { get; set; }
     
-    public MonthlyPayment(TransactionName name, Month month, Currency currency, Amount amount, CategoryName categoryName) 
+    public MonthlyPayment(TransactionName name, Month month, Currency currency, Amount amount, Category category) 
         : base(Guid.NewGuid(), name, month, currency, amount)
     {
-        CategoryName = categoryName;
+        Category = category;
     }
 
     /// <summary>

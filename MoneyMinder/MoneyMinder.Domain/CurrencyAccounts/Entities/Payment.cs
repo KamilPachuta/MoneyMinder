@@ -1,18 +1,17 @@
 using MoneyMinder.Domain.CurrencyAccounts.Abstractions;
+using MoneyMinder.Domain.CurrencyAccounts.Enums;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
-using MoneyMinder.Domain.Primitives;
-using MoneyMinder.Domain.Users.ValueObjects;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
 public class Payment : Transaction
 {
-    public CategoryName CategoryName { get; set; }
+    public Category Category { get; set; }
     
-    public Payment(TransactionName name, DateTime date, Currency currency, Amount amount, CategoryName categoryName) : base(Guid.NewGuid(), name, date, currency, amount)
+    public Payment(TransactionName name, DateTime date, Currency currency, Amount amount, Category category) : base(Guid.NewGuid(), name, date, currency, amount)
     {
-        CategoryName = categoryName;
+        Category = category;
     }
 
     /// <summary>

@@ -3,6 +3,7 @@ using MoneyMinder.Domain.Abstractions;
 using MoneyMinder.Domain.Accounts.DomainEvents;
 using MoneyMinder.Domain.Accounts.Exceptions;
 using MoneyMinder.Domain.Accounts.ValueObjects;
+using MoneyMinder.Domain.Users;
 
 namespace MoneyMinder.Domain.Accounts;
 
@@ -12,12 +13,16 @@ public class Account : AggregateRoot
     public AccountRole Role { get; }
     public AccountPasswordHash PasswordHash { get; private set; }
 
-    public Account(Guid id, AccountEmail email, AccountRole role, AccountPasswordHash passwordHash)
+
+    private User? User;
+    
+
+    public Account(Guid id, AccountEmail email, AccountRole role, string password, IPasswordHasher<Account> passwordHasher)
         : base(id)
     {
         Email = email;
         Role = role;
-        PasswordHash = passwordHash;
+        PasswordHash = new AccountPasswordHash(password, this, passwordHasher);
         
         RaiseDomainEvent(new AccountCreatedDomainEvent(DateTime.UtcNow, this));
     }
@@ -44,4 +49,15 @@ public class Account : AggregateRoot
 
         RaiseDomainEvent(new AccountLoggedInDomainEvent(DateTime.UtcNow, this));
     }
+
+    public void AssignUser(User user)
+    {
+        if (user is null)
+        {
+            throw new EmptyUserException();
+        }
+
+        User = user;
+    }
+    
 }
