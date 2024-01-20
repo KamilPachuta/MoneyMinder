@@ -29,6 +29,11 @@ public sealed class Budget : Entity
     {
         Name = name;
     }
+
+    public void ChangeExpense(Expense expense)
+    {
+        
+    }
     
     /// <summary>
     /// Checks if the provided collection of expenses contains unique items and adds them to the internal list.

@@ -12,14 +12,14 @@ public record AccountPasswordHash
         Value = value;
     }
 
-    public AccountPasswordHash(string password, IPasswordHasher<AccountPasswordHash> passwordHasher)
+    public AccountPasswordHash(string password, Account account, IPasswordHasher<Account> passwordHasher)
     {
         if (password is null)
         {
             throw new EmptyPasswordHashException();
         }
 
-        var passwordHash = passwordHasher.HashPassword(this, password);
+        var passwordHash = passwordHasher.HashPassword(account, password);
 
         Value = passwordHash;
     }

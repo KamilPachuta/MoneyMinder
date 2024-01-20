@@ -8,7 +8,7 @@ public record BudgetDate
 
     public BudgetDate(DateTime date)
     {
-        if (date.Month != DateTime.Now.Month)
+        if (date.Month != DateTime.UtcNow.Month)
         {
             throw new InvalidBudgetDateException(date);
         }

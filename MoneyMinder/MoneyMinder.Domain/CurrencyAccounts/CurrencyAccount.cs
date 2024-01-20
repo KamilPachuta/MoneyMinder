@@ -1,4 +1,6 @@
+using Microsoft.Extensions.DependencyInjection;
 using MoneyMinder.Domain.Abstractions;
+using MoneyMinder.Domain.Accounts.DomainEvents;
 using MoneyMinder.Domain.CurrencyAccounts.Abstractions;
 using MoneyMinder.Domain.CurrencyAccounts.DomainEvents;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
@@ -14,7 +16,7 @@ public class CurrencyAccount : AggregateRoot
     
     
     //Entity
-    public Budget Budget { get; private set; }
+    public Budget? Budget { get; private set; }
     
     public IEnumerable<Balance> Balances => _balances;
     // public IEnumerable<Income> Incomes => _incomes;
@@ -67,15 +69,22 @@ public class CurrencyAccount : AggregateRoot
     private bool MonthlyPaymentExist(TransactionName name)
         => _monthlyPayments.Any(mp => mp.Name == name);
 
-    /// <summary>
-    /// Checks if the budget is for the current month.
-    /// </summary>
-    /// <param name="month">The month associated with the budget to check.</param>
-    /// <returns>True if the budget is for the current month, otherwise false.</returns>
-    private bool BudgetMonthCheck(Month month)
-        => month.Date.Month == DateTime.Today.Month;
+    // /// <summary>
+    // /// Checks if the budget is for the current month.
+    // /// </summary>
+    // /// <param name="month">The month associated with the budget to check.</param>
+    // /// <returns>True if the budget is for the current month, otherwise false.</returns>
+    // private bool BudgetMonthCheck(Month month)
+    //     => month.Date.Month == DateTime.Today.Month;
 
 
+    // private bool BudgetMonthCheck(BudgetDate month)
+    // {
+    //     
+    //     
+    //     
+    // }
+    
     /// <summary>
     /// 
     /// </summary>
@@ -423,23 +432,99 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new MonthlyPaymentAcceptedDomainEvent(monthlyPayment, payment, this));
     }
 
+    public void ConvertCurrencyTo(Currency from, Currency to, decimal amount, decimal coefficient)
+    {
+        if (amount < 0)
+        {
+            throw new NegativeAmountException(amount);
+        }
+
+        var income = new Income(new TransactionName("Currency conversion"), DateTime.UtcNow, to, new Amount(amount));
+
+        var convertedAmount = new Amount(amount / coefficient);
+        
+        var payment = new Payment(new TransactionName("Currency Conversion"), DateTime.UtcNow, from, convertedAmount,
+            new CategoryName("Currency conversion"));
+
+
+        AddIncome(income);
+        AddPayment(payment);
+        
+        RaiseDomainEvent(new CurrencyConvertedToDomainEvent(from, to, amount, coefficient, this));
+    }
+    
+    public void ConvertCurrencyFrom(Currency from, Currency to, decimal amount, decimal coefficient)
+    {
+        if (amount < 0)
+        {
+            throw new NegativeAmountException(amount);
+        }
+
+        var payment = new Payment(new TransactionName("Currency Conversion"), DateTime.UtcNow, from, new Amount(-1 * amount),
+            new CategoryName("Currency conversion"));
+
+        var convertedAmount = new Amount(amount * coefficient);
+        
+        var income = new Income(new TransactionName("Currency conversion"), DateTime.UtcNow, to, convertedAmount);
+
+
+        AddIncome(income);
+        AddPayment(payment);
+        
+        RaiseDomainEvent(new CurrencyConvertedFromDomainEvent(from, to, amount, coefficient, this));
+    }
     
     public void CreateBudget(Budget budget)
     {
-        //Czy budget jest na ten miesiac? czy poprzedni jest na ten? jesli tak to exception bo musi byc na poprzdedni
-    }
-
-    public void ConvertCurrency()
-    {
+        if (Budget is null)
+        {
+            Budget = budget;
         
+            RaiseDomainEvent(new BudgetCreatedDomainEvent(null, Budget, this));
+
+        }
+        
+        if (Budget.Date.Date.Month == DateTime.UtcNow.Month)
+        {
+            throw new BudgetAlreadyExistException(Budget.Date.Date);
+        }
+        
+        var oldBudget = Budget;
+
+        Budget = budget;
+        
+        RaiseDomainEvent(new BudgetCreatedDomainEvent(oldBudget, Budget, this));
+
+    }
+
+    public void ChangeBudgetName(BudgetName name)
+    {
+        var oldName = Budget.Name;
+
+        Budget.ChangeName(name);
+        
+        RaiseDomainEvent(new BudgetNameChangedDomainEvent(oldName, name, this));
+    }
+
+    public void EditExpense(Expense newExpense)
+    {
+        var expense = Budget.Expenses.FirstOrDefault(e => e == newExpense);
+
+        var oldAmount = expense.Amount;
+        
+        expense.ChangeAmount(newExpense);
+        
+        
+        RaiseDomainEvent(new ExpenseEditedDomainEvent(expense, oldAmount, this));
     }
     
-    
-    //add budget
-    // edit budget name
-    // edit expenses?
+    public void DeleteBudget(Guid id)
+    {
+        var budget = Budget;
+        
+        Budget = null;
+        
+        RaiseDomainEvent(new BudgetDeletedDomainEvent(budget, this));
+    }
     // co z powiadomieniami
-    
-    
-
 }

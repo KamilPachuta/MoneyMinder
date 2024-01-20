@@ -8,6 +8,10 @@
 
     <ItemGroup>
       <Folder Include="Shared\" />
+      <Folder Include="Users\DomainEvents\" />
+      <Folder Include="Users\Entities\" />
+      <Folder Include="Users\Exceptions\" />
+      <Folder Include="Users\Repository\" />
     </ItemGroup>
 
     <ItemGroup>

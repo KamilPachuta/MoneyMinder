@@ -19,27 +19,29 @@ public class Account : AggregateRoot
         Role = role;
         PasswordHash = passwordHash;
         
-        RaiseDomainEvent(new AccountCreatedDomainEvent(DateTime.Now, this));
+        RaiseDomainEvent(new AccountCreatedDomainEvent(DateTime.UtcNow, this));
     }
 
-    public void ChangePassword(string password, AccountPasswordHash newPasswordHash, IPasswordHasher<AccountPasswordHash> passwordHasher)
+    public void ChangePassword(string password, string newPassword, IPasswordHasher<Account> passwordHasher)
     {
         VerifyPassword(password, passwordHasher);
 
+        var newPasswordHash = new AccountPasswordHash(newPassword, this, passwordHasher);
+        
         PasswordHash = newPasswordHash;
         
-        RaiseDomainEvent(new PasswordChangedDomainEvent(this));
+        RaiseDomainEvent(new PasswordChangedDomainEvent(DateTime.UtcNow, this));
     }
 
-    public void VerifyPassword(string password, IPasswordHasher<AccountPasswordHash> passwordHasher)
+    public void VerifyPassword(string password, IPasswordHasher<Account> passwordHasher)
     {
-        var result = passwordHasher.VerifyHashedPassword(PasswordHash, PasswordHash.Value, password);
+        var result = passwordHasher.VerifyHashedPassword(this, PasswordHash.Value, password);
 
         if (result is PasswordVerificationResult.Failed)
         {
             throw new LoginFailedException();
         }
 
-        RaiseDomainEvent(new AccountLoggedInDomainEvent(DateTime.Now, this));
+        RaiseDomainEvent(new AccountLoggedInDomainEvent(DateTime.UtcNow, this));
     }
 }
