@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyMinder.Domain.Accounts.Enum;
 using MoneyMinder.Infrastructure.EF.Context;
@@ -9,12 +10,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MoneyMinder.Infrastructure.Migrations
+namespace MoneyMinder.Infrastructure.EF.Migrations
 {
     [DbContext(typeof(MoneyMinderDbContext))]
-    partial class MoneyMinderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240121230840_Address added")]
+    partial class Addressadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,6 +49,32 @@ namespace MoneyMinder.Infrastructure.Migrations
                     b.ToTable("Accounts", "MoneyMinderr");
                 });
 
+            modelBuilder.Entity("MoneyMinder.Domain.Accounts.Entities.Address", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Addresses", "MoneyMinderr");
+                });
+
             modelBuilder.Entity("MoneyMinder.Domain.Accounts.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -67,6 +96,15 @@ namespace MoneyMinder.Infrastructure.Migrations
                     b.ToTable("Users", "MoneyMinderr");
                 });
 
+            modelBuilder.Entity("MoneyMinder.Domain.Accounts.Entities.Address", b =>
+                {
+                    b.HasOne("MoneyMinder.Domain.Accounts.Entities.User", null)
+                        .WithOne("Address")
+                        .HasForeignKey("MoneyMinder.Domain.Accounts.Entities.Address", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MoneyMinder.Domain.Accounts.Entities.User", b =>
                 {
                     b.HasOne("MoneyMinder.Domain.Accounts.Account", null)
@@ -79,6 +117,12 @@ namespace MoneyMinder.Infrastructure.Migrations
             modelBuilder.Entity("MoneyMinder.Domain.Accounts.Account", b =>
                 {
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.Accounts.Entities.User", b =>
+                {
+                    b.Navigation("Address")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -5,7 +5,7 @@ using MoneyMinder.Domain.Repository;
 
 namespace MoneyMinder.Infrastructure.Queries;
 
-public class GetAccountHandler : IRequestHandler<GetAccount, Account>
+internal sealed class GetAccountHandler : IRequestHandler<GetAccount, Account>
 {
     private readonly IAccountRepository _repository;
 

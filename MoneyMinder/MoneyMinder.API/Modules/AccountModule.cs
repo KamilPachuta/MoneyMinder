@@ -25,7 +25,9 @@ public class AccountModule : CarterModule
         
         app.MapGet("/", AccountEndpoints.Get);
 
-        
+        app.MapGet("/all/", AccountEndpoints.GetAll);
+
+
         // app.MapPut("/CurrencyAccount",AccountEndpoints);
         // app.MapGet("/Savings",);
 

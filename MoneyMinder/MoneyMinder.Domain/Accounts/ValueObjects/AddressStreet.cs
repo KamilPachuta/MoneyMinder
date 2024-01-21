@@ -5,7 +5,7 @@ namespace MoneyMinder.Domain.Accounts.ValueObjects;
 
 public record AddressStreet
 {
-    public string Value { get; set; }
+    public string Value { get; }
 
     public AddressStreet(string value)
     {

@@ -10,12 +10,12 @@ public class User : Entity
     public UserPhoneNumber PhoneNumber { get; protected set; }
     public UserBrithDate BirthDate { get; }
     public Gender Gender { get; }
-    
-    
+
+
     //private List<CurrencyAccount> _currencyAccounts;
     //private List<SavingsPortfolio> _savings;
-    
-    private Address _address;
+
+    public Address Address{ get; private set; }
 
     
     private User()
@@ -29,7 +29,7 @@ public class User : Entity
         PhoneNumber = phoneNumber;
         BirthDate = birthDate;
         Gender = gender;
-        _address = address;
+        Address = address;
     }
     
     
@@ -53,9 +53,9 @@ public class User : Entity
 
     internal Address ChangeAddress(Address address)
     {
-        var oldAddress = _address;
+        var oldAddress = Address;
         
-        _address = address;
+        Address = address;
 
         return oldAddress;
     }

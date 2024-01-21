@@ -16,15 +16,6 @@ internal static class AccountEndpoints
         await sender.Send(command);
         return Results.Ok();
     }
-   
-    public static async Task<IResult> Get([FromBody]GetAccountQuery request, [FromServices]ISender sender)
-    {
-        var command = new GetAccount(request.Id);
-
-        var result = await sender.Send(command);
-
-        return Results.Ok(result);
-    }
     
     public static async Task<IResult> PutUser([FromBody]CreateUserRequest request, [FromServices]ISender sender)
     {
@@ -35,4 +26,21 @@ internal static class AccountEndpoints
         return Results.Ok();
     }
     
+    public static async Task<IResult> Get([FromBody]GetAccountQuery request, [FromServices]ISender sender)
+    {
+        var command = new GetAccount(request.Id);
+
+        var result = await sender.Send(command);
+
+        return Results.Ok(result);
+    }
+    
+    public static async Task<IResult> GetAll([FromServices]ISender sender)
+    {
+        var command = new GetAccounts();
+
+        var result = await sender.Send(command);
+
+        return Results.Ok(result);
+    }
 }

@@ -12,7 +12,7 @@ public static class Extensions
         var accountWriteConfiguration = new AccountConfiguration();
         modelBuilder.ApplyConfiguration<Account>(accountWriteConfiguration);
         modelBuilder.ApplyConfiguration<User>(accountWriteConfiguration);
-        //modelBuilder.ApplyConfiguration<Address>(accountWriteConfiguration);
+        modelBuilder.ApplyConfiguration<Address>(accountWriteConfiguration);
 
         return modelBuilder;
     }

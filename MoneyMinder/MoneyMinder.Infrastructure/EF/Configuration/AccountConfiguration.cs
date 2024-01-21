@@ -53,10 +53,32 @@ internal sealed class AccountConfiguration :
         builder
             .Property(a => a.BirthDate)
             .HasConversion(bd => bd.Date, bd => new UserBrithDate(bd));
+
+        builder
+            .HasOne(u => u.Address)
+            .WithOne()
+            .HasForeignKey<Address>();
     }
 
     public void Configure(EntityTypeBuilder<Address> builder)
     {
-        throw new NotImplementedException();
+        builder.ToTable(TableNames.Addresses);
+        builder.HasKey(a => a.Id);
+
+        builder
+            .Property(a => a.Country)
+            .HasConversion(c => c.Value, c => new AddressCountry(c));
+
+        builder
+            .Property(a => a.City)
+            .HasConversion(c => c.Value, c => new AddressCity(c));
+
+        builder
+            .Property(a => a.PostalCode)
+            .HasConversion(pc => pc.Value, pc => new AddressPostalCode(pc));
+
+        builder
+            .Property(a => a.Street)
+            .HasConversion(s => s.Value, s => new AddressStreet(s));
     }
 }

@@ -12,6 +12,12 @@
 
     <ItemGroup>
       <Folder Include="Accounts\Models\" />
+      <Folder Include="CurrencyAccounts\Models\" />
+      <Folder Include="Savings\Commands\Handlers\" />
+      <Folder Include="Savings\Exceptions\" />
+      <Folder Include="Savings\Models\" />
+      <Folder Include="Savings\Queries\" />
+      <Folder Include="Savings\Services\" />
     </ItemGroup>
 
 </Project>

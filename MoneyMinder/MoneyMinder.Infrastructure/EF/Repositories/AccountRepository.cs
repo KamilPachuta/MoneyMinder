@@ -21,6 +21,7 @@ internal sealed class AccountRepository : IAccountRepository
     public async Task<Account> GetAsync(Guid id)
         => await _accounts
             .Include(a => a.User)
+            .ThenInclude(u => u.Address)
             .FirstOrDefaultAsync(a => a.Id == id);
 
     public async Task AddAsync(Account account)
