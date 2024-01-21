@@ -23,7 +23,7 @@ public class SavingsPortfolio : AggregateRoot
     {
     }
     
-    public SavingsPortfolio(Guid id, SavingsPortfolioName name, Currency currency, PositiveAmount plannedAmount, PositiveAmount actualAmount)
+    internal SavingsPortfolio(Guid id, SavingsPortfolioName name, Currency currency, PositiveAmount plannedAmount, PositiveAmount actualAmount)
         : base(id)
     {
         Name = name;

@@ -15,13 +15,17 @@ internal sealed class AccountFactory : IAccountFactory
 
 
     public Account CreateUser(AccountEmail email, string password, IPasswordHasher<Account> passwordHasher, UserName name,
-        UserPhoneNumber phoneNumber, UserBrithDate birthDate, Gender gender, Address address)
+        UserPhoneNumber phoneNumber, UserBrithDate birthDate, Gender gender, AddressCountry country, AddressCity city, AddressPostalCode postalCode, AddressStreet street)
     {
         var accountId = Guid.NewGuid();
         
         var account = new Account(accountId, email, new AccountRole(Role.User), password, passwordHasher);
 
         var userId = Guid.NewGuid();
+
+        var addressId = Guid.NewGuid();
+        
+        var address = new Address(addressId, country, city, postalCode, street);
         
         var user = new User(userId, name, phoneNumber, birthDate, gender, address);
         
@@ -29,6 +33,7 @@ internal sealed class AccountFactory : IAccountFactory
         
         return account;
     }
+    
 
     public Account CreateAdmin(AccountEmail email, string password, IPasswordHasher<Account> passwordHasher)
     {

@@ -1,10 +1,38 @@
+using Microsoft.Extensions.DependencyInjection;
+using MoneyMinder.Domain.Factories;
+using MoneyMinder.Domain.Factories.Interfaces;
+
 namespace MoneyMinder.Domain;
 
-public class Extensions
+public static class Extensions
 {
-    /*
+
+    public static IServiceCollection AddDomain(this IServiceCollection services)
+    {
+        services.AddSingleton<IAccountFactory, AccountFactory>();
+        services.AddSingleton<ICurrencyAccountFactory, CurrencyAccountFactory>();
+        services.AddSingleton<ISavingsFactory, SavingsFactory>();
+
+        return services;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
      /*
      * Business Rules:
+     *
+     *
+     *
+     * 
+     * ENG
      * 1. A budget can only be created for the current month.
      * 2. In the budget, only the name can be edited.
      * 3. Savings act as an account where you can deposit and withdraw money from a currency account.
@@ -19,16 +47,7 @@ public class Extensions
      *
      *
      *
-     *
-     *
-     *
-     *
-     *
-     * 
-     *
-     *
-     * 
-     * Buissness Rulse:
+     * POL
      * 1. Budzet mozna stworzyc tylko dla bierzacego miesiaca
      * 2. W Budzecie mozna edytowac tylko nazwę
      * 3. Savings to jakby konto na które mozna wplacac i wyplacac pieniadze z currencyaccount

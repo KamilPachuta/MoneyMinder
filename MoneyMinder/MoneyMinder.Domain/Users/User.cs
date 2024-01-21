@@ -26,7 +26,7 @@ public class User : AggregateRoot
     {
     }
     
-    public User(Guid id, UserName name, UserPhoneNumber phoneNumber, UserBrithDate birthDate, Gender gender, Address address)
+    internal User(Guid id, UserName name, UserPhoneNumber phoneNumber, UserBrithDate birthDate, Gender gender, Address address)
         : base(id)
     {
         Name = name;

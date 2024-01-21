@@ -17,7 +17,7 @@ public class Account : AggregateRoot
     private User? User;
     
 
-    public Account(Guid id, AccountEmail email, AccountRole role, string password, IPasswordHasher<Account> passwordHasher)
+    internal Account(Guid id, AccountEmail email, AccountRole role, string password, IPasswordHasher<Account> passwordHasher)
         : base(id)
     {
         Email = email;

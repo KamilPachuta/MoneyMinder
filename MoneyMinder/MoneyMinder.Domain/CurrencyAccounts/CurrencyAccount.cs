@@ -34,7 +34,7 @@ public class CurrencyAccount : AggregateRoot
     {
     }
     
-    public CurrencyAccount(Guid id, CurrencyAccountName name) 
+    internal CurrencyAccount(Guid id, CurrencyAccountName name) 
         : base(id)
     {
         Name = name;
