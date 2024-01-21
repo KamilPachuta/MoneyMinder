@@ -14,7 +14,7 @@ public class Account : AggregateRoot
     public AccountPasswordHash PasswordHash { get; private set; }
 
 
-    private User? User;
+    //private User? User;
     
 
     internal Account(Guid id, AccountEmail email, AccountRole role, string password, IPasswordHasher<Account> passwordHasher)
@@ -50,14 +50,14 @@ public class Account : AggregateRoot
         RaiseDomainEvent(new AccountLoggedInDomainEvent(DateTime.UtcNow, this));
     }
 
-    public void AssignUser(User user)
-    {
-        if (user is null)
-        {
-            throw new EmptyUserException();
-        }
-
-        User = user;
-    }
+    // public void AssignUser(User user)
+    // {
+    //     if (user is null)
+    //     {
+    //         throw new EmptyUserException();
+    //     }
+    //
+    //     User = user;
+    // }
     
 }

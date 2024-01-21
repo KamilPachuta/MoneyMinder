@@ -29,7 +29,7 @@ internal sealed class AccountFactory : IAccountFactory
         
         var user = new User(userId, name, phoneNumber, birthDate, gender, address);
         
-        account.AssignUser(user);
+        //account.AssignUser(user);
         
         return account;
     }

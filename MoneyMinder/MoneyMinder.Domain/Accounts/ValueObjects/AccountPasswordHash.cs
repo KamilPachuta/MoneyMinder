@@ -7,6 +7,11 @@ public record AccountPasswordHash
 {
     public string Value { get; }
 
+    private AccountPasswordHash()
+    {
+        
+    }
+
     private AccountPasswordHash(string value)
     {
         Value = value;
@@ -14,7 +19,7 @@ public record AccountPasswordHash
 
     internal AccountPasswordHash(string password, Account account, IPasswordHasher<Account> passwordHasher)
     {
-        if (password is null)
+        if (string.IsNullOrWhiteSpace(password))
         {
             throw new EmptyPasswordHashException();
         }
@@ -22,6 +27,18 @@ public record AccountPasswordHash
         var passwordHash = passwordHasher.HashPassword(account, password);
 
         Value = passwordHash;
+    }
+
+    public static AccountPasswordHash Create(string passwordHash)
+    {
+        if (string.IsNullOrWhiteSpace(passwordHash))
+        {
+            throw new EmptyPasswordHashException();
+        }
+
+        var password = new AccountPasswordHash(passwordHash);
+        
+        return password;
     }
 
     
