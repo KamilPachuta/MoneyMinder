@@ -26,12 +26,12 @@ public sealed class Budget : Entity
         CheckUnique(expenses);
     }
 
-    public void ChangeName(BudgetName name)
+    internal void ChangeName(BudgetName name)
     {
         Name = name;
     }
 
-    public void ChangeExpense(Expense expense)
+    internal void ChangeExpense(Expense expense)
     {
         
     }

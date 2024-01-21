@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using MoneyMinder.Domain.Abstractions;
 using MoneyMinder.Domain.Accounts.DomainEvents;
+using MoneyMinder.Domain.Accounts.Entities;
 using MoneyMinder.Domain.Accounts.Exceptions;
 using MoneyMinder.Domain.Accounts.ValueObjects;
-using MoneyMinder.Domain.Users;
 
 namespace MoneyMinder.Domain.Accounts;
 
@@ -13,8 +13,8 @@ public class Account : AggregateRoot
     public AccountRole Role { get; }
     public AccountPasswordHash PasswordHash { get; private set; }
 
+    public User? User { get; private set; }
 
-    //private User? User;
 
     private Account()
     {
@@ -54,14 +54,50 @@ public class Account : AggregateRoot
         RaiseDomainEvent(new AccountLoggedInDomainEvent(DateTime.UtcNow, this));
     }
 
-    // public void AssignUser(User user)
-    // {
-    //     if (user is null)
-    //     {
-    //         throw new EmptyUserException();
-    //     }
-    //
-    //     User = user;
-    // }
+    public void AssignUser(User user)
+    {
+        if (user is null)
+        {
+            throw new EmptyUserException();
+        }
+    
+        User = user;
+    }
+    
+        
+    internal void ChangeName(UserName name)
+    {
+        CheckUser();
+        var oldName = User.ChangeName(name);
+        
+        RaiseDomainEvent(new UserNameChangedDomainEvent(oldName, name, this));
+    }
+    
+    internal void ChangePhoneNumber(UserPhoneNumber phoneNumber)
+    {
+        CheckUser();
+
+        var oldPhone = User.ChangePhoneNumber(phoneNumber);
+        
+        RaiseDomainEvent(new UserPhoneNumberChangedDomainEvent(oldPhone, phoneNumber, this));
+
+    }
+
+    internal void ChangeAddress(Address address)
+    {
+        CheckUser();
+
+        var oldAddress = User.ChangeAddress(address);
+        
+        RaiseDomainEvent(new UserAddressChangedDomainEvent(oldAddress, address, this));
+    }
+
+    private void CheckUser()
+    {
+        if (User is null)
+        {
+            throw new UserNullableReferenceException();
+        }
+    }
     
 }

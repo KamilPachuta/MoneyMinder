@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyMinder.Domain.Accounts.Enum;
 using MoneyMinder.Infrastructure.EF.Context;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MoneyMinder.Infrastructure.Migrations
 {
     [DbContext(typeof(MoneyMinderDbContext))]
-    partial class MoneyMinderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240121225455_User added")]
+    partial class Useradded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
