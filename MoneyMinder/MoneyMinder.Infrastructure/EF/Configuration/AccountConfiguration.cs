@@ -5,7 +5,7 @@ using MoneyMinder.Domain.Accounts.ValueObjects;
 
 namespace MoneyMinder.Infrastructure.EF.Configuration;
 
-public class AccountConfiguration : IEntityTypeConfiguration<Account>
+internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
 {
     public void Configure(EntityTypeBuilder<Account> builder)
     {

@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 MoneyMinder/.idea/.idea.MoneyMinder/.idea/indexLayout.xml
 MoneyMinder/.idea/.idea.MoneyMinder/.idea/vcs.xml
+MoneyMinder/MoneyMinder.API/credentials.json
