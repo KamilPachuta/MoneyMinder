@@ -21,12 +21,16 @@ public record BudgetName
         Name = name;
 
     }
+    
+    public static implicit operator string(BudgetName name)
+        => name.Name; 
+
+    public static implicit operator BudgetName(string name)
+        => new(name);
+    
 }
 
 
 
-// public static AccountPasswordHash Create(string passwordHash)
-//     => new AccountPasswordHash(passwordHash);
-//     
-// public static implicit operator string(AccountPasswordHash hash)
-//     => hash.Value;
+    
+

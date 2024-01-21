@@ -21,4 +21,10 @@ public record SavingsPortfolioName
         Name = name;
     }
     
+    
+    public static implicit operator string(SavingsPortfolioName name)
+        => name.Name; 
+
+    public static implicit operator SavingsPortfolioName(string name)
+        => new(name);
 }

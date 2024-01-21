@@ -19,6 +19,13 @@ public record MonthlyTransactionName
         }
 
         Name = name;
-
     }
+
+    
+    public static implicit operator string(MonthlyTransactionName name)
+        => name.Name; 
+
+    public static implicit operator MonthlyTransactionName(string name)
+        => new(name);
+    
 }

@@ -15,4 +15,12 @@ public record BudgetDate
 
         Date = date;
     }
+    
+    
+        
+    public static implicit operator DateTime(BudgetDate date)
+        => date.Date; 
+
+    public static implicit operator BudgetDate(DateTime date)
+        => new(date);
 }

@@ -22,5 +22,9 @@ public record AddressCity
     }
     
     
-    
+    public static implicit operator string(AddressCity value)
+        => value.Value; 
+
+    public static implicit operator AddressCity(string value)
+        => new(value);
 }

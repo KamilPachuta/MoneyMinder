@@ -47,7 +47,6 @@ public record UserPhoneNumber
 
     public override string ToString()
         => $"{Code}-{Number}";
-    
 }
 
 

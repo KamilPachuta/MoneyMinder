@@ -22,4 +22,12 @@ public record CurrencyAccountName
 
     }
     
+    
+    
+    public static implicit operator string(CurrencyAccountName name)
+        => name.Name; 
+
+    public static implicit operator CurrencyAccountName(string name)
+        => new(name);
+    
 }

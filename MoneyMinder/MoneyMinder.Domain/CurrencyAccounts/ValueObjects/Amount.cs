@@ -8,4 +8,16 @@ public record Amount
     {
         Value = value;
     }
+    
+        
+    public static implicit operator decimal(Amount value)
+        => value.Value; 
+
+    public static implicit operator Amount(decimal value)
+        => new(value);
+    
 }
+
+
+
+

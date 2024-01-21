@@ -28,5 +28,9 @@ public record UserBrithDate
         return age < 18;
     }
     
-    
+    public static implicit operator DateTime(UserBrithDate date)
+        => date.Date; 
+
+    public static implicit operator UserBrithDate(DateTime date)
+        => new(date);
 }

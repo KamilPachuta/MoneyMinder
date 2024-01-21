@@ -15,4 +15,11 @@ public record ExpenseAmount
 
         Amount = amount;
     }
+    
+    
+    public static implicit operator decimal(ExpenseAmount amount)
+        => amount.Amount; 
+
+    public static implicit operator ExpenseAmount(decimal amount)
+        => new(amount);
 }

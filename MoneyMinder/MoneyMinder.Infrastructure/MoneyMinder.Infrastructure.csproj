@@ -10,4 +10,8 @@
       <ProjectReference Include="..\MoneyMinder.Application\MoneyMinder.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="EF\" />
+    </ItemGroup>
+
 </Project>

@@ -12,7 +12,7 @@ public record AccountPasswordHash
         Value = value;
     }
 
-    public AccountPasswordHash(string password, Account account, IPasswordHasher<Account> passwordHasher)
+    internal AccountPasswordHash(string password, Account account, IPasswordHasher<Account> passwordHasher)
     {
         if (password is null)
         {
@@ -24,6 +24,7 @@ public record AccountPasswordHash
         Value = passwordHash;
     }
 
+    
     
     
 }

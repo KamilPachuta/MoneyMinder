@@ -23,4 +23,9 @@ public record AddressCountry
     
     
     
+    public static implicit operator string(AddressCountry value)
+        => value.Value; 
+
+    public static implicit operator AddressCountry(string value)
+        => new(value);
 }

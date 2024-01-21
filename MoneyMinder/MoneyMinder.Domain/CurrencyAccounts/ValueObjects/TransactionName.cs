@@ -19,6 +19,12 @@ public record TransactionName
         }
 
         Name = name;
-
     }
+    
+    public static implicit operator string(TransactionName name)
+        => name.Name; 
+
+    public static implicit operator TransactionName(string name)
+        => new(name);
+    
 }

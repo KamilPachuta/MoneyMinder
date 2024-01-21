@@ -15,4 +15,10 @@ public record Month
 
         Date = date;
     }
+    
+    public static implicit operator DateTime(Month date)
+        => date.Date; 
+
+    public static implicit operator Month(DateTime date)
+        => new(date);
 }

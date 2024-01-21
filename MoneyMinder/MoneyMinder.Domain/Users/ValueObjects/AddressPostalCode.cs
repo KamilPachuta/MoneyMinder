@@ -22,5 +22,9 @@ public record AddressPostalCode
     }
     
     
-    
+    public static implicit operator string(AddressPostalCode value)
+        => value.Value; 
+
+    public static implicit operator AddressPostalCode(string value)
+        => new(value);
 }

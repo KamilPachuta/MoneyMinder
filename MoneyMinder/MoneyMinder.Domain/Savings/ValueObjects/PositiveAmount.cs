@@ -16,4 +16,11 @@ public record PositiveAmount
         Amount = amount;
     }
     
+    
+    public static implicit operator decimal(PositiveAmount amount)
+        => amount.Amount; 
+
+    public static implicit operator PositiveAmount(decimal amount)
+        => new(amount);
+
 }

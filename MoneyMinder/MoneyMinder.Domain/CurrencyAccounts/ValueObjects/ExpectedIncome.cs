@@ -15,4 +15,12 @@ public record ExpectedIncome
 
         Amount = amount;
     }
+    
+    public static implicit operator decimal(ExpectedIncome amount)
+        => amount.Amount; 
+
+    public static implicit operator ExpectedIncome(decimal amount)
+        => new(amount);
+
+    
 }

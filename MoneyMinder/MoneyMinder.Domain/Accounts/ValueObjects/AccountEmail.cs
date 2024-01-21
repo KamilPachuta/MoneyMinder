@@ -21,5 +21,11 @@ public record AccountEmail
         Value = value;
     }
     
+    public static implicit operator string(AccountEmail value)
+        => value.Value; 
+
+    public static implicit operator AccountEmail(string value)
+        => new(value);
+    
     //Flunet Validation?
 }
