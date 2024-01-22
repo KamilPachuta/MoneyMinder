@@ -11,4 +11,4 @@ internal sealed class PaymentNotFoundException : MoneyMinderException
         : base($"Payment not found: {transaction}")
     {
     }
-}
+}        
