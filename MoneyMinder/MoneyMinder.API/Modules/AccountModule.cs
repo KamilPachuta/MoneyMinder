@@ -27,6 +27,13 @@ public class AccountModule : CarterModule
 
         app.MapGet("/all/", AccountEndpoints.GetAll);
 
+        app.MapPost("/password/", AccountEndpoints.PostPassword);
+        
+        app.MapPost("/name/", AccountEndpoints.PostName);
+
+        app.MapPost("/phone/", AccountEndpoints.PostPhone);
+
+        app.MapPost("/address", AccountEndpoints.PostAddress);
 
         // app.MapPut("/CurrencyAccount",AccountEndpoints);
         // app.MapGet("/Savings",);

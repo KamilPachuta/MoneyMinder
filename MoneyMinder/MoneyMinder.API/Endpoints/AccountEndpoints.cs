@@ -43,4 +43,50 @@ internal static class AccountEndpoints
 
         return Results.Ok(result);
     }
+    
+    public static async Task<IResult> PostPassword([FromBody]ChangePasswordRequest request, [FromServices] ISender sender)
+    {
+        var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
+
+        var command = new ChangePassword(id, request.Password, request.NewPassword);
+        
+        await sender.Send(command);
+
+        return Results.Ok();
+    }
+    
+    public static async Task<IResult> PostName([FromBody]ChangeNameRequest request, [FromServices]ISender sender)
+    {
+        var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
+        
+        var command = new ChangeName(id, request.FirstName, request.LastName);
+
+        await sender.Send(command);
+
+        return Results.Ok();
+    }
+
+    public static async Task<IResult> PostPhone([FromBody]ChangePhoneNumberRequest request, [FromServices] ISender sender)
+    {
+        var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
+
+        var command = new ChangePhoneNumber(id, request.Code, request.Number);
+        
+        await sender.Send(command);
+
+        return Results.Ok();
+    }
+    
+    public static async Task<IResult> PostAddress([FromBody]ChangeAddressRequest request, [FromServices] ISender sender)
+    {
+        var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
+
+        var command = new ChangeAddress(id, request.Country, request.City, request.PostalCode, request.Street);
+        
+        await sender.Send(command);
+
+        return Results.Ok();
+    }
+    
+    
 }

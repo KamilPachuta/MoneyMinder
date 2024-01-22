@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyMinder.Application.Accounts.Services;
+using MoneyMinder.Application.CurrencyAccounts.Services;
 using MoneyMinder.Domain.Repository;
 using MoneyMinder.Infrastructure.EF.Context;
 using MoneyMinder.Infrastructure.EF.Postgres;
@@ -23,8 +24,12 @@ public static class Extensions
 
         
         services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddScoped<IAccountReadService, AccountReadService>();
+        services.AddScoped<ICurrencyAccountRepository, CurrencyAccountRepository>();
 
+        services.AddScoped<IAccountReadService, AccountReadService>();
+        services.AddScoped<ICurrencyAccountReadService, CurrencyAccountReadService>();
+        
+        
         return services;
     }
 }

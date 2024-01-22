@@ -1,0 +1,33 @@
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using MoneyMinder.Application.Accounts.Exceptions;
+using MoneyMinder.Domain.Accounts;
+using MoneyMinder.Domain.Repository;
+
+namespace MoneyMinder.Application.Accounts.Commands.Handlers;
+
+public class ChangePasswordHandler : IRequestHandler<ChangePassword>
+{
+    private readonly IAccountRepository _repository;
+    private readonly IPasswordHasher<Account> _passwordHasher;
+
+    public ChangePasswordHandler(IAccountRepository repository, IPasswordHasher<Account> passwordHasher)
+    {
+        _repository = repository;
+        _passwordHasher = passwordHasher;
+    }
+    
+    public async Task Handle(ChangePassword request, CancellationToken cancellationToken)
+    {
+        var account = await _repository.GetAsync(request.Id);
+
+        if (account is null)
+        {
+            throw new AccountNotFoundException(request.Id);
+        }
+        
+        account.ChangePassword(request.Password, request.NewPassword, _passwordHasher);
+
+        await _repository.UpdateAsync(account);
+    }
+}

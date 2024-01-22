@@ -31,16 +31,7 @@ public class Account : AggregateRoot
         RaiseDomainEvent(new AccountCreatedDomainEvent(DateTime.UtcNow, this));
     }
 
-    public void ChangePassword(string password, string newPassword, IPasswordHasher<Account> passwordHasher)
-    {
-        VerifyPassword(password, passwordHasher);
-
-        var newPasswordHash = new AccountPasswordHash(newPassword, this, passwordHasher);
-        
-        PasswordHash = newPasswordHash;
-        
-        RaiseDomainEvent(new PasswordChangedDomainEvent(DateTime.UtcNow, this));
-    }
+ 
 
     public void VerifyPassword(string password, IPasswordHasher<Account> passwordHasher)
     {
@@ -54,7 +45,7 @@ public class Account : AggregateRoot
         RaiseDomainEvent(new AccountLoggedInDomainEvent(DateTime.UtcNow, this));
     }
 
-    public void AssignUser(User user)
+    internal void AssignUser(User user)
     {
         if (user is null)
         {
@@ -64,8 +55,17 @@ public class Account : AggregateRoot
         User = user;
     }
     
+    public void ChangePassword(string password, string newPassword, IPasswordHasher<Account> passwordHasher)
+    {
+        VerifyPassword(password, passwordHasher);
+
+        var newPasswordHash = new AccountPasswordHash(newPassword, this, passwordHasher);
         
-    internal void ChangeName(UserName name)
+        PasswordHash = newPasswordHash;
+        
+        RaiseDomainEvent(new PasswordChangedDomainEvent(DateTime.UtcNow, this));
+    }
+    public void ChangeName(UserName name)
     {
         CheckUser();
         var oldName = User.ChangeName(name);
@@ -73,7 +73,7 @@ public class Account : AggregateRoot
         RaiseDomainEvent(new UserNameChangedDomainEvent(oldName, name, this));
     }
     
-    internal void ChangePhoneNumber(UserPhoneNumber phoneNumber)
+    public void ChangePhoneNumber(UserPhoneNumber phoneNumber)
     {
         CheckUser();
 
@@ -83,7 +83,7 @@ public class Account : AggregateRoot
 
     }
 
-    internal void ChangeAddress(Address address)
+    public void ChangeAddress(Address address)
     {
         CheckUser();
 
