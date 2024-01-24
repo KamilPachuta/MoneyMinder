@@ -22,6 +22,8 @@ public class AccountModule : CarterModule
         app.MapPut("/Admin/", AccountEndpoints.PutAdmin);
 
         app.MapPut("/", AccountEndpoints.PutUser);
+
+        app.MapPost("/", AccountEndpoints.PostLogin);
         
         app.MapGet("/", AccountEndpoints.Get);
 

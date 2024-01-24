@@ -26,6 +26,14 @@ internal static class AccountEndpoints
         return Results.Ok();
     }
     
+    public static async Task<IResult> PostLogin([FromBody]LoginAccountRequest request, [FromServices]ISender sender)
+    {
+        var command = new LoginAccount(request.Email, request.Password);
+        
+        var result = await sender.Send(command);
+        return Results.Ok(result);
+    }
+    
     public static async Task<IResult> Get([FromBody]GetAccountQuery request, [FromServices]ISender sender)
     {
         var command = new GetAccount(request.Id);

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MoneyMinder.Domain.Accounts;
+using MoneyMinder.Domain.Accounts.ValueObjects;
 using MoneyMinder.Domain.Factories.Interfaces;
 using MoneyMinder.Domain.Repository;
 using MoneyMinder.Infrastructure.EF.Context;
@@ -24,6 +25,10 @@ internal sealed class AccountRepository : IAccountRepository
             .ThenInclude(u => u.Address)
             .FirstOrDefaultAsync(a => a.Id == id);
 
+    public async Task<Account> GetAsync(AccountEmail email)
+        => await _accounts
+            .FirstOrDefaultAsync(a => a.Email == email);
+    
     public async Task AddAsync(Account account)
     {
         await _accounts.AddAsync(account);
