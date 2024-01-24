@@ -1,8 +1,9 @@
 using Carter;
+using MoneyMinder.API.Modules.Abstractions;
 
 namespace MoneyMinder.API.Modules;
 
-public class CurrencyAccountModule : CarterModule
+public class CurrencyAccountModule : BaseModule
 {
     public CurrencyAccountModule()
         : base("/CurrencyAccount")

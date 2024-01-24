@@ -3,13 +3,14 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoneyMinder.API.Endpoints;
+using MoneyMinder.API.Modules.Abstractions;
 using MoneyMinder.API.Requests.Accounts;
 using MoneyMinder.Application.Accounts.Commands;
 using MoneyMinder.Application.Accounts.Queries;
 
 namespace MoneyMinder.API.Modules;
 
-public class AccountModule : CarterModule
+public class AccountModule : BaseModule
 {
     public AccountModule()
         : base("/Account")
