@@ -4,10 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using MoneyMinder.Application.Accounts.Services;
 using MoneyMinder.Application.CurrencyAccounts.Services;
 using MoneyMinder.Domain.Repository;
+using MoneyMinder.Domain.UnitOfWork;
 using MoneyMinder.Infrastructure.EF.Context;
 using MoneyMinder.Infrastructure.EF.Postgres;
 using MoneyMinder.Infrastructure.EF.ReadServices;
 using MoneyMinder.Infrastructure.EF.Repositories;
+using MoneyMinder.Infrastructure.EF.UnitOfWork;
 
 namespace MoneyMinder.Infrastructure;
 
@@ -22,6 +24,8 @@ public static class Extensions
         services.AddDbContext<MoneyMinderDbContext>(ctx =>
             ctx.UseNpgsql(postgresOptions.MoneyMinderConnection));
 
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ICurrencyAccountRepository, CurrencyAccountRepository>();

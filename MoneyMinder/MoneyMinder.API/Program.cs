@@ -1,6 +1,7 @@
 using Carter;
 using MoneyMinder.API;
 using MoneyMinder.API.Middleware;
+using MoneyMinder.Application.Behaviors;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,14 +15,23 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddProject(builder.Configuration);
 
+// builder.Services.AddMediatR(cfg =>
+// {
+//     var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+//     foreach (var assembly in assemblies)
+//     {
+//         cfg.RegisterServicesFromAssembly(assembly);
+//     }
+// });
+
 builder.Services.AddMediatR(cfg =>
 {
-    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-    foreach (var assembly in assemblies)
-    {
-        cfg.RegisterServicesFromAssembly(assembly);
-    }
+    cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
+    cfg.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
 });
+
+
 
 
 

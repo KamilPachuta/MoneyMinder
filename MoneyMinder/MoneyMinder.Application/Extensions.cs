@@ -9,8 +9,6 @@ public static class Extensions
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
-
-        //services.AddSingleton<AuthenticationSettings>();
         
         return services;
     }
