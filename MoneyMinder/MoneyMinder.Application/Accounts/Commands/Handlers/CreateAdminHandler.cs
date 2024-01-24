@@ -8,7 +8,7 @@ using MoneyMinder.Domain.Repository;
 
 namespace MoneyMinder.Application.Accounts.Commands.Handlers;
 
-public class CreateAdminHandler : IRequestHandler<CreateAdmin>
+internal sealed class CreateAdminHandler : IRequestHandler<CreateAdminCommand>
 {
     private readonly IAccountFactory _factory;
     private readonly IAccountRepository _repository;
@@ -23,7 +23,7 @@ public class CreateAdminHandler : IRequestHandler<CreateAdmin>
         _passwordHasher = passwordHasher;
     }
     
-    public async Task Handle(CreateAdmin request, CancellationToken cancellationToken)
+    public async Task Handle(CreateAdminCommand request, CancellationToken cancellationToken)
     {
         if (await _readService.CheckUnique(request.Email))
         {

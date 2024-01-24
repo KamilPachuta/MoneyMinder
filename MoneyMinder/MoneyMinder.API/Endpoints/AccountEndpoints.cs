@@ -11,7 +11,7 @@ internal static class AccountEndpoints
 {
     public static async Task<IResult> PutAdmin([FromBody]CreateAdminRequest request, [FromServices]ISender sender)
     {
-        var command = new CreateAdmin(request.Email, request.Password);
+        var command = new CreateAdminCommand(request.Email, request.Password);
         
         await sender.Send(command);
         return Results.Ok();
@@ -19,7 +19,7 @@ internal static class AccountEndpoints
     
     public static async Task<IResult> PutUser([FromBody]CreateUserRequest request, [FromServices]ISender sender)
     {
-        var command = new CreateUser(request.Email, request.Password, request.FirstName, request.LastName, 
+        var command = new CreateUserCommand(request.Email, request.Password, request.FirstName, request.LastName, 
             request.PhoneCode, request.PhoneNumber, request.BirthDate, request.Gender, request.Country, request.City, request.PostalCode, request.Street);
         
         await sender.Send(command);
@@ -28,7 +28,7 @@ internal static class AccountEndpoints
     
     public static async Task<IResult> PostLogin([FromBody]LoginAccountRequest request, [FromServices]ISender sender)
     {
-        var command = new LoginAccount(request.Email, request.Password);
+        var command = new LoginAccountCommand(request.Email, request.Password);
         
         var result = await sender.Send(command);
         return Results.Ok(result);
@@ -56,7 +56,7 @@ internal static class AccountEndpoints
     {
         var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
 
-        var command = new ChangePassword(id, request.Password, request.NewPassword);
+        var command = new ChangePasswordCommand(id, request.Password, request.NewPassword);
         
         await sender.Send(command);
 
@@ -67,7 +67,7 @@ internal static class AccountEndpoints
     {
         var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
         
-        var command = new ChangeName(id, request.FirstName, request.LastName);
+        var command = new ChangeNameCommand(id, request.FirstName, request.LastName);
 
         await sender.Send(command);
 
@@ -78,7 +78,7 @@ internal static class AccountEndpoints
     {
         var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
 
-        var command = new ChangePhoneNumber(id, request.Code, request.Number);
+        var command = new ChangePhoneNumberCommand(id, request.Code, request.Number);
         
         await sender.Send(command);
 
@@ -89,7 +89,7 @@ internal static class AccountEndpoints
     {
         var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
 
-        var command = new ChangeAddress(id, request.Country, request.City, request.PostalCode, request.Street);
+        var command = new ChangeAddressCommand(id, request.Country, request.City, request.PostalCode, request.Street);
         
         await sender.Send(command);
 

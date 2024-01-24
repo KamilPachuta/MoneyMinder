@@ -5,7 +5,7 @@ using MoneyMinder.Domain.Repository;
 
 namespace MoneyMinder.Application.Accounts.Commands.Handlers;
 
-public class ChangeNameHandler : IRequestHandler<ChangeName>
+internal sealed class ChangeNameHandler : IRequestHandler<ChangeNameCommand>
 {
     private readonly IAccountRepository _repository;
 
@@ -14,7 +14,7 @@ public class ChangeNameHandler : IRequestHandler<ChangeName>
         _repository = repository;
     }
     
-    public async Task Handle(ChangeName request, CancellationToken cancellationToken)
+    public async Task Handle(ChangeNameCommand request, CancellationToken cancellationToken)
     {
         var account = await _repository.GetAsync(request.Id);
 

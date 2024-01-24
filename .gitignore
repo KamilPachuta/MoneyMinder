@@ -399,3 +399,6 @@ FodyWeavers.xsd
 MoneyMinder/.idea/.idea.MoneyMinder/.idea/indexLayout.xml
 MoneyMinder/.idea/.idea.MoneyMinder/.idea/vcs.xml
 MoneyMinder/MoneyMinder.API/credentials.json
+MoneyMinder/MoneyMinder.API/Middleware/.idea/.idea.Middleware.dir/.idea/indexLayout.xml
+MoneyMinder/MoneyMinder.API/Middleware/.idea/.idea.Middleware.dir/.idea/projectSettingsUpdater.xml
+MoneyMinder/MoneyMinder.API/Middleware/.idea/.idea.Middleware.dir/.idea/workspace.xml

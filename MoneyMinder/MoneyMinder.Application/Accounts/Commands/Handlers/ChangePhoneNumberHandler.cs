@@ -5,7 +5,7 @@ using MoneyMinder.Domain.Repository;
 
 namespace MoneyMinder.Application.Accounts.Commands.Handlers;
 
-public class ChangePhoneNumberHandler : IRequestHandler<ChangePhoneNumber>
+internal sealed class ChangePhoneNumberHandler : IRequestHandler<ChangePhoneNumberCommand>
 {
     private readonly IAccountRepository _repository;
 
@@ -14,7 +14,7 @@ public class ChangePhoneNumberHandler : IRequestHandler<ChangePhoneNumber>
         _repository = repository;
     }
     
-    public async Task Handle(ChangePhoneNumber request, CancellationToken cancellationToken)
+    public async Task Handle(ChangePhoneNumberCommand request, CancellationToken cancellationToken)
     {
         var account = await _repository.GetAsync(request.Id);
 

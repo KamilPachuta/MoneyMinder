@@ -9,7 +9,7 @@ using MoneyMinder.Domain.Repository;
 
 namespace MoneyMinder.Application.Accounts.Commands.Handlers;
 
-public class CreateUserHandler : IRequestHandler<CreateUser>
+internal sealed class CreateUserHandler : IRequestHandler<CreateUserCommand>
 {
     private readonly IAccountFactory _factory;
     private readonly IAccountRepository _repository;
@@ -24,7 +24,7 @@ public class CreateUserHandler : IRequestHandler<CreateUser>
         _passwordHasher = passwordHasher;
     }
     
-    public async Task Handle(CreateUser request, CancellationToken cancellationToken)
+    public async Task Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         if (await _readService.CheckUnique(request.Email))
         {

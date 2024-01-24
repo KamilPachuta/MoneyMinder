@@ -10,7 +10,7 @@ using MoneyMinder.Domain.Repository;
 
 namespace MoneyMinder.Application.Accounts.Commands.Handlers;
 
-public class LoginAccountHandler : IRequestHandler<LoginAccount, string>
+internal sealed class LoginAccountHandler : IRequestHandler<LoginAccountCommand, string>
 {
     private readonly IAccountRepository _repository;
     private readonly AuthenticationSettings _authenticationSettings;
@@ -27,7 +27,7 @@ public class LoginAccountHandler : IRequestHandler<LoginAccount, string>
     /// <param name="request">The request</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Response from the request</returns>
-    public async Task<string> Handle(LoginAccount request, CancellationToken cancellationToken)
+    public async Task<string> Handle(LoginAccountCommand request, CancellationToken cancellationToken)
     {
         //var result = await _repository.GetAsync(new Guid("85bc49d3-9277-4cc6-8bce-ca80f5a62c64"));
         var account = await _repository.GetAsync(request.Email);

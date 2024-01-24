@@ -6,7 +6,7 @@ using MoneyMinder.Domain.Repository;
 
 namespace MoneyMinder.Application.Accounts.Commands.Handlers;
 
-public class ChangePasswordHandler : IRequestHandler<ChangePassword>
+internal sealed class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand>
 {
     private readonly IAccountRepository _repository;
     private readonly IPasswordHasher<Account> _passwordHasher;
@@ -17,7 +17,7 @@ public class ChangePasswordHandler : IRequestHandler<ChangePassword>
         _passwordHasher = passwordHasher;
     }
     
-    public async Task Handle(ChangePassword request, CancellationToken cancellationToken)
+    public async Task Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
         var account = await _repository.GetAsync(request.Id);
 
