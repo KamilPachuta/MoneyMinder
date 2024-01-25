@@ -29,6 +29,11 @@ internal sealed class ChangeCurrencyAccountNameHandler : IRequestHandler<ChangeC
         }
         
         var currencyAccount = await _repository.GetAsync(request.CurrencyAccountId);
+
+        if (currencyAccount is null)
+        {
+            throw new CurrencyAccountNotFoundException(request.CurrencyAccountId);
+        }
         
         currencyAccount.ChangeName(request.Name);
 

@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyMinder.API.Requests.Accounts;
+using MoneyMinder.API.Services;
 using MoneyMinder.Application.Accounts.Commands;
 using MoneyMinder.Application.Accounts.Queries;
 using MoneyMinder.Domain.Accounts;
@@ -37,9 +38,13 @@ internal static class AccountEndpoints
     }
     
     [Authorize]
-    public static async Task<IResult> Get([FromBody]GetAccountQuery request, [FromServices]ISender sender)
+    public static async Task<IResult> Get(
+        [FromServices]ISender sender,
+        [FromServices]IUserService userService)
     {
-        var command = new GetAccount(request.Id);
+        var id = userService.GetAccountId();
+        
+        var command = new GetAccount(id);
 
         var result = await sender.Send(command);
 
@@ -57,9 +62,12 @@ internal static class AccountEndpoints
     }
     
     [Authorize]
-    public static async Task<IResult> PostPassword([FromBody]ChangePasswordRequest request, [FromServices] ISender sender)
+    public static async Task<IResult> PostPassword(
+        [FromBody]ChangePasswordRequest request, 
+        [FromServices] ISender sender,
+        [FromServices]IUserService userService)
     {
-        var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
+        var id = userService.GetAccountId();
 
         var command = new ChangePasswordCommand(id, request.Password, request.NewPassword);
         
@@ -69,9 +77,12 @@ internal static class AccountEndpoints
     }
     
     [Authorize]
-    public static async Task<IResult> PostName([FromBody]ChangeNameRequest request, [FromServices]ISender sender)
+    public static async Task<IResult> PostName(
+        [FromBody]ChangeNameRequest request, 
+        [FromServices]ISender sender,
+        [FromServices]IUserService userService)
     {
-        var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
+        var id = userService.GetAccountId();
         
         var command = new ChangeNameCommand(id, request.FirstName, request.LastName);
 
@@ -81,9 +92,12 @@ internal static class AccountEndpoints
     }
 
     [Authorize]
-    public static async Task<IResult> PostPhone([FromBody]ChangePhoneNumberRequest request, [FromServices] ISender sender)
+    public static async Task<IResult> PostPhone(
+        [FromBody]ChangePhoneNumberRequest request, 
+        [FromServices] ISender sender,
+        [FromServices]IUserService userService)
     {
-        var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
+        var id = userService.GetAccountId();
 
         var command = new ChangePhoneNumberCommand(id, request.Code, request.Number);
         
@@ -93,9 +107,12 @@ internal static class AccountEndpoints
     }
     
     [Authorize]
-    public static async Task<IResult> PostAddress([FromBody]ChangeAddressRequest request, [FromServices] ISender sender)
+    public static async Task<IResult> PostAddress(
+        [FromBody]ChangeAddressRequest request, 
+        [FromServices] ISender sender,
+        [FromServices]IUserService userService)
     {
-        var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
+        var id = userService.GetAccountId();
 
         var command = new ChangeAddressCommand(id, request.Country, request.City, request.PostalCode, request.Street);
         
