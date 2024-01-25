@@ -1,6 +1,9 @@
 using System.Text;
+using Carter;
 using Microsoft.IdentityModel.Tokens;
+using MoneyMinder.API.Services;
 using MoneyMinder.Application;
+using MoneyMinder.Application.Behaviors;
 using MoneyMinder.Domain;
 using MoneyMinder.Infrastructure;
 using Serilog;
@@ -22,7 +25,8 @@ public static class Extensions
         services.AddDomain();
         services.AddApplication();
         services.AddInfrastructure(configuration);
-        services.AddAuthenticationSettings(configuration);
+        services.AddApi(configuration);
+        
         
         return services;
     }
@@ -52,6 +56,29 @@ public static class Extensions
 
             };
         });
+        
+        return services;
+    }
+
+    public static IServiceCollection AddApi(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddCarter();
+        
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
+            cfg.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
+        });
+        
+        
+        services.AddAuthenticationSettings(configuration);
+
+        services.AddAuthorization();
+        
+        services.AddHttpContextAccessor();
+
+        services.AddScoped<IUserService, UserService>();
         
         return services;
     }

@@ -1,34 +1,42 @@
 using MediatR;
 using MoneyMinder.Application.Accounts.Exceptions;
 using MoneyMinder.Application.CurrencyAccounts.Exceptions;
-using MoneyMinder.Application.CurrencyAccounts.Services;
 using MoneyMinder.Domain.Factories.Interfaces;
 using MoneyMinder.Domain.Repository;
 
 namespace MoneyMinder.Application.CurrencyAccounts.Commands.Handlers;
 
-public class CreateCurrencyAccountHandler : IRequestHandler<CreateCurrencyAccount>
+internal sealed class CreateCurrencyAccountHandler : IRequestHandler<CreateCurrencyAccountCommand>
 {
     private readonly ICurrencyAccountFactory _factory;
-    private readonly ICurrencyAccountRepository _repository;
-    private readonly ICurrencyAccountReadService _readService;
+    private readonly ICurrencyAccountRepository _currencyAccountRepository;
+    private readonly IAccountRepository _accountRepository;
 
-    public CreateCurrencyAccountHandler(ICurrencyAccountFactory factory, ICurrencyAccountRepository repository, ICurrencyAccountReadService readService)
+
+    public CreateCurrencyAccountHandler(ICurrencyAccountFactory factory, ICurrencyAccountRepository currencyAccountRepository, 
+        IAccountRepository accountRepository)
     {
         _factory = factory;
-        _repository = repository;
-        _readService = readService;
+        _currencyAccountRepository = currencyAccountRepository;
+        _accountRepository = accountRepository;
     }
     
-    public async Task Handle(CreateCurrencyAccount request, CancellationToken cancellationToken)
+    public async Task Handle(CreateCurrencyAccountCommand request, CancellationToken cancellationToken)
     {
-        if (_readService.CheckUnique(request.Name))
+        var account = await _accountRepository.GetAsync(request.AccountId);
+
+        if (account is null)
+        {
+            throw new AccountNotFoundException(request.AccountId);
+        }
+        
+        if (account.CurrencyAccounts.Exists(ca => ca.Name == request.Name))
         {
             throw new CurrencyAccountAlreadyExistException(request.Name);
         }
         
-        var currencyAccount = _factory.Create(request.Name);
+        var currencyAccount = _factory.Create(request.Name, account);
 
-        await _repository.AddAsync(currencyAccount);
+        await _currencyAccountRepository.AddAsync(currencyAccount);
     }
 }

@@ -2,6 +2,7 @@ using MoneyMinder.Domain.CurrencyAccounts.Enums;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
 using MoneyMinder.Domain.Primitives;
+using MoneyMinder.Domain.Savings.ValueObjects;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
@@ -9,12 +10,17 @@ public sealed class Budget : Entity
 {
     public BudgetName Name { get; private set; }
     public Currency Currency { get; init; }
-    public decimal ExpectedIncome { get; init; }
+    public PositiveAmount ExpectedIncome { get; init; }
     public BudgetDate Date { get; init; }
     
-    public IEnumerable<Expense> Expenses => _expenses;
-    
-    private readonly List<Expense> _expenses = new();
+    //public IEnumerable<Expense> Expenses => _expenses;
+
+    public List<Expense> Expenses { get; } = new();
+
+    private Budget()
+    {
+        
+    }
     
     public Budget(Guid id, BudgetName name, decimal expectedIncome, IEnumerable<Expense> expenses, BudgetDate date, Currency currency) : base(id)
     {
@@ -45,13 +51,13 @@ public sealed class Budget : Entity
     {
         foreach (var expense in expenses)
         {
-            if (_expenses.All(e => e != expense))
+            if (Expenses.All(e => e != expense))
             {
-                _expenses.Add(expense);
+                Expenses.Add(expense);
             }
         }
 
-        if (_expenses.Count != expenses.Count())
+        if (Expenses.Count != expenses.Count())
         {
             throw new DuplicateExpensesException(expenses);
         }

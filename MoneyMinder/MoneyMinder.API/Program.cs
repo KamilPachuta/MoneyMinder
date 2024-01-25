@@ -7,30 +7,16 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("credentials.json", optional: true, reloadOnChange: true);
+
 builder.Host.AddSerilog();
+
 builder.Services.AddCors();
 
-builder.Services.AddCarter();
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddProject(builder.Configuration);
-
-// builder.Services.AddMediatR(cfg =>
-// {
-//     var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-//     foreach (var assembly in assemblies)
-//     {
-//         cfg.RegisterServicesFromAssembly(assembly);
-//     }
-// });
-
-builder.Services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
-
-    cfg.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
-});
-
 
 
 

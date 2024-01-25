@@ -10,7 +10,11 @@ public abstract class Transaction : Entity
     public DateTime Date { get; }
     public Currency Currency { get; }
     public Amount Amount { get; }
-    
+
+
+    protected Transaction()
+    {
+    }
 
     protected Transaction(Guid id, TransactionName name, DateTime date, Currency currency, Amount amount)
         : base(id)

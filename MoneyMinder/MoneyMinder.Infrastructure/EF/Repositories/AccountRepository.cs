@@ -21,6 +21,7 @@ internal sealed class AccountRepository : IAccountRepository
         => await _accounts
             .Include(a => a.User)
             .ThenInclude(u => u.Address)
+            .Include(u => u.CurrencyAccounts)
             .FirstOrDefaultAsync(a => a.Id == id);
 
     public async Task<Account> GetAsync(AccountEmail email)

@@ -11,7 +11,11 @@ public abstract class MonthlyTransaction : Entity
     public Month Month { get; protected set; }
     public Currency Currency { get; set; }
     public Amount Amount { get; set; }
-    
+
+
+    protected MonthlyTransaction()
+    {
+    }
 
     protected MonthlyTransaction(Guid id, TransactionName name, Month month, Currency currency, Amount amount)
         : base(id)

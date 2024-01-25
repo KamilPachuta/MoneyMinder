@@ -10,6 +10,10 @@ public class Expense : Entity
     public Category Category { get; init; }
     public ExpenseAmount Amount { get; private set; }
 
+    private Expense()
+    {
+    }
+    
     public Expense(Guid id, Category category, ExpenseAmount amount) 
         : base(id)
     {

@@ -6,6 +6,10 @@ namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
 public class MonthlyIncome : MonthlyTransaction
 {
+    private MonthlyIncome()
+    {
+    }
+    
     public MonthlyIncome(TransactionName transactionName, Month month, Currency currency, Amount amount) 
         : base(Guid.NewGuid(), transactionName, month, currency, amount)
     {

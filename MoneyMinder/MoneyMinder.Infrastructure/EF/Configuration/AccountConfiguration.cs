@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MoneyMinder.Domain.Accounts;
 using MoneyMinder.Domain.Accounts.Entities;
 using MoneyMinder.Domain.Accounts.ValueObjects;
+using MoneyMinder.Domain.CurrencyAccounts;
 
 namespace MoneyMinder.Infrastructure.EF.Configuration;
 
@@ -34,6 +35,10 @@ internal sealed class AccountConfiguration :
             .HasOne(a => a.User)
             .WithOne()
             .HasForeignKey<User>();
+
+        builder
+            .HasMany(a => a.CurrencyAccounts)
+            .WithOne(ca => ca.Account);
 
     }
 

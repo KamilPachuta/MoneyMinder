@@ -1,4 +1,5 @@
 using Carter;
+using MoneyMinder.API.Endpoints;
 using MoneyMinder.API.Modules.Abstractions;
 
 namespace MoneyMinder.API.Modules;
@@ -13,7 +14,10 @@ public class CurrencyAccountModule : BaseModule
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        // app.MapPut("/Admin/", C.PutAdmin);
+
+        app.MapPut("/", CurrencyAccountEndpoints.Put);
+        app.MapPost("/", CurrencyAccountEndpoints.Post);
+        app.MapDelete("/", CurrencyAccountEndpoints.Delete);
         //
         // app.MapPut("/", AccountEndpoints.PutUser);
         //

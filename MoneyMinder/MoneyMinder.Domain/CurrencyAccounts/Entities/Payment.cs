@@ -8,6 +8,10 @@ namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 public class Payment : Transaction
 {
     public Category Category { get; set; }
+
+    private Payment()
+    {
+    }
     
     public Payment(TransactionName name, DateTime date, Currency currency, Amount amount, Category category) : base(Guid.NewGuid(), name, date, currency, amount)
     {

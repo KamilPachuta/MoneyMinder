@@ -1,11 +1,13 @@
 using MoneyMinder.Domain.Abstractions;
+using MoneyMinder.Domain.Accounts;
 using MoneyMinder.Domain.CurrencyAccounts.Abstractions;
 using MoneyMinder.Domain.CurrencyAccounts.DomainEvents;
+using MoneyMinder.Domain.CurrencyAccounts.Entities;
 using MoneyMinder.Domain.CurrencyAccounts.Enums;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
 
-namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
+namespace MoneyMinder.Domain.CurrencyAccounts;
 
 public class CurrencyAccount : AggregateRoot
 {
@@ -13,32 +15,43 @@ public class CurrencyAccount : AggregateRoot
     public CurrencyAccountName Name { get; private set; }
     
     
+    public Account Account { get; set; }
+    
     //Entity
     public Budget? Budget { get; private set; }
     
-    public IEnumerable<Balance> Balances => _balances;
-    // public IEnumerable<Income> Incomes => _incomes;
-    // public IEnumerable<Payment> Payments => _payments;
-    // public IEnumerable<MonthlyIncome> MonthlyIncomes => _monthlyIncomes;
-    // public IEnumerable<MonthlyPayment> MonthlyPayments => _monthlyPayments;
+    // public IEnumerable<Balance> Balances => _balances;
+    // // public IEnumerable<Income> Incomes => _incomes;
+    // // public IEnumerable<Payment> Payments => _payments;
+    // // public IEnumerable<MonthlyIncome> MonthlyIncomes => _monthlyIncomes;
+    // // public IEnumerable<MonthlyPayment> MonthlyPayments => _monthlyPayments;
+    //
+    //
+    // //Collections
+    // private readonly List<Balance> Balances = new();
+    // private readonly List<Income> Incomes = new();
+    // private readonly List<Payment> Payments = new();
+    // private readonly List<MonthlyIncome> MonthlyIncomes = new();
+    // private readonly List<MonthlyPayment> MonthlyPayments = new();
+
+    public List<Balance> Balances { get; } = new ();
+    public List<Income> Incomes { get; } = new ();
+    public List<Payment> Payments { get; } = new ();
+    public List<MonthlyIncome> MonthlyIncomes { get; } = new ();
+    public List<MonthlyPayment> MonthlyPayments { get; } = new ();
 
     
-    //Collections
-    private readonly List<Balance> _balances = new();
-    private readonly List<Income> _incomes = new();
-    private readonly List<Payment> _payments = new();
-    private readonly List<MonthlyIncome> _monthlyIncomes = new();
-    private readonly List<MonthlyPayment> _monthlyPayments = new();
 
     private CurrencyAccount() 
     {
     }
     
-    internal CurrencyAccount(Guid id, CurrencyAccountName name) 
+    internal CurrencyAccount(Guid id, CurrencyAccountName name, Account account) 
         : base(id)
     {
         Name = name;
-        
+        Account = account;
+
         RaiseDomainEvent(new CurrencyAccountCreatedDomainEvent(DateTime.UtcNow, this));
     }
     
@@ -49,7 +62,7 @@ public class CurrencyAccount : AggregateRoot
     /// <param name="currency">The currency to check for a balance.</param>
     /// <returns>True if a balance exists for the specified currency, otherwise false.</returns>
     private bool BalanceExist(Currency currency)
-        => _balances.Exists(b => b.Currency == currency);
+        => Balances.Exists(b => b.Currency == currency);
 
     /// <summary>
     /// Checks if a monthly income entry exists with a given name.
@@ -57,7 +70,7 @@ public class CurrencyAccount : AggregateRoot
     /// <param name="name">The name of the monthly income to check.</param>
     /// <returns>True if a monthly income with the specified name exists, otherwise false.</returns>
     private bool MonthlyIncomeExist(TransactionName name) 
-        => _monthlyIncomes.Any(mi => mi.Name == name);
+        => MonthlyIncomes.Any(mi => mi.Name == name);
     
     /// <summary>
     /// Checks if a monthly payment entry exists with a given name.
@@ -65,7 +78,7 @@ public class CurrencyAccount : AggregateRoot
     /// <param name="name">The name of the monthly payment to check.</param>
     /// <returns>True if a monthly payment with the specified name exists, otherwise false.</returns>
     private bool MonthlyPaymentExist(TransactionName name)
-        => _monthlyPayments.Any(mp => mp.Name == name);
+        => MonthlyPayments.Any(mp => mp.Name == name);
 
     // /// <summary>
     // /// Checks if the budget is for the current month.
@@ -91,7 +104,7 @@ public class CurrencyAccount : AggregateRoot
     /// <exception cref="BalanceNotFoundException"></exception>
     private Balance GetBalance(Currency currency)
     {
-        var balance = _balances.FirstOrDefault(b => b.Currency == currency);
+        var balance = Balances.FirstOrDefault(b => b.Currency == currency);
         
         if (balance is null)
         {
@@ -109,7 +122,7 @@ public class CurrencyAccount : AggregateRoot
     /// <exception cref="MonthlyIncomeNotFoundException"></exception>
     private MonthlyIncome GetMonthlyIncome(TransactionName name)
     {
-        var monthlyIncome = _monthlyIncomes.FirstOrDefault(mi => mi.Name == name);
+        var monthlyIncome = MonthlyIncomes.FirstOrDefault(mi => mi.Name == name);
 
         if (monthlyIncome is null)
         {
@@ -127,7 +140,7 @@ public class CurrencyAccount : AggregateRoot
     /// <exception cref="MonthlyPaymentNotFoundException"></exception>
     private MonthlyPayment GetMonthlyPayment(TransactionName name)
     {
-        var monthlyPayment = _monthlyPayments.FirstOrDefault(mp => mp.Name == name);
+        var monthlyPayment = MonthlyPayments.FirstOrDefault(mp => mp.Name == name);
 
         if (monthlyPayment is null)
         {
@@ -152,7 +165,7 @@ public class CurrencyAccount : AggregateRoot
         {
             var balance = new Balance(transaction.Currency);
             balance.ChangeAmount(transaction.Amount);
-            _balances.Add(balance);
+            Balances.Add(balance);
         }
         
         RaiseDomainEvent(new TransactionProcessedDomainEvent(transaction, this));
@@ -194,7 +207,7 @@ public class CurrencyAccount : AggregateRoot
     /// <exception cref="TransactionDateLaterThanExpectedException">Thrown if the income date is later than expected.</exception>
     public void AddIncome(Income income)
     {
-        if (_incomes.Any(i => i == income))
+        if (Incomes.Any(i => i == income))
         {
             throw new IncomeAlreadyExistException(income);
         }
@@ -206,7 +219,7 @@ public class CurrencyAccount : AggregateRoot
         
         ProcessTransaction(income);
         
-        _incomes.Add(income);
+        Incomes.Add(income);
         
         RaiseDomainEvent(new IncomeAddedDomainEvent(income, this));
     }
@@ -219,7 +232,7 @@ public class CurrencyAccount : AggregateRoot
     /// <exception cref="TransactionDateLaterThanExpectedException">Thrown if the payment date is later than expected.</exception>
     public void AddPayment(Payment payment)
     {
-        if (_payments.Any(p => p == payment))
+        if (Payments.Any(p => p == payment))
         {
             throw new PaymentAlreadyExistException(payment);
         }
@@ -231,7 +244,7 @@ public class CurrencyAccount : AggregateRoot
         
         ProcessTransaction(payment);
         
-        _payments.Add(payment);
+        Payments.Add(payment);
         
         RaiseDomainEvent(new PaymentAddedDomainEvent(payment, this));
     }
@@ -243,7 +256,7 @@ public class CurrencyAccount : AggregateRoot
     /// <exception cref="IncomeNotFoundException">Thrown if the income is not found.</exception>
     public void RemoveIncome(Transaction transaction)
     {
-        var income = _incomes.FirstOrDefault(i => i == transaction);
+        var income = Incomes.FirstOrDefault(i => i == transaction);
 
         if (income is null)
         {
@@ -252,7 +265,7 @@ public class CurrencyAccount : AggregateRoot
         
         RollbackTransaction(income);
         
-        _incomes.Remove(income);
+        Incomes.Remove(income);
         
         RaiseDomainEvent(new IncomeRemovedDomainEvent(income, this));
     }
@@ -264,7 +277,7 @@ public class CurrencyAccount : AggregateRoot
     /// <exception cref="PaymentNotFoundException">Thrown if the payment is not found.</exception>
     public void RemovePayment(Transaction transaction)
     {
-        var payment = _payments.FirstOrDefault(i => i == transaction);
+        var payment = Payments.FirstOrDefault(i => i == transaction);
 
         if (payment is null)
         {
@@ -273,7 +286,7 @@ public class CurrencyAccount : AggregateRoot
         
         RollbackTransaction(payment);
         
-        _payments.Remove(payment);
+        Payments.Remove(payment);
         
         RaiseDomainEvent(new PaymentRemovedDomainEvent(payment, this));
     }
@@ -290,7 +303,7 @@ public class CurrencyAccount : AggregateRoot
             throw new MonthlyIncomeAlreadyExistException(monthlyIncome.Name);
         }
         
-        _monthlyIncomes.Add(monthlyIncome);
+        MonthlyIncomes.Add(monthlyIncome);
         
         RaiseDomainEvent(new MonthlyIncomeAddedDomainEvent(monthlyIncome, this));
     }
@@ -332,7 +345,7 @@ public class CurrencyAccount : AggregateRoot
     {
         var monthlyIncome = GetMonthlyIncome(name);
         
-        _monthlyIncomes.Remove(monthlyIncome);
+        MonthlyIncomes.Remove(monthlyIncome);
         
         RaiseDomainEvent(new MonthlyIncomeDeletedDomainEvent(monthlyIncome, this));
     }
@@ -349,7 +362,7 @@ public class CurrencyAccount : AggregateRoot
             throw new MonthlyPaymentAlreadyExistException(monthlyPayment.Name);
         }
         
-        _monthlyPayments.Add(monthlyPayment);
+        MonthlyPayments.Add(monthlyPayment);
         
         RaiseDomainEvent(new MonthlyPaymentAddedDomainEvent(monthlyPayment, this));
     }
@@ -395,7 +408,7 @@ public class CurrencyAccount : AggregateRoot
     {
         var monthlyPayment = GetMonthlyPayment(name);
         
-        _monthlyPayments.Remove(monthlyPayment);
+        MonthlyPayments.Remove(monthlyPayment);
         
         RaiseDomainEvent(new MonthlyPaymentDeletedDomainEvent(monthlyPayment, this));
     }
@@ -409,7 +422,7 @@ public class CurrencyAccount : AggregateRoot
         var monthlyIncomeStock = GetMonthlyIncome(monthlyIncome.Name);
         var income = new Income(monthlyIncome.Name, monthlyIncome.Month.Date, monthlyIncome.Currency, monthlyIncome.Amount);
 
-        _monthlyIncomes.Remove(monthlyIncomeStock);
+        MonthlyIncomes.Remove(monthlyIncomeStock);
         AddIncome(income);
         
         RaiseDomainEvent(new MonthlyIncomeAcceptedDomainEvent(monthlyIncome, income, this));
@@ -424,7 +437,7 @@ public class CurrencyAccount : AggregateRoot
         var monthlyPaymentStock = GetMonthlyPayment(monthlyPayment.Name);
         var payment = new Payment(monthlyPayment.Name, monthlyPayment.Month.Date, monthlyPayment.Currency, monthlyPayment.Amount, monthlyPayment.Category);
 
-        _monthlyPayments.Remove(monthlyPaymentStock);
+        MonthlyPayments.Remove(monthlyPaymentStock);
         AddPayment(payment);
         
         RaiseDomainEvent(new MonthlyPaymentAcceptedDomainEvent(monthlyPayment, payment, this));

@@ -10,6 +10,11 @@ public class Balance : Entity
     public Currency Currency { get; init; }
     
     public Amount Amount { get; set; }
+
+    private Balance()
+    {
+        
+    }
     
     public Balance(Currency currency) : base(Guid.NewGuid())
     {

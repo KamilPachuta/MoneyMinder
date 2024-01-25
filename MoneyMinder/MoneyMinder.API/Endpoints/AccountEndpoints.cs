@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyMinder.API.Requests.Accounts;
 using MoneyMinder.Application.Accounts.Commands;
@@ -9,6 +10,7 @@ namespace MoneyMinder.API.Endpoints;
 
 internal static class AccountEndpoints
 {
+    [Authorize]
     public static async Task<IResult> PutAdmin([FromBody]CreateAdminRequest request, [FromServices]ISender sender)
     {
         var command = new CreateAdminCommand(request.Email, request.Password);
@@ -34,6 +36,7 @@ internal static class AccountEndpoints
         return Results.Ok(result);
     }
     
+    [Authorize]
     public static async Task<IResult> Get([FromBody]GetAccountQuery request, [FromServices]ISender sender)
     {
         var command = new GetAccount(request.Id);
@@ -43,6 +46,7 @@ internal static class AccountEndpoints
         return Results.Ok(result);
     }
     
+    [Authorize]
     public static async Task<IResult> GetAll([FromServices]ISender sender)
     {
         var command = new GetAccounts();
@@ -52,6 +56,7 @@ internal static class AccountEndpoints
         return Results.Ok(result);
     }
     
+    [Authorize]
     public static async Task<IResult> PostPassword([FromBody]ChangePasswordRequest request, [FromServices] ISender sender)
     {
         var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
@@ -63,6 +68,7 @@ internal static class AccountEndpoints
         return Results.Ok();
     }
     
+    [Authorize]
     public static async Task<IResult> PostName([FromBody]ChangeNameRequest request, [FromServices]ISender sender)
     {
         var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
@@ -74,6 +80,7 @@ internal static class AccountEndpoints
         return Results.Ok();
     }
 
+    [Authorize]
     public static async Task<IResult> PostPhone([FromBody]ChangePhoneNumberRequest request, [FromServices] ISender sender)
     {
         var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");
@@ -85,6 +92,7 @@ internal static class AccountEndpoints
         return Results.Ok();
     }
     
+    [Authorize]
     public static async Task<IResult> PostAddress([FromBody]ChangeAddressRequest request, [FromServices] ISender sender)
     {
         var id = new Guid("4c7be10f-989d-424f-b0e9-4c34ffa2aa01");

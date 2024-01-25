@@ -1,27 +1,43 @@
+using Microsoft.EntityFrameworkCore;
+using MoneyMinder.Domain.CurrencyAccounts;
 using MoneyMinder.Domain.CurrencyAccounts.Entities;
 using MoneyMinder.Domain.Repository;
+using MoneyMinder.Infrastructure.EF.Context;
 
 namespace MoneyMinder.Infrastructure.EF.Repositories;
 
-public class CurrencyAccountRepository : ICurrencyAccountRepository
+internal sealed class CurrencyAccountRepository : ICurrencyAccountRepository
 {
-    public Task<CurrencyAccount> GetAsync(Guid id)
+    private DbSet<CurrencyAccount> _currencyAccounts;
+    
+    public CurrencyAccountRepository(MoneyMinderDbContext dbContext)
     {
-        throw new NotImplementedException();
+        _currencyAccounts = dbContext.CurrencyAccounts;
     }
 
-    public Task AddAsync(CurrencyAccount currencyAccount)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<CurrencyAccount> GetAsync(Guid id)
+        => await _currencyAccounts
+            .Include(ca => ca.Budget)
+            .ThenInclude(b => b.Expenses)
+            .Include(ca => ca.Balances)
+            .Include(ca => ca.Incomes)
+            .Include(ca => ca.Payments)
+            .Include(ca =>ca.MonthlyIncomes)
+            .Include(ca => ca.MonthlyPayments)
+            .FirstOrDefaultAsync(ca => ca.Id == id);
+
+    public async Task AddAsync(CurrencyAccount currencyAccount)
+        => await _currencyAccounts.AddAsync(currencyAccount);
 
     public Task UpdateAsync(CurrencyAccount currencyAccount)
     {
-        throw new NotImplementedException();
+        _currencyAccounts.Update(currencyAccount);
+        return Task.CompletedTask;
     }
 
     public Task DeleteAsync(CurrencyAccount currencyAccount)
     {
-        throw new NotImplementedException();
+        _currencyAccounts.Remove(currencyAccount);
+        return Task.CompletedTask;
     }
 }

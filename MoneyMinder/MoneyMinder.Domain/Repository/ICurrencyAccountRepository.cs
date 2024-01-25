@@ -1,3 +1,4 @@
+using MoneyMinder.Domain.CurrencyAccounts;
 using MoneyMinder.Domain.CurrencyAccounts.Entities;
 
 namespace MoneyMinder.Domain.Repository;
