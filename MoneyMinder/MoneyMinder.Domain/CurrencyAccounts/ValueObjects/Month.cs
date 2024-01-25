@@ -15,6 +15,9 @@ public record Month
 
         Date = date;
     }
+
+    public Month NextMonth()
+        => new(Date.AddMonths(1));
     
     public static implicit operator DateTime(Month date)
         => date.Date; 

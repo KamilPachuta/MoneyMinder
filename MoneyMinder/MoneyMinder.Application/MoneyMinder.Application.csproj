@@ -12,7 +12,6 @@
 
     <ItemGroup>
       <Folder Include="Accounts\Models\" />
-      <Folder Include="CurrencyAccounts\Models\" />
       <Folder Include="Savings\Commands\Handlers\" />
       <Folder Include="Savings\Exceptions\" />
       <Folder Include="Savings\Models\" />

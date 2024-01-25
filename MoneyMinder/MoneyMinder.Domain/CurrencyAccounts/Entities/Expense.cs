@@ -14,21 +14,21 @@ public class Expense : Entity
     {
     }
     
-    public Expense(Guid id, Category category, ExpenseAmount amount) 
-        : base(id)
+    public Expense(Category category, ExpenseAmount amount) 
+        : base(Guid.NewGuid())
     {
         Category = category;
         Amount = amount;
     }
 
-    internal void ChangeAmount(Expense expense)
+    internal void ChangeAmount(Category category, ExpenseAmount amount)
     {
-        if (expense != this)
+        if (category != Category)
         {
-            throw new DifferentExprenseException(this, expense);
+            throw new DifferentExpenseException(Category, category);
         }
 
-        Amount = expense.Amount;
+        Amount = amount;
     }
     
     

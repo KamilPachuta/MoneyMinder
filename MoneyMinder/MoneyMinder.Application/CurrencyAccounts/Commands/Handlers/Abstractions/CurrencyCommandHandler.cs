@@ -7,7 +7,7 @@ using MoneyMinder.Domain.Repository;
 namespace MoneyMinder.Application.CurrencyAccounts.Commands.Handlers.Abstractions;
 
 internal abstract class CurrencyCommandHandler<TRequest> : IRequestHandler<TRequest>
-    where TRequest : IRequest
+    where TRequest : CurrencyCommand
 {
     protected readonly ICurrencyAccountRepository _repository;
     protected readonly ICurrencyAccountReadService _readService;

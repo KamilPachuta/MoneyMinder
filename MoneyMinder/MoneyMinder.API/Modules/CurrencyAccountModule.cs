@@ -16,19 +16,56 @@ public class CurrencyAccountModule : BaseModule
     {
 
         app.MapPut("/", CurrencyAccountEndpoints.Put);
+        
         app.MapPost("/", CurrencyAccountEndpoints.Post);
+        
         app.MapDelete("/", CurrencyAccountEndpoints.Delete);
-        //
-        // app.MapPut("/", AccountEndpoints.PutUser);
-        //
-        // app.MapGet("/", AccountEndpoints.Get);
-        //
-        // app.MapGet("/all/", AccountEndpoints.GetAll);
 
+        
+        app.MapPut("/income/", CurrencyAccountEndpoints.IncomeAdd);
+        
+        app.MapDelete("/income/", CurrencyAccountEndpoints.IncomeRemove);
 
-        // app.MapPut("/CurrencyAccount",AccountEndpoints);
-        // app.MapGet("/Savings",);
+        
+        app.MapPut("/payment/", CurrencyAccountEndpoints.PaymentAdd);
+        
+        app.MapDelete("/payment/", CurrencyAccountEndpoints.PaymentRemove);
 
+        
+        app.MapPut("/monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeAdd);
 
+        app.MapPost("monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeEdit);
+
+        app.MapDelete("/monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeRemove);
+
+        app.MapPost("/monthlyIncome/accept/", CurrencyAccountEndpoints.MonthlyIncomeAccept);
+        
+        
+        app.MapPut("/monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentAdd);
+
+        app.MapPost("monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentEdit);
+
+        app.MapDelete("/monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentRemove);
+
+        app.MapPost("/monthlyPayment/accept/", CurrencyAccountEndpoints.MonthlyPaymentAccept);
+        
+
+        app.MapPost("/convert/to", CurrencyAccountEndpoints.ConvertCurrencyTo);
+
+        app.MapPost("/convert/from", CurrencyAccountEndpoints.ConvertCurrencyFrom);
+        
+        
+        app.MapPut("/budget/", CurrencyAccountEndpoints.BudgetCreate);
+
+        app.MapPost("/budget/", CurrencyAccountEndpoints.BudgetEdit);
+
+        app.MapDelete("/budget/", CurrencyAccountEndpoints.BudgetDelete);
+        
+        app.MapPut("/budget/expense/", CurrencyAccountEndpoints.ExpenseAdd);
+
+        app.MapPost("/budget/expense/", CurrencyAccountEndpoints.ExpenseEdit);
+
+        app.MapDelete("/budget/expense/", CurrencyAccountEndpoints.ExpenseDelete);
+        
     }
 }

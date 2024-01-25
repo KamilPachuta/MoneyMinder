@@ -41,8 +41,9 @@ public static class Extensions
      * 6. Transactions cannot be edited at all; they can only be deleted.
      * 7. Transactions can be deleted, which will affect the balance (budget info about expenses is updated in real-time).
      * 8. Monthly transactions can be created for the current month or the future.
-     * 9. Transactions for the current month can be "Approved," i.e., the exact amount can be set and processed -> adding the transaction and generating a new record with the next month set.
-     * 10. Monthly transactions are deleted by removing the entry of the respective transaction (in the future, a feature to delete previous transactions could be added).
+     * 9. Monthly transactions has unique names in account scope.
+     * 10. Transactions for the current month can be "Approved," i.e., the exact amount can be set and processed -> adding the transaction and generating a new record with the next month set.
+     * 11. Monthly transactions are deleted by removing the entry of the respective transaction (in the future, a feature to delete previous transactions could be added).
      *
      *
      *
@@ -56,8 +57,9 @@ public static class Extensions
      * 6. W transakcji nie można w ogóle edytować, mozna tylko usunąć
      * 7. Transakcje mozna usunąc, mechanizm cofania Balance ( w budget info o wydatkach jest pobierane na bierzaco)
      * 8. Transakcje miesieczne mozna utworzyc dla miesiaca bierzacego albo przyszlego.
-     * 9. Transakcje na bierzacy miesiac mozna "Akceptować" tj. ustalic dokladna kwote i przetworzyć -> dodanie transakcji i wyplucie nowego recordu z ustawionym kolejnym miesiacem
-     * 10. Transakcja miesieczna usuwa sie na zasadzie usunięcia wpisu o kolejnej transakcji ( moze w przyszlosci jako feature dodac mozliwosc usunieca poprzednich transackji)
+     * 9. Transakcje miesięczne mają unikalne nazwy względem konta.
+     * 10. Transakcje na bierzacy miesiac mozna "Akceptować" tj. ustalic dokladna kwote i przetworzyć -> dodanie transakcji i wyplucie nowego recordu z ustawionym kolejnym miesiacem
+     * 11. Transakcja miesieczna usuwa sie na zasadzie usunięcia wpisu o kolejnej transakcji ( moze w przyszlosci jako feature dodac mozliwosc usunieca poprzednich transackji)
      *
      */
 }

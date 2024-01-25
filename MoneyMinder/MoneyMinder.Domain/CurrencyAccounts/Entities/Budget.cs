@@ -22,7 +22,7 @@ public sealed class Budget : Entity
         
     }
     
-    public Budget(Guid id, BudgetName name, decimal expectedIncome, IEnumerable<Expense> expenses, BudgetDate date, Currency currency) : base(id)
+    public Budget(BudgetName name, decimal expectedIncome, IEnumerable<Expense> expenses, BudgetDate date, Currency currency) : base(Guid.NewGuid())
     {
         Name = name;
         ExpectedIncome = expectedIncome;
@@ -37,9 +37,14 @@ public sealed class Budget : Entity
         Name = name;
     }
 
-    internal void ChangeExpense(Expense expense)
+    internal void AddExpense(Expense expense)
     {
-        
+        Expenses.Add(expense);
+    }
+
+    internal void RemoveExpense(Expense expense)
+    {
+        Expenses.Remove(expense);
     }
     
     /// <summary>

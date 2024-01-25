@@ -7,7 +7,6 @@ namespace MoneyMinder.Domain.CurrencyAccounts.DomainEvents;
 
 public record MonthlyPaymentEditedDomainEvent(TransactionName OldName, TransactionName NewName, 
     Amount OldAmount, Amount NewAmount, 
-    Currency OldCurrency, Currency NewCurrency, 
     Category OldCategoryName, Category NewCategoryName,
     CurrencyAccount CurrencyAccount) 
     : IDomainEvent;

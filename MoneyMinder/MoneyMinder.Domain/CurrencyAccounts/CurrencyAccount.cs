@@ -316,26 +316,57 @@ public class CurrencyAccount : AggregateRoot
     /// <param name="amount">The new amount for the monthly income.</param>
     /// <param name="currency">The new currency for the monthly income.</param>
     /// <exception cref="MonthlyIncomeAlreadyExistException">Thrown if a monthly income with the new name already exists.</exception>
-    public void EditMonthlyIncome(TransactionName oldName, TransactionName newName, Amount amount, Currency currency)
+    public void EditMonthlyIncome(TransactionName oldName, TransactionName newName, Amount amount)
     {
         var monthlyIncome = GetMonthlyIncome(oldName);
 
-        if (MonthlyIncomeExist(newName))
+        if (oldName != newName)
         {
-            throw new MonthlyIncomeAlreadyExistException(monthlyIncome.Name);
+            if (MonthlyIncomeExist(newName))
+            {
+                throw new MonthlyIncomeAlreadyExistException(monthlyIncome.Name);
+            }
+            
+            monthlyIncome.Name = newName;
+            
+            RaiseDomainEvent(new MonthlyIncomeNameEditedDomainEvent(oldName, newName,  this));
         }
-        
-        monthlyIncome.Name = newName;
 
-        var oldCurrency = monthlyIncome.Currency;
-        monthlyIncome.Currency = currency;
-
-        var oldAmount = monthlyIncome.Amount;
-        monthlyIncome.Amount = amount;
-        
-        RaiseDomainEvent(new MonthlyIncomeEditedDomainEvent(oldName, newName, oldAmount, amount, oldCurrency, currency, this));
-
+        if (amount != monthlyIncome.Amount)
+        {
+            
+            var oldAmount = monthlyIncome.Amount;
+            monthlyIncome.Amount = amount;
+            
+            RaiseDomainEvent(new MonthlyIncomeAmountEditedDomainEvent(monthlyIncome.Name, oldAmount, amount, this));
+        }
     }
+    
+    // public void EditMonthlyIncomeName(TransactionName oldName, TransactionName newName)
+    // {
+    //     var monthlyIncome = GetMonthlyIncome(oldName);
+    //
+    //     if (MonthlyIncomeExist(newName))
+    //     {
+    //         throw new MonthlyIncomeAlreadyExistException(monthlyIncome.Name);
+    //     }
+    //     
+    //     monthlyIncome.Name = newName;
+    //     
+    //     RaiseDomainEvent(new MonthlyIncomeNameEditedDomainEvent(oldName, newName,  this));
+    //
+    // }
+    //
+    // public void EditMonthlyIncomeAmount(TransactionName name, Amount amount)
+    // {
+    //     var monthlyIncome = GetMonthlyIncome(name);
+    //     
+    //     var oldAmount = monthlyIncome.Amount;
+    //     monthlyIncome.Amount = amount;
+    //     
+    //     RaiseDomainEvent(new MonthlyIncomeAmountEditedDomainEvent(name, oldAmount, amount, this));
+    //
+    // }
     
     /// <summary>
     /// Removes a monthly income entry from the account.
@@ -376,29 +407,72 @@ public class CurrencyAccount : AggregateRoot
     /// <param name="currency">The new currency for the monthly payment.</param>
     /// <param name="categoryName">The new category name for the monthly payment.</param>
     /// <exception cref="MonthlyPaymentAlreadyExistException">Thrown if a monthly payment with the new name already exists.</exception>
-    public void EditMonthlyPayment(TransactionName oldName, TransactionName newName, Amount amount, Currency currency, Category categoryName)
+    public void EditMonthlyPayment(TransactionName oldName, TransactionName newName, Amount amount, Category category)
     {
         var monthlyPayment = GetMonthlyPayment(oldName);
-        
-        if (MonthlyPaymentExist(newName))
+
+        if (newName != oldName)
         {
-            throw new MonthlyPaymentAlreadyExistException(monthlyPayment.Name);
+            if (MonthlyPaymentExist(newName))
+            {
+                throw new MonthlyPaymentAlreadyExistException(monthlyPayment.Name);
+            }
+           
+            monthlyPayment.Name = newName;
+            
+            RaiseDomainEvent(new MonthlyPaymentNameEditedDomainEvent(oldName, newName, this));
         }
-        
-        monthlyPayment.Name = newName;
 
-        var oldCurrency = monthlyPayment.Currency;
-        monthlyPayment.Currency = currency;
+        if (amount != monthlyPayment.Amount)
+        {
+            var oldAmount = monthlyPayment.Amount;
+            monthlyPayment.Amount = amount;
+            
+            RaiseDomainEvent(new MonthlyPaymentAmountEditedDomainEvent(monthlyPayment.Name, oldAmount, amount, this));
+        }
 
-        var oldAmount = monthlyPayment.Amount;
-        monthlyPayment.Amount = amount;
-
-        var oldCategoryName = monthlyPayment.Category;
-        monthlyPayment.Category = categoryName;
-        
-        
-        RaiseDomainEvent(new MonthlyPaymentEditedDomainEvent(oldName, newName, oldAmount, amount, oldCurrency, currency, oldCategoryName, categoryName , this));
+        if (category != monthlyPayment.Category)
+        {
+            var oldCategory = monthlyPayment.Category;
+            monthlyPayment.Category = category;
+            
+            RaiseDomainEvent(new MonthlyPaymentCategoryEditedDomainEvent(monthlyPayment.Name, oldCategory, category, this));
+        }
     }
+    
+    // public void EditMonthlyPaymentName(TransactionName oldName, TransactionName newName, Amount amount, Category categoryName)
+    // {
+    //     var monthlyPayment = GetMonthlyPayment(oldName);
+    //     
+    //     if (MonthlyPaymentExist(newName))
+    //     {
+    //         throw new MonthlyPaymentAlreadyExistException(monthlyPayment.Name);
+    //     }
+    //     
+    //     monthlyPayment.Name = newName;
+    //     
+    //     RaiseDomainEvent(new MonthlyPaymentNameEditedDomainEvent(oldName, newName,  this));
+    // }
+    //
+    // public void EditMonthlyPaymentAmount(TransactionName name, Amount amount)
+    // {
+    //     var monthlyPayment = GetMonthlyPayment(name);
+    //     
+    //     var oldAmount = monthlyPayment.Amount;
+    //     monthlyPayment.Amount = amount;
+    //     
+    //     RaiseDomainEvent(new MonthlyPaymentAmountEditedDomainEvent(name, oldAmount, amount, this));
+    // }
+    //
+    // public void EditMonthlyPaymentCategory(TransactionName name, Category categoryName)
+    // {
+    //     var monthlyPayment = GetMonthlyPayment(name);
+    //
+    //     var oldCategoryName = monthlyPayment.Category;
+    //     monthlyPayment.Category = categoryName;
+    //     
+    //     RaiseDomainEvent(new MonthlyPaymentCategoryEditedDomainEvent(name, oldCategoryName, categoryName , this));
+    // }
 
     /// <summary>
     /// Removes a monthly payment entry from the account.
@@ -417,13 +491,29 @@ public class CurrencyAccount : AggregateRoot
     /// Accepts a monthly income entry by converting it into a regular income transaction.
     /// </summary>
     /// <param name="monthlyIncome">The monthly income to accept.</param>
-    public void AcceptMonthlyIncome(MonthlyIncome monthlyIncome)
+    public void AcceptMonthlyIncome(TransactionName name, Amount amount)
     {
-        var monthlyIncomeStock = GetMonthlyIncome(monthlyIncome.Name);
+
+        var monthlyIncome = GetMonthlyIncome(name);
+
+        if (amount != monthlyIncome.Amount)
+        {
+            EditMonthlyIncome(monthlyIncome.Name, monthlyIncome.Name, amount);
+        }
+        
         var income = new Income(monthlyIncome.Name, monthlyIncome.Month.Date, monthlyIncome.Currency, monthlyIncome.Amount);
 
-        MonthlyIncomes.Remove(monthlyIncomeStock);
+        MonthlyIncomes.Remove(monthlyIncome);
+        
         AddIncome(income);
+
+        var newMonthlyIncome = new MonthlyIncome(
+            monthlyIncome.Name, 
+            monthlyIncome.Month.NextMonth(),
+            monthlyIncome.Currency, 
+            monthlyIncome.Amount);
+        
+        AddMonthlyIncome(newMonthlyIncome);
         
         RaiseDomainEvent(new MonthlyIncomeAcceptedDomainEvent(monthlyIncome, income, this));
     }
@@ -432,13 +522,29 @@ public class CurrencyAccount : AggregateRoot
     /// Accepts a monthly payment entry by converting it into a regular payment transaction.
     /// </summary>
     /// <param name="monthlyPayment">The monthly payment to accept.</param>
-    public void AcceptMonthlyPayment(MonthlyPayment monthlyPayment)
+    public void AcceptMonthlyPayment(TransactionName name, Amount amount)
     {
-        var monthlyPaymentStock = GetMonthlyPayment(monthlyPayment.Name);
-        var payment = new Payment(monthlyPayment.Name, monthlyPayment.Month.Date, monthlyPayment.Currency, monthlyPayment.Amount, monthlyPayment.Category);
+        var monthlyPayment = GetMonthlyPayment(name);
 
-        MonthlyPayments.Remove(monthlyPaymentStock);
+        if (amount != monthlyPayment.Amount)
+        {
+            EditMonthlyPayment(monthlyPayment.Name, monthlyPayment.Name, amount, monthlyPayment.Category);
+        }
+        
+        var payment = new Payment(monthlyPayment.Name, monthlyPayment.Month.Date, monthlyPayment.Currency, monthlyPayment.Amount, monthlyPayment.Category);
+        
+        MonthlyPayments.Remove(monthlyPayment);
+        
         AddPayment(payment);
+
+        var newMonthlyPaymment = new MonthlyPayment(
+            monthlyPayment.Name, 
+            monthlyPayment.Month.NextMonth(),
+            monthlyPayment.Currency, 
+            monthlyPayment.Amount,
+            monthlyPayment.Category);
+        
+        AddMonthlyPayment(newMonthlyPaymment);
         
         RaiseDomainEvent(new MonthlyPaymentAcceptedDomainEvent(monthlyPayment, payment, this));
     }
@@ -493,6 +599,7 @@ public class CurrencyAccount : AggregateRoot
         
             RaiseDomainEvent(new BudgetCreatedDomainEvent(null, Budget, this));
 
+            return;
         }
         
         if (Budget.Date.Date.Month == DateTime.UtcNow.Month)
@@ -510,6 +617,11 @@ public class CurrencyAccount : AggregateRoot
 
     public void ChangeBudgetName(BudgetName name)
     {
+        if (Budget is null)
+        {
+            throw new BudgetNotFoundException();
+        }
+        
         var oldName = Budget.Name;
 
         Budget.ChangeName(name);
@@ -517,20 +629,71 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new BudgetNameChangedDomainEvent(oldName, name, this));
     }
 
-    public void EditExpense(Expense newExpense)
+    public void AddExpense(Expense newExpense)
     {
-        var expense = Budget.Expenses.FirstOrDefault(e => e == newExpense);
+        if (Budget is null)
+        {
+            throw new BudgetNotFoundException();
+        }
 
+        if (Budget.Expenses.Exists(e => e == newExpense))
+        {
+            throw new ExpenseAlreadyExistException(newExpense.Category);
+        }
+        
+        Budget.AddExpense(newExpense);
+        
+        RaiseDomainEvent(new ExpenseAddedDomainEvent(newExpense, this));
+    }
+    
+    public void EditExpense(Category category, ExpenseAmount newExpenseAmount)
+    {
+        if (Budget is null)
+        {
+            throw new BudgetNotFoundException();
+        }
+        
+        var expense = Budget.Expenses.FirstOrDefault(e => e.Category == category);
+
+        if (expense is null)
+        {
+            throw new ExpenseNotFoundException(category);
+        }
+        
         var oldAmount = expense.Amount;
         
-        expense.ChangeAmount(newExpense);
-        
+        expense.ChangeAmount(category, newExpenseAmount);
         
         RaiseDomainEvent(new ExpenseEditedDomainEvent(expense, oldAmount, this));
     }
     
-    public void DeleteBudget(Guid id)
+    public void RemoveExpense(Category category)
     {
+        if (Budget is null)
+        {
+            throw new BudgetNotFoundException();
+        }
+  
+        var expense = Budget.Expenses.FirstOrDefault(e => e.Category == category);
+
+        if (expense is null)
+        {
+            throw new ExpenseNotFoundException(category);
+        }
+
+        Budget.RemoveExpense(expense);
+        
+        RaiseDomainEvent(new ExpenseDeletedDomainEvent(category, this));
+    }
+    
+    public void DeleteBudget()
+    {
+
+        if (Budget is null)
+        {
+            throw new BudgetNotFoundException();
+        }
+        
         var budget = Budget;
         
         Budget = null;

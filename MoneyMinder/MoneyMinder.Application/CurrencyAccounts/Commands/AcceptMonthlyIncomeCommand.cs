@@ -1,3 +1,5 @@
+using MoneyMinder.Application.CurrencyAccounts.Commands.Handlers.Abstractions;
+
 namespace MoneyMinder.Application.CurrencyAccounts.Commands;
 
-public record AcceptMonthlyIncomeCommand();
+public record AcceptMonthlyIncomeCommand(Guid AccountId, Guid CurrencyAccountId, string Name, decimal Amount) : CurrencyCommand(AccountId, CurrencyAccountId);
