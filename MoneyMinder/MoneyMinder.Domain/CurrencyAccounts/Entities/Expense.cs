@@ -15,7 +15,7 @@ public class Expense : Entity
     }
     
     public Expense(Category category, ExpenseAmount amount) 
-        : base(Guid.NewGuid())
+        //: base(Guid.NewGuid())
     {
         Category = category;
         Amount = amount;

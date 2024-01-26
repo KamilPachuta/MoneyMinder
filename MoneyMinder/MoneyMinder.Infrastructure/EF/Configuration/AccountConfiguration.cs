@@ -39,6 +39,10 @@ internal sealed class AccountConfiguration :
         builder
             .HasMany(a => a.CurrencyAccounts)
             .WithOne(ca => ca.Account);
+        
+        builder
+            .HasMany(a => a.SavingsPortfolios)
+            .WithOne(sp => sp.Account);
 
     }
 

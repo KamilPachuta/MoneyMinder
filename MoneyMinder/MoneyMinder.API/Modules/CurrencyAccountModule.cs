@@ -22,7 +22,7 @@ public class CurrencyAccountModule : BaseModule
         app.MapDelete("/", CurrencyAccountEndpoints.Delete);
 
         
-        app.MapPut("/income/", CurrencyAccountEndpoints.IncomeAdd);
+        app.MapPost("/income/", CurrencyAccountEndpoints.IncomeAdd);
         
         app.MapDelete("/income/", CurrencyAccountEndpoints.IncomeRemove);
 
@@ -66,6 +66,10 @@ public class CurrencyAccountModule : BaseModule
         app.MapPost("/budget/expense/", CurrencyAccountEndpoints.ExpenseEdit);
 
         app.MapDelete("/budget/expense/", CurrencyAccountEndpoints.ExpenseDelete);
-        
+
+
+        app.MapGet("/", CurrencyAccountReadEndpoints.GetAll);
+
+        //app.MapGet("/", CurrencyAccountReadEndpoints.Get);
     }
 }

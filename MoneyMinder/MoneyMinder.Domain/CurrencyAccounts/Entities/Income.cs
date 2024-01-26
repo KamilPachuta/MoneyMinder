@@ -12,7 +12,7 @@ public class Income : Transaction
     }
     
     public Income(TransactionName transactionName, DateTime transactionDate, Currency currency, Amount amount) 
-        : base(Guid.NewGuid(), transactionName, transactionDate, currency, amount)
+        : base(transactionName, transactionDate, currency, amount)
     {
         CheckAmount(amount);
     }

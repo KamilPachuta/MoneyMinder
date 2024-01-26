@@ -17,8 +17,7 @@ public abstract class MonthlyTransaction : Entity
     {
     }
 
-    protected MonthlyTransaction(Guid id, TransactionName name, Month month, Currency currency, Amount amount)
-        : base(id)
+    protected MonthlyTransaction(TransactionName name, Month month, Currency currency, Amount amount)
     {
         CheckAmount(amount);
         Name = name;
@@ -26,6 +25,16 @@ public abstract class MonthlyTransaction : Entity
         Currency = currency;
         Amount = amount;
     }
+    
+    // protected MonthlyTransaction(Guid id, TransactionName name, Month month, Currency currency, Amount amount)
+    //     : base(id)
+    // {
+    //     CheckAmount(amount);
+    //     Name = name;
+    //     Month = month;
+    //     Currency = currency;
+    //     Amount = amount;
+    // }
     protected abstract void CheckAmount(Amount amount);
 
     public override string ToString()

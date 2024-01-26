@@ -16,7 +16,7 @@ public class Balance : Entity
         
     }
     
-    public Balance(Currency currency) : base(Guid.NewGuid())
+    public Balance(Currency currency)
     {
         Currency = currency;
         Amount = new Amount(0);

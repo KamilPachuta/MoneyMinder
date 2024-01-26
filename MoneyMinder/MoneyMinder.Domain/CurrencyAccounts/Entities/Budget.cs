@@ -2,7 +2,7 @@ using MoneyMinder.Domain.CurrencyAccounts.Enums;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
 using MoneyMinder.Domain.Primitives;
-using MoneyMinder.Domain.Savings.ValueObjects;
+using MoneyMinder.Domain.SavingsPortfolios.ValueObjects;
 
 namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
 
@@ -22,7 +22,7 @@ public sealed class Budget : Entity
         
     }
     
-    public Budget(BudgetName name, decimal expectedIncome, IEnumerable<Expense> expenses, BudgetDate date, Currency currency) : base(Guid.NewGuid())
+    public Budget(BudgetName name, decimal expectedIncome, IEnumerable<Expense> expenses, BudgetDate date, Currency currency) //: base(Guid.NewGuid())
     {
         Name = name;
         ExpectedIncome = expectedIncome;

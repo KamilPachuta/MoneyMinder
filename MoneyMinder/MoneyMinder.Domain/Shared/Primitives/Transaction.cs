@@ -16,14 +16,22 @@ public abstract class Transaction : Entity
     {
     }
 
-    protected Transaction(Guid id, TransactionName name, DateTime date, Currency currency, Amount amount)
-        : base(id)
+    protected Transaction(TransactionName name, DateTime date, Currency currency, Amount amount)
     {
         Name = name;
         Date = date;
         Currency = currency;
         Amount = amount;
     }
+    
+    // protected Transaction(Guid id, TransactionName name, DateTime date, Currency currency, Amount amount)
+    //     : base(id)
+    // {
+    //     Name = name;
+    //     Date = date;
+    //     Currency = currency;
+    //     Amount = amount;
+    // }
 
     public override string ToString()
     {

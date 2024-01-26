@@ -1,7 +1,4 @@
-using MediatR;
 using MoneyMinder.Application.CurrencyAccounts.Commands.Handlers.Abstractions;
-using MoneyMinder.Application.CurrencyAccounts.Exceptions;
-using MoneyMinder.Application.CurrencyAccounts.Queries;
 using MoneyMinder.Application.CurrencyAccounts.Services;
 using MoneyMinder.Domain.Repository;
 

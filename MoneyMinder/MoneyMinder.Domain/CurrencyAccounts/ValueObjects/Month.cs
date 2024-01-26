@@ -8,7 +8,7 @@ public record Month
 
     public Month(DateTime date)
     {
-        if (date.Month != DateTime.Now.Month || date.Month != DateTime.Now.AddMonths(1).Month) 
+        if (date.Month != DateTime.Now.Month && date.Month != DateTime.Now.AddMonths(1).Month) 
         {
             throw new InvalidMonthException(date);
         }

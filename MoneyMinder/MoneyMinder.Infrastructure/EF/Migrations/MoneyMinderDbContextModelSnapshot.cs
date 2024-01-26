@@ -167,7 +167,7 @@ namespace MoneyMinder.Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid?>("BudgetId")
+                    b.Property<Guid>("BudgetId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Category")
@@ -189,8 +189,14 @@ namespace MoneyMinder.Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid?>("CurrencyAccountId")
+                    b.Property<int>("Currency")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("CurrencyAccountId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -215,7 +221,7 @@ namespace MoneyMinder.Infrastructure.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("CurrencyAccountId")
+                    b.Property<Guid>("CurrencyAccountId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("Month")
@@ -247,7 +253,7 @@ namespace MoneyMinder.Infrastructure.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("CurrencyAccountId")
+                    b.Property<Guid>("CurrencyAccountId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("Month")
@@ -276,8 +282,14 @@ namespace MoneyMinder.Infrastructure.Migrations
                     b.Property<int>("Category")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("CurrencyAccountId")
+                    b.Property<int>("Currency")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("CurrencyAccountId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -288,6 +300,67 @@ namespace MoneyMinder.Infrastructure.Migrations
                     b.HasIndex("CurrencyAccountId");
 
                     b.ToTable("Payments", "MoneyMinderr");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.SavingsPortfolios.Entities.SavingsTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("SavingsPortfolioId")
+                        .HasColumnType("uuid");
+
+                    b.Property<byte>("Type")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SavingsPortfolioId");
+
+                    b.ToTable("SavingsTransactions", "MoneyMinderr");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.SavingsPortfolios.SavingsPortfolio", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("ActualAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("PlannedAmount")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("SavingsPortfolios", "MoneyMinderr");
                 });
 
             modelBuilder.Entity("MoneyMinder.Domain.Accounts.Entities.Address", b =>
@@ -323,7 +396,8 @@ namespace MoneyMinder.Infrastructure.Migrations
                 {
                     b.HasOne("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", null)
                         .WithMany("Balances")
-                        .HasForeignKey("CurrencyAccountId");
+                        .HasForeignKey("CurrencyAccountId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Budget", b =>
@@ -339,40 +413,72 @@ namespace MoneyMinder.Infrastructure.Migrations
                 {
                     b.HasOne("MoneyMinder.Domain.CurrencyAccounts.Entities.Budget", null)
                         .WithMany("Expenses")
-                        .HasForeignKey("BudgetId");
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Income", b =>
                 {
                     b.HasOne("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", null)
                         .WithMany("Incomes")
-                        .HasForeignKey("CurrencyAccountId");
+                        .HasForeignKey("CurrencyAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.MonthlyIncome", b =>
                 {
                     b.HasOne("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", null)
                         .WithMany("MonthlyIncomes")
-                        .HasForeignKey("CurrencyAccountId");
+                        .HasForeignKey("CurrencyAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.MonthlyPayment", b =>
                 {
                     b.HasOne("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", null)
                         .WithMany("MonthlyPayments")
-                        .HasForeignKey("CurrencyAccountId");
+                        .HasForeignKey("CurrencyAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Payment", b =>
                 {
                     b.HasOne("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", null)
                         .WithMany("Payments")
-                        .HasForeignKey("CurrencyAccountId");
+                        .HasForeignKey("CurrencyAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.SavingsPortfolios.Entities.SavingsTransaction", b =>
+                {
+                    b.HasOne("MoneyMinder.Domain.SavingsPortfolios.SavingsPortfolio", null)
+                        .WithMany("Transactions")
+                        .HasForeignKey("SavingsPortfolioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.SavingsPortfolios.SavingsPortfolio", b =>
+                {
+                    b.HasOne("MoneyMinder.Domain.Accounts.Account", "Account")
+                        .WithMany("SavingsPortfolios")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("MoneyMinder.Domain.Accounts.Account", b =>
                 {
                     b.Navigation("CurrencyAccounts");
+
+                    b.Navigation("SavingsPortfolios");
 
                     b.Navigation("User");
                 });
@@ -401,6 +507,11 @@ namespace MoneyMinder.Infrastructure.Migrations
             modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Budget", b =>
                 {
                     b.Navigation("Expenses");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.SavingsPortfolios.SavingsPortfolio", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

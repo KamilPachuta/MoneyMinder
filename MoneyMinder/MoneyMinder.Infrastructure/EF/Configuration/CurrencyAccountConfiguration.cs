@@ -23,32 +23,43 @@ IEntityTypeConfiguration<Expense>
 
         builder
             .Property(ca => ca.Name)
-            .HasConversion(n => n.Name, n => new(n));
+            .HasConversion(n => n.Name, n => new(n))
+            .IsRequired();
 
         builder
             .HasMany(ca => ca.Balances)
-            .WithOne();
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
             .HasMany(ca => ca.Incomes)
-            .WithOne();
+            .WithOne()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
             .HasMany(ca => ca.Payments)
-            .WithOne();
+            .WithOne()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
             .HasMany(ca => ca.MonthlyIncomes)
-            .WithOne();
+            .WithOne()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
             .HasMany(ca => ca.MonthlyPayments)
-            .WithOne();
+            .WithOne()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
             .HasOne(ca => ca.Budget)
             .WithOne()
-            .HasForeignKey<Budget>();
+            .HasForeignKey<Budget>()
+            .IsRequired();
     }
 
     public void Configure(EntityTypeBuilder<Balance> builder)
@@ -57,8 +68,13 @@ IEntityTypeConfiguration<Expense>
         builder.HasKey(b => b.Id);
 
         builder
+            .Property(b => b.Currency)
+            .IsRequired();
+
+        builder
             .Property(b => b.Amount)
-            .HasConversion(b => b.Value, b => new(b));
+            .HasConversion(b => b.Value, b => new(b))
+            .IsRequired();
     }
 
     public void Configure(EntityTypeBuilder<Income> builder)
@@ -68,11 +84,22 @@ IEntityTypeConfiguration<Expense>
 
         builder
             .Property(i => i.Name)
-            .HasConversion(n => n.Name, n=> new(n));
+            .HasConversion(n => n.Name, n => new(n))
+            .IsRequired();
 
         builder
+            .Property(i => i.Date)
+            .IsRequired();
+
+        builder
+            .Property(i => i.Currency)
+            .IsRequired();
+        
+        builder
             .Property(i => i.Amount)
-            .HasConversion(a => a.Value, a => new(a));
+            .HasConversion(a => a.Value, a => new(a))
+            .IsRequired();
+        
     }
 
     public void Configure(EntityTypeBuilder<Payment> builder)
@@ -82,11 +109,25 @@ IEntityTypeConfiguration<Expense>
         
         builder
             .Property(p => p.Name)
-            .HasConversion(n => n.Name, n=> new(n));
+            .HasConversion(n => n.Name, n=> new(n))
+            .IsRequired();
+        
+        builder
+            .Property(p => p.Date)
+            .IsRequired();
 
         builder
+            .Property(p => p.Currency)
+            .IsRequired();
+        
+        builder
             .Property(i => i.Amount)
-            .HasConversion(a => a.Value, a => new(a));
+            .HasConversion(a => a.Value, a => new(a))
+            .IsRequired();
+        
+        builder
+            .Property(p => p.Category)
+            .IsRequired();
     }
 
     public void Configure(EntityTypeBuilder<MonthlyIncome> builder)
@@ -96,15 +137,22 @@ IEntityTypeConfiguration<Expense>
         
         builder
             .Property(mi => mi.Name)
-            .HasConversion(n => n.Name, n=> new(n));
-
+            .HasConversion(n => n.Name, n=> new(n))
+            .IsRequired();
+        
         builder
             .Property(mi => mi.Month)
-            .HasConversion(m => m.Date, m => new Month(m));
-
+            .HasConversion(m => m.Date, m => new Month(m))
+            .IsRequired();
+        
+        builder
+            .Property(mi => mi.Currency)
+            .IsRequired();
+        
         builder
             .Property(mi => mi.Amount)
-            .HasConversion(a => a.Value, a => new(a));
+            .HasConversion(a => a.Value, a => new(a))
+            .IsRequired(); 
     }
 
     public void Configure(EntityTypeBuilder<MonthlyPayment> builder)
@@ -115,15 +163,25 @@ IEntityTypeConfiguration<Expense>
          
         builder
             .Property(mp => mp.Name)
-            .HasConversion(n => n.Name, n=> new(n));
-
+            .HasConversion(n => n.Name, n=> new(n))
+            .IsRequired();
+        
         builder
             .Property(mp => mp.Month)
-            .HasConversion(m => m.Date, m => new Month(m));
+            .HasConversion(m => m.Date, m => new Month(m))
+            .IsRequired();
 
         builder
+            .Property(mp => mp.Currency)
+            .IsRequired();
+        
+        builder
             .Property(mp => mp.Amount)
-            .HasConversion(a => a.Value, a => new(a));
+            .HasConversion(a => a.Value, a => new(a))
+            .IsRequired();
+
+        builder
+            .Property(mp => mp.Category);
     }
 
     public void Configure(EntityTypeBuilder<Budget> builder)
@@ -133,19 +191,28 @@ IEntityTypeConfiguration<Expense>
 
         builder
             .Property(b => b.Name)
-            .HasConversion(n => n.Name, n => new(n));
+            .HasConversion(n => n.Name, n => new(n))
+            .IsRequired();
 
+        builder
+            .Property(b => b.Currency)
+            .IsRequired();
+        
         builder
             .Property(b => b.ExpectedIncome)
-            .HasConversion(pa => pa.Amount, pa => new(pa));
-
+            .HasConversion(pa => pa.Amount, pa => new(pa))
+            .IsRequired();
+        
         builder
             .Property(b => b.Date)
-            .HasConversion(d => d.Date, d => new(d));
-
+            .HasConversion(d => d.Date, d => new(d))
+            .IsRequired();
+        
         builder
             .HasMany(b => b.Expenses)
-            .WithOne();
+            .WithOne()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
     }
     
@@ -155,7 +222,12 @@ IEntityTypeConfiguration<Expense>
         builder.HasKey(e => e.Id);
 
         builder
+            .Property(p => p.Category)
+            .IsRequired();
+        
+        builder
             .Property(e => e.Amount)
-            .HasConversion(a => a.Amount, a => new(a));
+            .HasConversion(a => a.Amount, a => new(a))
+            .IsRequired();
     }
 }

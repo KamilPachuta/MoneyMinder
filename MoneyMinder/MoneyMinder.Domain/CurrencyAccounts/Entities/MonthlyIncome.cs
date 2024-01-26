@@ -11,7 +11,7 @@ public class MonthlyIncome : MonthlyTransaction
     }
     
     public MonthlyIncome(TransactionName transactionName, Month month, Currency currency, Amount amount) 
-        : base(Guid.NewGuid(), transactionName, month, currency, amount)
+        : base(transactionName, month, currency, amount)
     {
     }
 

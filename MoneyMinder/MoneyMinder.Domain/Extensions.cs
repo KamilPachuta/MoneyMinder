@@ -11,7 +11,7 @@ public static class Extensions
     {
         services.AddSingleton<IAccountFactory, AccountFactory>();
         services.AddSingleton<ICurrencyAccountFactory, CurrencyAccountFactory>();
-        services.AddSingleton<ISavingsFactory, SavingsFactory>();
+        services.AddSingleton<ISavingsPortfolioFactory, SavingsPortfolioFactory>();
 
         return services;
     }

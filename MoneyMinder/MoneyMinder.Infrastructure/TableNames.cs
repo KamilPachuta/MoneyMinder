@@ -5,6 +5,7 @@ public static class TableNames
     public static string Accounts => "Accounts";
     public static string Users => "Users";
     public static string Addresses => "Addresses";
+    
     public static string CurrencyAccounts => "CurrencyAccounts";
     public static string Budgets => "Budgets";
     public static string Expenses => "Expenses";
@@ -14,6 +15,9 @@ public static class TableNames
     public static string MonthlyIncomes => "MonthlyIncomes";
     public static string MonthlyPayments => "MonthlyPayments";
 
-    
+    public static string SavingsPortfolios => "SavingsPortfolios";
+    public static string SavingsTransactions => "SavingsTransactions";
+
+
 
 }

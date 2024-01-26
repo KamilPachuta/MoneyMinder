@@ -12,11 +12,8 @@
 
     <ItemGroup>
       <Folder Include="Accounts\Models\" />
-      <Folder Include="Savings\Commands\Handlers\" />
-      <Folder Include="Savings\Exceptions\" />
       <Folder Include="Savings\Models\" />
       <Folder Include="Savings\Queries\" />
-      <Folder Include="Savings\Services\" />
     </ItemGroup>
 
     <ItemGroup>

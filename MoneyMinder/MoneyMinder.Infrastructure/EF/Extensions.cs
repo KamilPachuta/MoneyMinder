@@ -3,6 +3,8 @@ using MoneyMinder.Domain.Accounts;
 using MoneyMinder.Domain.Accounts.Entities;
 using MoneyMinder.Domain.CurrencyAccounts;
 using MoneyMinder.Domain.CurrencyAccounts.Entities;
+using MoneyMinder.Domain.SavingsPortfolios;
+using MoneyMinder.Domain.SavingsPortfolios.Entities;
 using MoneyMinder.Infrastructure.EF.Configuration;
 
 namespace MoneyMinder.Infrastructure.EF;
@@ -25,6 +27,10 @@ public static class Extensions
         modelBuilder.ApplyConfiguration<Payment>(currencyAccountConfiguration);
         modelBuilder.ApplyConfiguration<MonthlyIncome>(currencyAccountConfiguration);
         modelBuilder.ApplyConfiguration<MonthlyPayment>(currencyAccountConfiguration);
+
+        var savingsPortfolioConfiguration = new SavingsPortfolioConfiguration();
+        modelBuilder.ApplyConfiguration<SavingsPortfolio>(savingsPortfolioConfiguration);
+        modelBuilder.ApplyConfiguration<SavingsTransaction>(savingsPortfolioConfiguration);
 
 
         return modelBuilder;
