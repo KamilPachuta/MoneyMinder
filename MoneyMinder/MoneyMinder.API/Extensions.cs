@@ -1,5 +1,6 @@
 using System.Text;
 using Carter;
+using FluentValidation;
 using Microsoft.IdentityModel.Tokens;
 using MoneyMinder.API.Services;
 using MoneyMinder.Application;
@@ -79,6 +80,8 @@ public static class Extensions
         services.AddHttpContextAccessor();
 
         services.AddScoped<IUserService, UserService>();
+        
+        services.AddValidatorsFromAssembly(typeof(Extensions).Assembly);
         
         return services;
     }

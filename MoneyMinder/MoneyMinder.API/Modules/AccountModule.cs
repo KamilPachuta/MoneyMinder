@@ -7,6 +7,7 @@ using MoneyMinder.API.Modules.Abstractions;
 using MoneyMinder.API.Requests.Accounts;
 using MoneyMinder.Application.Accounts.Commands;
 using MoneyMinder.Application.Accounts.Queries;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace MoneyMinder.API.Modules;
 
@@ -20,23 +21,25 @@ public class AccountModule : BaseModule
     
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPut("/Admin/", AccountEndpoints.PutAdmin);
-
-        app.MapPut("/", AccountEndpoints.PutUser);
-
-        app.MapPost("/", AccountEndpoints.PostLogin);
+        var group = app.MapGroup("").AddFluentValidationAutoValidation();
         
-        app.MapGet("/", AccountEndpoints.Get);
+        group.MapPut("/Admin/", AccountEndpoints.PutAdmin);
 
-        app.MapGet("/all/", AccountEndpoints.GetAll);
+        group.MapPut("/", AccountEndpoints.PutUser);
 
-        app.MapPost("/password/", AccountEndpoints.PostPassword);
+        group.MapPost("/", AccountEndpoints.PostLogin);
         
-        app.MapPost("/name/", AccountEndpoints.PostName);
+        group.MapGet("/", AccountEndpoints.Get);
 
-        app.MapPost("/phone/", AccountEndpoints.PostPhone);
+        group.MapGet("/all/", AccountEndpoints.GetAll);
 
-        app.MapPost("/address", AccountEndpoints.PostAddress);
+        group.MapPost("/password/", AccountEndpoints.PostPassword);
+        
+        group.MapPost("/name/", AccountEndpoints.PostName);
+
+        group.MapPost("/phone/", AccountEndpoints.PostPhone);
+
+        group.MapPost("/address", AccountEndpoints.PostAddress);
 
         // app.MapPut("/CurrencyAccount",AccountEndpoints);
         // app.MapGet("/Savings",);

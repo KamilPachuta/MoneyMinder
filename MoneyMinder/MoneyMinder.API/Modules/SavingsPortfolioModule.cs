@@ -1,5 +1,6 @@
 using MoneyMinder.API.Endpoints;
 using MoneyMinder.API.Modules.Abstractions;
+using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace MoneyMinder.API.Modules;
 
@@ -12,15 +13,18 @@ public class SavingsPortfolioModule : BaseModule
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPut("/", SavingsPortfolioEndpoints.Put);
+        var group = app.MapGroup("").AddFluentValidationAutoValidation();
 
-        app.MapDelete("/", SavingsPortfolioEndpoints.Delete);
         
-        app.MapPost("/Name/", SavingsPortfolioEndpoints.PostName);
+        group.MapPut("/", SavingsPortfolioEndpoints.Put);
 
-        app.MapPost("/PlannedAmount/", SavingsPortfolioEndpoints.PostAmount);
+        group.MapDelete("/", SavingsPortfolioEndpoints.Delete);
+        
+        group.MapPost("/Name/", SavingsPortfolioEndpoints.PostName);
 
-        app.MapPost("/transaction/", SavingsPortfolioEndpoints.PostTransaction);
+        group.MapPost("/PlannedAmount/", SavingsPortfolioEndpoints.PostAmount);
+
+        group.MapPost("/transaction/", SavingsPortfolioEndpoints.PostTransaction);
 
     }
 }

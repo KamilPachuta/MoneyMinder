@@ -9,17 +9,24 @@
 
     <ItemGroup>
         <PackageReference Include="Carter" Version="8.0.0" />
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Endpoints" Version="1.4.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\MoneyMinder.Infrastructure\MoneyMinder.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Requests\Accounts\Query\" />
+      <Folder Include="Requests\SavingsPortfolios\Query\" />
     </ItemGroup>
 
 </Project>

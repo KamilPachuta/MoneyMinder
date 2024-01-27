@@ -1,3 +1,3 @@
 namespace MoneyMinder.API.Requests.CurrencyAccounts;
 
-public record AcceptMonthlyIncomeRequest(Guid CurrencyAccountId, string Name, decimal Amount);
+public record AcceptMonthlyIncomeRequest(Guid Id, string Name, decimal Amount);
