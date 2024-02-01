@@ -1,0 +1,282 @@
+﻿@page "/CurrencyAccount/{name}/MonthlyTransactions"
+@using Client.Models.ReadModels
+@using MoneyMinderClient.Models
+@using Client.Components.Dialogs
+@using Client.Models.Requests.CurrencyAccount.Commands
+@using MoneyMinder.API.Requests.CurrencyAccounts
+@inject ICurrencyAccountService CurrencyService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<MudPaper Elevation="2" Class="px-4 py-4">
+    <MudGrid>
+     <MudItem xs="12" sm="12">
+            <MudPaper Elevation="2" Class="px-4 py-4">
+                <MudText Class="mx-4 my-5" Typo="Typo.h3">Monthly Transactions</MudText>
+                <MudText Class="mx-4 my-2" Typo="Typo.h5">@name</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="12">
+            <MudPaper Class="d-inline-flex py-3">
+                <MudContainer Style="max-height: 800px; overflow-y: scroll;">
+                    
+                    <MudTable T="TransactionModel" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
+                              RowClass="cursor-pointer" OnRowClick="RowClickEvent"  RowClassFunc="@SelectedRowClassFunc">
+                        <HeaderContent>
+                                <MudTh>Name</MudTh>
+                                <MudTh>Date</MudTh>
+                                <MudTh>Amount</MudTh>
+                                <MudTh>Currency</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Name">@context.Name</MudTd>
+                                <MudTd DataLabel="Date">@context.Date.ToString("dd-mm-yyyy")</MudTd>
+                                <MudTd DataLabel="Amount">@context.Amount</MudTd>
+                                <MudTd DataLabel="Currency">@context.Currency</MudTd>
+                            </RowTemplate>
+                    </MudTable>
+                </MudContainer>
+                @* <MudList> *@
+                @*     <MudListItem> *@
+                @*         <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="NewTransactionDialog"></MudIconButton> *@
+                @*     </MudListItem> *@
+                @*     <MudListItem> *@
+                @*         <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="NewRemoveDialog"></MudIconButton> *@
+                @*     </MudListItem> *@
+                @*     <MudListItem> *@
+                @*         <MudText>@selectedRowNumber</MudText> *@
+                @*         <MudText>@selectedRowGuid</MudText> *@
+                @*     </MudListItem> *@
+                @*     </MudList> *@
+                <MudList>
+                    <MudListItem>
+                        <MudText>Transaction name: @selectedModel?.Name</MudText>
+                    </MudListItem>
+                    <MudListItem>
+                        <MudText>Transaction date: @selectedModel?.Date</MudText>
+                                        
+                    </MudListItem>
+                    <MudListItem>
+                        <MudText>Amount: @selectedModel?.Amount @selectedModel?.Currency</MudText>
+                    </MudListItem>
+                </MudList>
+                
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="NewMonthlyTransactionDialog"></MudIconButton>
+
+                <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="NewRemoveDialog"></MudIconButton>
+      
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="NewMonthlyTransactionDialog"></MudIconButton>
+
+                <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="NewRemoveDialog"></MudIconButton>
+      
+
+@code {
+    [Parameter] 
+    public string name { get; set; }
+
+    private bool show = false;
+    private MudTable<TransactionModel> mudTable;
+    private int selectedRowNumber = -1;
+    private TransactionModel? selectedModel = null;
+    private List<TransactionModel> _transactions = new();
+    private Guid _id;
+    private bool _succeded = false;
+    private List<string> _errors;
+
+    private RemoveMonthlyIncomeRequest _incomeRequest;
+    private RemoveMonthlyPaymentRequest _paymentRequest;
+
+    private void RowClickEvent(TableRowClickEventArgs<TransactionModel> tableRowClickEventArgs)
+    {
+    }
+    private string SelectedRowClassFunc(TransactionModel transaction, int rowNumber)
+    {
+        if (selectedRowNumber == rowNumber)
+        {
+            selectedRowNumber = -1;
+            selectedModel = transaction;
+            
+            return string.Empty;
+        }
+        else if (mudTable.SelectedItem != null && mudTable.SelectedItem.Equals(transaction))
+        {
+            selectedRowNumber = rowNumber;
+            selectedModel = transaction;
+            
+            return "selected";
+        }
+        else
+        {
+            return string.Empty;
+        }
+    }
+    
+    private async Task SetParams()
+    {
+        var firstResult = await CurrencyService.GetIdByName(name);
+        if (!firstResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = firstResult.ErrorList;
+            return;
+        }
+        
+        _id = firstResult.Response.Id;
+
+        var secondResult = await CurrencyService.GetMonthlyTransactions(_id);
+        
+        if (!secondResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = secondResult.ErrorList;
+            return;
+        }
+
+        _transactions= secondResult.Response.Transactions.ToList();
+
+        _succeded = true;
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        await SetParams();
+    }
+
+    
+    
+    
+    
+    private async Task NewMonthlyTransactionDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "id", _id }
+        };
+        var dialog = await DialogService.ShowAsync<NewMonthlyTransaction>("New monthly transaction" ,parameters);
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted adding monthly transaction!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
+    
+
+    private async Task NewRemoveDialog()
+    {
+        
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you really want to delete these records? This process cannot be undone.");
+        parameters.Add(x => x.ButtonText, "Delete");
+        parameters.Add(x => x.Color, Color.Error);
+        
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters, options);
+        
+        var result = await dialog.Result;
+        
+        
+        if (result.Canceled)
+        {
+            return;
+        }
+        
+        var agree  = await dialog.GetReturnValueAsync<bool>();
+
+        if (agree)
+        {
+            var isSucces = new Result();
+            
+            if (selectedModel.Amount < 0)
+            {
+
+                _paymentRequest = new RemoveMonthlyPaymentRequest(_id, selectedModel.Name);
+                
+                isSucces = await CurrencyService.DeleteMonthlyPayment(_paymentRequest);
+            }
+            else
+            {
+                _incomeRequest = new RemoveMonthlyIncomeRequest(_id, selectedModel.Name);
+                
+                isSucces = await CurrencyService.DeleteMonthlyIncome(_incomeRequest);
+            }
+            
+            if (isSucces.Succeeded)
+            {
+                Snackbar.Add("Submitted removing transaction!");
+                await SetParams();
+            }
+            else
+            {
+                Snackbar.Add("Saving error!");
+                foreach (var error in isSucces.ErrorList)
+                {
+                    Snackbar.Add(error);
+                }
+            }
+        }
+    }
+    
+   
+    
+}
+
+
+
+
+@* *@
+@* <h3>MonthlyTransactions</h3> *@
+@* *@
+@* @code { *@
+@*     [Parameter]  *@
+@*     public string name { get; set; } *@
+@* *@
+@*     private Guid _id; *@
+@*     private bool _succeded = false; *@
+@*     private List<string> _errors; *@
+@*      *@
+@*     protected override async Task OnParametersSetAsync() *@
+@*     { *@
+@*         var firstResult = await CurrencyService.GetIdByName(name); *@
+@*         if (!firstResult.Succeeded) *@
+@*         { *@
+@*             _succeded = false; *@
+@*             _errors = firstResult.ErrorList; *@
+@*             return; *@
+@*         } *@
+@* *@
+@*         _id = firstResult.Response.Id; *@
+@* *@
+@*         _succeded = true; *@
+@*     } *@
+@* *@
+@* } *@
+
+
+
+
+
+

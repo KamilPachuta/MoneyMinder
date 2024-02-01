@@ -1,0 +1,33 @@
+﻿@page "/Main"
+@using Client.Services.Interfaces
+@using MoneyMinder.API.Requests.CurrencyAccounts
+@using Client.Models.Requests.CurrencyAccount.Commands
+@inject ICurrencyAccountService currencyService
+
+<h3>Main</h3>
+<AuthorizeView>
+    <Authorized>
+        
+        @* <MudGrid> *@
+        @*     <MudItem> *@
+        @*         Tutaj dodać całe zarządzanie kategoriami, osobny panel na górze toolbar z dodawaniem, usuwaniem i z edycja kategorii. *@
+        @*         Przy kliknięciu w dodawanie kategorii komunikat że usunąć można tylko jeśli nie ma przypisanej transakcji itd.  *@
+        @*         Ew jeśli categorii uzywam tylko do zapisu a potem nie waliduje ich to w sumie moze byc usuwanie normalnie ale zapis ze  *@
+        @*         zostanie ona w wszystkich miejscach gdzie zotala uzyta *@
+        @*     </MudItem> *@
+        @* </MudGrid> *@
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        CreateCurrencyAccountRequest request = new CreateCurrencyAccountRequest("PayPalaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"); 
+        await currencyService.GetCurrencyAccountNames();
+        await currencyService.PutCurrencyAccount(request);
+    }
+
+}
+
+

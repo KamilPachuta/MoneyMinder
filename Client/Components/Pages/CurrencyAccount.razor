@@ -1,0 +1,186 @@
+﻿@page "/CurrencyAccount/{name}"
+@using Client.Models.Responses
+@using MoneyMinder.API.Requests.CurrencyAccounts
+@using Client.Models.ReadModels
+@using MoneyMinderClient.Services.Interfaces
+@using Client.Components.Dialogs
+@using MoneyMinderClient.Models
+@inject ICurrencyAccountService CurrencyService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+
+
+
+
+
+
+
+<MudGrid>
+    <MudItem xs="12" sm="4">
+            <MudPaper Elevation="2" Class="mx-4 my-4">
+                <MudText >@name</MudText>
+                 @if (_succeded)
+                                            {
+                                                <MudPaper Elevation="2">
+                                                    <MudText>Available funds</MudText>
+                                                    <MudList>
+                           
+                                                        @foreach (var balance in _balances)
+                                                        {
+                                                            <MudListItem>@balance.Amount @balance.Currency</MudListItem>
+                                                        }
+                                                    </MudList>
+                                                </MudPaper>
+                                            }
+                </MudPaper>
+        </MudItem>
+        
+    <MudItem xs="12" sm="8">
+         <MudPaper Elevation="2" Class="mx-4 my-4">
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="NewTransactionDialog"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="NewMonthlyTransactionDialog"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.CurrencyExchange"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.AddReaction"></MudIconButton>
+            </MudPaper>
+    </MudItem>
+    
+    
+   
+</MudGrid>
+
+
+
+
+@code {
+    [Parameter] 
+    public string name { get; set; }
+    [CascadingParameter]
+    public Guid id { get; set; }
+    
+    private bool _succeded = false;
+    private List<string> _errors;
+    private GetCurrencyAccountNamesResponse _response;
+    private List<BalanceModel> _balances;
+
+    private async Task SetParams()
+    {
+        var firstResult = await CurrencyService.GetIdByName(name);
+        if (!firstResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = firstResult.ErrorList;
+            return;
+        }
+
+        id = firstResult.Response.Id;
+        
+        var secondResult = await CurrencyService.GetCurrencyAccountBalances(id);
+        
+        if (!secondResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = secondResult.ErrorList;
+            return;
+        }
+
+        _balances = secondResult.Response.Balances.ToList();
+
+        _succeded = true;
+    }
+    
+    protected async override Task OnParametersSetAsync()
+    {
+        await SetParams();
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        
+    }
+    
+    private async Task NewTransactionDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "id", id }
+        };
+        var dialog = await DialogService.ShowAsync<NewTransaction>("Add Transaction" ,parameters);
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted adding transaction!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
+    
+    private async Task NewMonthlyTransactionDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "id", id }
+        };
+        var dialog = await DialogService.ShowAsync<NewMonthlyTransaction>("Add Monthly Transaction" ,parameters);
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted adding monthly transaction!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
+
+
+    // private async Task SendAsync()
+    // {
+    //     
+    //     CreateCurrencyAccountRequest request = new CreateCurrencyAccountRequest("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"); 
+    //     //var result = await currencyService.GetCurrencyAccountNames();
+    //     var result = await currencyService.GetCurrencyAccountBalances();
+    //
+    //     if (result.Succeeded)
+    //     {
+    //         _response = result.Response;
+    //     }
+    //     else
+    //     {
+    //         _errors = result.ErrorList;
+    //     }
+    //     _succeded = result.Succeeded;
+    // }
+    
+
+}

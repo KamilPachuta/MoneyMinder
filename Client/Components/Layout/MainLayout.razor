@@ -1,0 +1,194 @@
+﻿@using MoneyMinderClient.Services.Interfaces
+@inherits LayoutComponentBase
+@inject IAccountService accService
+@inject NavigationManager navManager
+
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+
+<MudLayout>
+    <MudAppBar Color=Color.Primary Elevation="7" Fixed="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        <MudText Typo="Typo.h5" Class="ml-3">MoneyMinder</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="@((e) => ToggleOpen())"/>
+        <AuthorizeView>
+            <Authorized>
+                <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" />  @**@ 
+                <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="@((e) => HandleLogout())"/> @*OnClick="@((e) => DrawerToggle())"*@
+            </Authorized>
+        </AuthorizeView>
+        <MudPopover Open="_isOpen" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.BottomLeft" Paper="false">
+            <MudPaper Outlined="true" Class="px-4 py-2">
+                <MudStack>
+                    <MudPaper Width="400px"  Elevation="0">
+                        <MudText Typo="Typo.h6">Information's</MudText>
+                        <MudText Typo="Typo.body2">
+                            Money Minder is a web application that was created as part of an engineering project. It is dedicated to efficient household financial management and assists in creating budget plans. The application allows users to control their expenses, accumulate savings, and track the flow of funds. With Money Minder, users can effectively plan their finances, save for life goals, and achieve financial objectives. It is a tool that facilitates home budget organization and enhances financial awareness.
+                        </MudText>
+                    </MudPaper>
+                    <MudPaper Class="pa-1">
+                        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/KamilPachuta" Target="_blank" />
+                        <MudIconButton Icon="@Icons.Custom.Brands.LinkedIn" Color="Color.Inherit" Link="https://pl.linkedin.com/in/kamil-pachuta" Target="_blank" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@ToggleOpen"></MudIconButton>   
+                    </MudPaper>
+                </MudStack>
+            </MudPaper>
+        </MudPopover>
+    </MudAppBar>
+    <AuthorizeView>
+        <Authorized>
+            <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Variant="@DrawerVariant.Responsive">
+                <NavMenu />
+            </MudDrawer>
+        </Authorized>
+    </AuthorizeView>
+    
+    <MudMainContent>
+        
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+    
+</MudLayout>
+
+@*<MudPopover Open="@_isOpen" Fixed="true" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomCenter" TransformOrigin="@Origin.BottomCenter" Class="pa-4">
+        @* <MudPopover Open="@_isOpen" Fixed="true" Class="px-4 pt-4"> *@
+
+@code {
+    private bool _isDarkMode = false;
+    private MudTheme _theme = new();
+    private bool _drawerOpen = false;
+    public bool _isOpen = false;
+
+    public void ToggleOpen()
+    {
+        if (_isOpen)
+            _isOpen = false;
+        else
+            _isOpen = true;
+    }
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private async Task HandleLogout()
+    {
+        if (await accService.CheckAuthenticationAsync())
+        {
+            await accService.LogoutAsync();
+            navManager.NavigateTo("/login/", true);
+        }
+    }
+}
+
+
+@* *@
+@* @using Blazored.LocalStorage *@
+@* *@
+@* @using Microsoft.AspNetCore.SignalR.Client *@
+@* @using System.Net.Http.Headers *@
+@* @using MoneyMinderClient.Services.Interfaces *@
+@* @inherits LayoutComponentBase *@
+@* @inject IAccountService AccountService *@
+@* @inject ISnackbar Snackbar *@
+@* @inject ILocalStorageService Storage; *@
+@* <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" /> *@
+@* <MudDialogProvider /> *@
+@* <MudSnackbarProvider /> *@
+@* *@
+@* <MudLayout> *@
+@*     <MudAppBar Color=Color.Primary Elevation="10" Class="mb-4"> *@
+@* *@
+@*         <MudSpacer /> *@
+@*         <AuthorizeView> *@
+@* *@
+@*             <Authorized> *@
+@*                 <MudCard Class="ma-2" Elevation="4"> *@
+@*                     $1$ <MudText Class="ma-2" Color="Color.Primary"><b>@context.User.Identity?.Name.ToUpper()</b></MudText> #1# *@
+@*                 </MudCard> *@
+@*                 <MudButton Size="Size.Large" OnClick="Logout">LOGOUT</MudButton> *@
+@* *@
+@*             </Authorized> *@
+@* *@
+@*             <NotAuthorized> *@
+@*                 <MudButton Size="Size.Large" Href="register">REGISTER</MudButton> *@
+@*                 <MudButton Size="Size.Large" Href="login">LOGIN</MudButton> *@
+@*             </NotAuthorized> *@
+@* *@
+@*         </AuthorizeView> *@
+@*     </MudAppBar> *@
+@* *@
+@*     <MudMainContent> *@
+@*         <MudContainer Style="max-width: 1500px"> *@
+@*             <NavMenu></NavMenu> *@
+@*             @Body *@
+@*         </MudContainer> *@
+@*     </MudMainContent> *@
+@* </MudLayout> *@
+@* *@
+@* *@
+@* @code { *@
+@*      *@
+@* *@
+@*     private bool _isDarkMode = true; *@
+@*     private MudTheme _theme = new(); *@
+@* *@
+@*     *@
+@* *@
+@*     private async Task Logout() *@
+@*     { *@
+@*         if (await AccountService.CheckAuthenticationAsync()) *@
+@*         { *@
+@*             await AccountService.LogoutAsync(); *@
+@*         } *@
+@*     } *@
+@* } *@
+@* *@
+@* *@
+@* *@
+@* *@
+@* *@
+@* *@
+@* $1$ @inherits Microsoft.AspNetCore.Components.LayoutComponentBase #1# *@
+@* $1$ #1# *@
+@* $1$ <MyMudThemeProvider /> #1# *@
+@* $1$ #1# *@
+@* $1$ <div class="page mud-layout"> #1# *@
+@* $1$ #1# *@
+@* $1$     <div class="sidebar mud-elevation-1"> #1# *@
+@* $1$         <div class="top-row mud-drawer-head"> #1# *@
+@* $1$             <div> #1# *@
+@* $1$                 <a class="navbar-brand" href="https://mudblazor.com/" target="_blank">MudBlazor</a> #1# *@
+@* $1$             </div> #1# *@
+@* $1$         </div> #1# *@
+@* $1$ #1# *@
+@* $1$         <input type="checkbox" title="Navigation menu" class="navbar-toggler" /> #1# *@
+@* $1$         <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()"> #1# *@
+@* $1$             <NavMenu /> #1# *@
+@* $1$         </div> #1# *@
+@* $1$ #1# *@
+@* $1$     </div> #1# *@
+@* $1$ #1# *@
+@* $1$      <main> #1# *@
+@* $1$         <div class="top-row px-4"> #1# *@
+@* $1$             <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Style="color: white;" Link="https://mudblazor.com/" Target="_blank" /> #1# *@
+@* $1$             <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Style="color: white;" Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" /> #1# *@
+@* $1$         </div> #1# *@
+@* $1$ #1# *@
+@* $1$         <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-2 pt-2"> #1# *@
+@* $1$             @Body #1# *@
+@* $1$         </MudContainer> #1# *@
+@* $1$     </main> #1# *@
+@* $1$ </div> #1# *@
+@* $1$ #1# *@
+@* $1$ <div id="blazor-error-ui"> #1# *@
+@* $1$     An unhandled error has occurred. #1# *@
+@* $1$     <a href="" class="reload">Reload</a> #1# *@
+@* $1$     <a class="dismiss">🗙</a> #1# *@
+@* $1$ </div> #1# *@
+@* *@

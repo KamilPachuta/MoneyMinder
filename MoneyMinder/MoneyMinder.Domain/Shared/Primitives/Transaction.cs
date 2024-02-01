@@ -18,6 +18,11 @@ public abstract class Transaction : Entity
 
     protected Transaction(TransactionName name, DateTime date, Currency currency, Amount amount)
     {
+        if (date.Kind != DateTimeKind.Utc)
+        {
+            date = date.ToUniversalTime();
+        }
+        
         Name = name;
         Date = date;
         Currency = currency;

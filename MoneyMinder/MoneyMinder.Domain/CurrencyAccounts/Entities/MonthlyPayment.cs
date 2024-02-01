@@ -1,3 +1,4 @@
+using MoneyMinder.Domain.CurrencyAccounts.Abstractions;
 using MoneyMinder.Domain.CurrencyAccounts.Enums;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;

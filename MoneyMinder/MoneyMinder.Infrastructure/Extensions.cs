@@ -1,9 +1,13 @@
+using System.Reflection;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyMinder.Application.Accounts.Services;
+using MoneyMinder.Application.CurrencyAccounts.Models;
 using MoneyMinder.Application.CurrencyAccounts.Services;
 using MoneyMinder.Application.Savings.Services;
+using MoneyMinder.Domain.CurrencyAccounts.Entities;
 using MoneyMinder.Domain.Repository;
 using MoneyMinder.Domain.UnitOfWork;
 using MoneyMinder.Infrastructure.EF.Context;
@@ -24,6 +28,9 @@ public static class Extensions
         //DbContext
         services.AddDbContext<MoneyMinderDbContext>(ctx =>
             ctx.UseNpgsql(postgresOptions.MoneyMinderConnection));
+        
+        services.AddDbContext<MoneyMinderReadDbContext>(ctx =>
+            ctx.UseNpgsql(postgresOptions.MoneyMinderConnection));
 
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -36,7 +43,54 @@ public static class Extensions
         services.AddScoped<ICurrencyAccountReadService, CurrencyAccountReadService>();
         services.AddScoped<ISavingsPortfolioReadService, SavingsPortfolioReadService>();
         
+        AddAdapters();
         
         return services;
     }
+
+
+
+    public static void AddAdapters()
+    {
+        TypeAdapterConfig<MonthlyIncome, MonthlyTransactionModel>
+            .NewConfig()
+            .Map(dest => dest.Month, src => src.Month.Date);
+    }
+    // TypeAdapterConfig<IEnumerable<MonthlyIncome>, IEnumerable<MonthlyTransactionModel>>
+        //     .NewConfig()
+        //     .Map(dest => dest, src => 
+        //         src.Select(income => new MonthlyTransactionModel(
+        //             income.Id,
+        //             income.Name,
+        //     income.Month.Date,
+        //     income.Currency,
+        //     income.Amount,
+        //     null // Tutaj możesz dodać logikę do ustawienia właściwości Category
+        // ))
+            
+        // TypeAdapterConfig<IEnumerable<MonthlyIncome>, IEnumerable<MonthlyTransactionModel>>
+        //     .NewConfig()
+        //     .Map(dest => dest, src =>
+        //         src.Select(income => new MonthlyTransactionModel(
+        //             income.Id,
+        //             income.Name,
+        //             income.Month.Date,
+        //             income.Currency,
+        //             income.Amount,
+        //             null // Tutaj możesz dodać logikę do ustawienia właściwości Category
+        //         ))
+    // );
+    // {
+            //     var dest = new List<MonthlyTransactionModel>();
+            //     
+            //     foreach (var income in src)
+            //     {
+            //         dest.Add(new (income.Id, income.Name, income.Month.Date, income.Currency, income.Amount, null));
+            //     }
+            //
+            //     return dest.AsEnumerable();
+            // });
+
+        //TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
+    //}
 }

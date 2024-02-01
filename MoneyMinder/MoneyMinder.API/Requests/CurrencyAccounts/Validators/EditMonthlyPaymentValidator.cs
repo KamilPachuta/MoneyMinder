@@ -15,17 +15,12 @@ public sealed class EditMonthlyPaymentValidator : AbstractValidator<EditMonthlyP
             .MinimumLength(2)
             .MaximumLength(50);
         
-        RuleFor(x => x.NewName)
-            .NotEmpty()
-            .MinimumLength(2)
-            .MaximumLength(50);
-        
         RuleFor(x => x.NewAmount)
             .NotEmpty()
             .GreaterThan(0);
         
-        RuleFor(x => x.NewCategory)
-            .Must(value => Enum.IsDefined(typeof(Category), value))
-            .WithMessage("Invalid value for the Category field.");
+        RuleFor(x => x.NewCurrency)
+            .Must(value => Enum.IsDefined(typeof(Currency), value))
+            .WithMessage("Invalid value for the Currency field.");
     }
 }

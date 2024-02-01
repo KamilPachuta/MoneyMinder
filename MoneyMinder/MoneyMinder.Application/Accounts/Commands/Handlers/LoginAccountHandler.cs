@@ -45,6 +45,10 @@ internal sealed class LoginAccountHandler : IRequestHandler<LoginAccountCommand,
             new Claim(ClaimTypes.Email, account.Email),
             new Claim(ClaimTypes.Role, account.Role.ToString())
         };
+        if (account.User is not null)
+        {
+            claims.Add(new Claim(ClaimTypes.Name, account.User.Name.ToString()));
+        }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
 

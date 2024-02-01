@@ -1,0 +1,56 @@
+﻿@page "/Test"
+@using Client.Services
+@using Client.Services.Interfaces
+@using MoneyMinderClient.Services.Interfaces
+@using Client.Models.ReadModels
+@inject IAccountService AccountService
+@inject ICurrencyAccountService CurrencyAccountService
+
+<AuthorizeView>
+    <Authorized>
+        <MudPaper Width="250px" Class="d-inline-flex py-3" Elevation="0">
+            <MudNavMenu Class="mud-width-full">
+                <MudText Typo="Typo.h6" Class="px-4">@UserName</MudText>
+                @* <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">Secondary Text</MudText> *@
+                <MudDivider Class="my-2"/>
+                <MudNavLink Href="/profile" Icon="@Icons.Material.Filled.AccountCircle">Profile</MudNavLink>
+                <MudNavGroup Title="Currency Accounts" Icon="@Icons.Material.Filled.Settings" Expanded="true">
+                    @foreach (var account in dic)
+                        {
+                            <MudNavLink Href="@account.Value" Icon="@Icons.Material.Filled.AttachMoney">@account.Key</MudNavLink>
+                        }
+                    <MudNavLink Href="/currencyaccount/add" Icon="@Icons.Material.Filled.Add">Create currency account</MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title="Savings" Icon="@Icons.Material.Filled.Savings" Expanded="true">
+                    <MudNavLink Href="/savings/add" Icon="@Icons.Material.Filled.Add">Create savings</MudNavLink>
+                </MudNavGroup>
+            </MudNavMenu>
+        </MudPaper>
+    </Authorized>
+</AuthorizeView>
+
+@code{
+    private string UserName = "";
+    
+    private IEnumerable<CurrencyAccountNameModel> accounts;
+    private List<string> a;
+
+    private IDictionary<string, string> dic = new Dictionary<string, string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserName = await AccountService.GetName();
+        dic = new Dictionary<string, string>();
+        var response = await CurrencyAccountService.GetCurrencyAccountNames();
+        a = new List<string>();
+        accounts = response.Response.CurrencyAccountNames;
+        foreach (var acc in accounts)
+        {
+            dic.Add(acc.Name, $"/currencyaccount/{acc.Name}");
+        }
+        
+        
+    }
+    
+
+}

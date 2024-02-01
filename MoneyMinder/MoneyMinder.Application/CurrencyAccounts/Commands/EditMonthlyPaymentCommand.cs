@@ -3,4 +3,4 @@ using MoneyMinder.Domain.CurrencyAccounts.Enums;
 
 namespace MoneyMinder.Application.CurrencyAccounts.Commands;
 
-public record EditMonthlyPaymentCommand(Guid AccountId, Guid CurrencyAccountId, string Name, string NewName, decimal NewAmount, Category NewCategory) : CurrencyCommand(AccountId, CurrencyAccountId);
+public record EditMonthlyPaymentCommand(Guid AccountId, Guid CurrencyAccountId, string Name, decimal NewAmount, Currency NewCurrency) : CurrencyCommand(AccountId, CurrencyAccountId);

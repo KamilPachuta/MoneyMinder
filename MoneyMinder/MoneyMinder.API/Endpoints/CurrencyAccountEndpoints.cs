@@ -137,7 +137,7 @@ internal static  class CurrencyAccountEndpoints
         {
                 var accountId = userService.GetAccountId();
 
-                var command = new EditMonthlyIncomeCommand(accountId, request.Id, request.Name, request.NewName, request.NewAmount);
+                var command = new EditMonthlyIncomeCommand(accountId, request.Id, request.Name, request.NewAmount, request.NewCurrency);
 
                 await sender.Send(command);
                 
@@ -168,7 +168,7 @@ internal static  class CurrencyAccountEndpoints
                 var accountId = userService.GetAccountId();
 
                 var command = new AcceptMonthlyIncomeCommand(accountId, request.Id, request.Name,
-                        request.Amount);
+                        request.Amount, request.Currency);
 
                 await sender.Send(command);
                 
@@ -198,7 +198,7 @@ internal static  class CurrencyAccountEndpoints
         {
                 var accountId = userService.GetAccountId();
 
-                var command = new EditMonthlyPaymentCommand(accountId, request.Id, request.Name, request.NewName, request.NewAmount, request.NewCategory);
+                var command = new EditMonthlyPaymentCommand(accountId, request.Id, request.Name, request.NewAmount, request.NewCurrency);
 
                 await sender.Send(command);
                 
@@ -229,7 +229,7 @@ internal static  class CurrencyAccountEndpoints
                 var accountId = userService.GetAccountId();
 
                 var command = new AcceptMonthlyPaymentCommand(accountId, request.Id, request.Name,
-                        request.Amount);
+                        request.Amount, request.Currency);
 
                 await sender.Send(command);
                 

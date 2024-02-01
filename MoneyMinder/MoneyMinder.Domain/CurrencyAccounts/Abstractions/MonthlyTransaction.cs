@@ -2,7 +2,7 @@ using MoneyMinder.Domain.CurrencyAccounts.Enums;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
 using MoneyMinder.Domain.Primitives;
 
-namespace MoneyMinder.Domain.CurrencyAccounts.Entities;
+namespace MoneyMinder.Domain.CurrencyAccounts.Abstractions;
 
 public abstract class MonthlyTransaction : Entity
 {

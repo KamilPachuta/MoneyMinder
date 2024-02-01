@@ -15,62 +15,76 @@ public class CurrencyAccountModule : BaseModule
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("").AddFluentValidationAutoValidation();
+        var commands = app.MapGroup("").AddFluentValidationAutoValidation();
 
-        group.MapPut("/", CurrencyAccountEndpoints.Put);
+        commands.MapPut("/", CurrencyAccountEndpoints.Put);
         
-        group.MapPost("/", CurrencyAccountEndpoints.Post);
+        commands.MapPost("/", CurrencyAccountEndpoints.Post);
         
-        group.MapDelete("/", CurrencyAccountEndpoints.Delete);
-
-        
-        group.MapPost("/income/", CurrencyAccountEndpoints.IncomeAdd);
-        
-        group.MapDelete("/income/", CurrencyAccountEndpoints.IncomeRemove);
+        commands.MapDelete("/", CurrencyAccountEndpoints.Delete);
 
         
-        group.MapPut("/payment/", CurrencyAccountEndpoints.PaymentAdd);
+        commands.MapPost("/income/", CurrencyAccountEndpoints.IncomeAdd);
         
-        group.MapDelete("/payment/", CurrencyAccountEndpoints.PaymentRemove);
+        commands.MapDelete("/income/", CurrencyAccountEndpoints.IncomeRemove);
 
         
-        group.MapPut("/monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeAdd);
-
-        group.MapPost("monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeEdit);
-
-        group.MapDelete("/monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeRemove);
-
-        group.MapPost("/monthlyIncome/accept/", CurrencyAccountEndpoints.MonthlyIncomeAccept);
+        commands.MapPost("/payment/", CurrencyAccountEndpoints.PaymentAdd);
         
+        commands.MapDelete("/payment/", CurrencyAccountEndpoints.PaymentRemove);
+
         
-        group.MapPut("/monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentAdd);
+        commands.MapPut("/monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeAdd);
 
-        group.MapPost("monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentEdit);
+        commands.MapPost("monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeEdit);
 
-        group.MapDelete("/monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentRemove);
+        commands.MapDelete("/monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeRemove);
 
-        group.MapPost("/monthlyPayment/accept/", CurrencyAccountEndpoints.MonthlyPaymentAccept);
-        
-
-        group.MapPost("/convert/to", CurrencyAccountEndpoints.ConvertCurrencyTo);
-
-        group.MapPost("/convert/from", CurrencyAccountEndpoints.ConvertCurrencyFrom);
+        commands.MapPost("/monthlyIncome/accept/", CurrencyAccountEndpoints.MonthlyIncomeAccept);
         
         
-        group.MapPut("/budget/", CurrencyAccountEndpoints.BudgetCreate);
+        commands.MapPut("/monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentAdd);
 
-        group.MapPost("/budget/", CurrencyAccountEndpoints.BudgetEdit);
+        commands.MapPost("monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentEdit);
 
-        group.MapDelete("/budget/", CurrencyAccountEndpoints.BudgetDelete);
+        commands.MapDelete("/monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentRemove);
+
+        commands.MapPost("/monthlyPayment/accept/", CurrencyAccountEndpoints.MonthlyPaymentAccept);
         
-        group.MapPut("/budget/expense/", CurrencyAccountEndpoints.ExpenseAdd);
 
-        group.MapPost("/budget/expense/", CurrencyAccountEndpoints.ExpenseEdit);
+        commands.MapPost("/convert/to", CurrencyAccountEndpoints.ConvertCurrencyTo);
 
-        group.MapDelete("/budget/expense/", CurrencyAccountEndpoints.ExpenseDelete);
+        commands.MapPost("/convert/from", CurrencyAccountEndpoints.ConvertCurrencyFrom);
+        
+        
+        commands.MapPut("/budget/", CurrencyAccountEndpoints.BudgetCreate);
 
+        commands.MapPost("/budget/", CurrencyAccountEndpoints.BudgetEdit);
 
-        group.MapGet("/", CurrencyAccountReadEndpoints.GetAll);
+        commands.MapDelete("/budget/", CurrencyAccountEndpoints.BudgetDelete);
+        
+        commands.MapPut("/budget/expense/", CurrencyAccountEndpoints.ExpenseAdd);
+
+        commands.MapPost("/budget/expense/", CurrencyAccountEndpoints.ExpenseEdit);
+
+        commands.MapDelete("/budget/expense/", CurrencyAccountEndpoints.ExpenseDelete);
+
+        var queries = app.MapGroup("").AddFluentValidationAutoValidation();
+
+        queries.MapGet("/{id}", CurrencyAccountReadEndpoints.Get);
+        
+        queries.MapGet("/all/", CurrencyAccountReadEndpoints.GetAll);
+        
+        queries.MapGet("/names", CurrencyAccountReadEndpoints.GetNames);
+
+        queries.MapGet("/{id}/balances", CurrencyAccountReadEndpoints.GetBalances);
+        
+        queries.MapGet("/{id}/transactions", CurrencyAccountReadEndpoints.GetTransactions);
+        
+        queries.MapGet("/{id}/monthlyTransactions", CurrencyAccountReadEndpoints.GetMonthlyTransactions);
+        
+        queries.MapGet("/id/{name}", CurrencyAccountReadEndpoints.GetIdByName);
+
 
         //app.MapGet("/", CurrencyAccountReadEndpoints.Get);
     }

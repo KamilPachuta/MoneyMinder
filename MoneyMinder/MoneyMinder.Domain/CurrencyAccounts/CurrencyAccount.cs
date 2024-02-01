@@ -316,22 +316,10 @@ public class CurrencyAccount : AggregateRoot
     /// <param name="amount">The new amount for the monthly income.</param>
     /// <param name="currency">The new currency for the monthly income.</param>
     /// <exception cref="MonthlyIncomeAlreadyExistException">Thrown if a monthly income with the new name already exists.</exception>
-    public void EditMonthlyIncome(TransactionName oldName, TransactionName newName, Amount amount)
+    public void EditMonthlyIncome(TransactionName name, Amount amount, Currency currency)
     {
-        var monthlyIncome = GetMonthlyIncome(oldName);
-
-        if (oldName != newName)
-        {
-            if (MonthlyIncomeExist(newName))
-            {
-                throw new MonthlyIncomeAlreadyExistException(monthlyIncome.Name);
-            }
-            
-            monthlyIncome.Name = newName;
-            
-            RaiseDomainEvent(new MonthlyIncomeNameEditedDomainEvent(oldName, newName,  this));
-        }
-
+        var monthlyIncome = GetMonthlyIncome(name);
+        
         if (amount != monthlyIncome.Amount)
         {
             
@@ -339,6 +327,14 @@ public class CurrencyAccount : AggregateRoot
             monthlyIncome.Amount = amount;
             
             RaiseDomainEvent(new MonthlyIncomeAmountEditedDomainEvent(monthlyIncome.Name, oldAmount, amount, this));
+        }
+
+        if (currency != monthlyIncome.Currency)
+        {
+            var oldCurrency = monthlyIncome.Currency;
+            monthlyIncome.Currency = currency;
+            
+            RaiseDomainEvent(new MonthlyIncomeCurrencyEditedDomainEvent(monthlyIncome.Currency, oldCurrency, this));
         }
     }
     
@@ -405,24 +401,11 @@ public class CurrencyAccount : AggregateRoot
     /// <param name="newName">The new name for the monthly payment.</param>
     /// <param name="amount">The new amount for the monthly payment.</param>
     /// <param name="currency">The new currency for the monthly payment.</param>
-    /// <param name="categoryName">The new category name for the monthly payment.</param>
     /// <exception cref="MonthlyPaymentAlreadyExistException">Thrown if a monthly payment with the new name already exists.</exception>
-    public void EditMonthlyPayment(TransactionName oldName, TransactionName newName, Amount amount, Category category)
+    public void EditMonthlyPayment(TransactionName name, Amount amount, Currency currency)
     {
-        var monthlyPayment = GetMonthlyPayment(oldName);
-
-        if (newName != oldName)
-        {
-            if (MonthlyPaymentExist(newName))
-            {
-                throw new MonthlyPaymentAlreadyExistException(monthlyPayment.Name);
-            }
-           
-            monthlyPayment.Name = newName;
-            
-            RaiseDomainEvent(new MonthlyPaymentNameEditedDomainEvent(oldName, newName, this));
-        }
-
+        var monthlyPayment = GetMonthlyPayment(name);
+        
         if (amount != monthlyPayment.Amount)
         {
             var oldAmount = monthlyPayment.Amount;
@@ -431,12 +414,12 @@ public class CurrencyAccount : AggregateRoot
             RaiseDomainEvent(new MonthlyPaymentAmountEditedDomainEvent(monthlyPayment.Name, oldAmount, amount, this));
         }
 
-        if (category != monthlyPayment.Category)
+        if (currency != monthlyPayment.Currency)
         {
-            var oldCategory = monthlyPayment.Category;
-            monthlyPayment.Category = category;
+            var oldCurrency = monthlyPayment.Currency;
+            monthlyPayment.Currency = currency;
             
-            RaiseDomainEvent(new MonthlyPaymentCategoryEditedDomainEvent(monthlyPayment.Name, oldCategory, category, this));
+            RaiseDomainEvent(new MonthlyPaymentCurrencyEditedDomainEvent(monthlyPayment.Name, oldCurrency, currency, this));
         }
     }
     
@@ -491,15 +474,13 @@ public class CurrencyAccount : AggregateRoot
     /// Accepts a monthly income entry by converting it into a regular income transaction.
     /// </summary>
     /// <param name="monthlyIncome">The monthly income to accept.</param>
-    public void AcceptMonthlyIncome(TransactionName name, Amount amount)
+    public void AcceptMonthlyIncome(TransactionName name, Amount amount, Currency currency)
     {
 
         var monthlyIncome = GetMonthlyIncome(name);
 
-        if (amount != monthlyIncome.Amount)
-        {
-            EditMonthlyIncome(monthlyIncome.Name, monthlyIncome.Name, amount);
-        }
+       
+        EditMonthlyIncome(monthlyIncome.Name, amount, currency);
         
         var income = new Income(monthlyIncome.Name, monthlyIncome.Month.Date, monthlyIncome.Currency, monthlyIncome.Amount);
 
@@ -518,20 +499,12 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new MonthlyIncomeAcceptedDomainEvent(monthlyIncome, income, this));
     }
     
-    /// <summary>
-    /// Accepts a monthly payment entry by converting it into a regular payment transaction.
-    /// </summary>
-    /// <param name="monthlyPayment">The monthly payment to accept.</param>
-    public void AcceptMonthlyPayment(TransactionName name, Amount amount)
+    
+    public void AcceptMonthlyPayment(TransactionName name, Amount amount, Currency currency)
     {
         var monthlyPayment = GetMonthlyPayment(name);
-
-        if (amount != monthlyPayment.Amount)
-        {
-            EditMonthlyPayment(monthlyPayment.Name, monthlyPayment.Name, amount, monthlyPayment.Category);
-        }
         
-        var payment = new Payment(monthlyPayment.Name, monthlyPayment.Month.Date, monthlyPayment.Currency, monthlyPayment.Amount, monthlyPayment.Category);
+        var payment = new Payment(monthlyPayment.Name, monthlyPayment.Month.Date, currency, amount, monthlyPayment.Category);
         
         MonthlyPayments.Remove(monthlyPayment);
         

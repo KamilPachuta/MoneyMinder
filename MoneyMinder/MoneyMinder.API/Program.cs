@@ -11,7 +11,17 @@ builder.Configuration.AddJsonFile("credentials.json", optional: true, reloadOnCh
 
 builder.Host.AddSerilog();
 
-builder.Services.AddCors();
+// builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontEnd", builder =>
+    {
+        builder.WithOrigins("https://localhost:7284")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -29,13 +39,13 @@ builder.Services.AddFluentValidationAutoValidation();
 
 var app = builder.Build();
 
-app.UseCors(builder =>
-{
-    builder.WithOrigins("https://localhost:44398") // Domeny FrontEnd
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowCredentials();
-});
+// app.UseCors(builder =>
+// {
+//     builder.WithOrigins("https://localhost:7284") // Domeny FrontEnd
+//         .AllowAnyHeader()
+//         .AllowAnyMethod()
+//         .AllowCredentials();
+// });
 
 if (app.Environment.IsDevelopment())
 {
@@ -50,6 +60,8 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestLogContextMiddleware>();
 
 app.UseSerilogRequestLogging();
+
+app.UseCors("AllowFrontEnd");
 
 app.MapCarter();
 

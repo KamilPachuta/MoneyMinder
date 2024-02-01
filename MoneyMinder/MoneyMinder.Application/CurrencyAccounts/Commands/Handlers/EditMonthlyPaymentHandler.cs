@@ -15,7 +15,7 @@ internal sealed class EditMonthlyPaymentHandler : CurrencyCommandHandler<EditMon
     {
         var currencyAccount = await GetCurremcyAccount(request.AccountId, request.CurrencyAccountId);
         
-        currencyAccount.EditMonthlyPayment(request.Name, request.NewName, request.NewAmount, request.NewCategory);
+        currencyAccount.EditMonthlyPayment(request.Name, request.NewAmount, request.NewCurrency);
 
         await _repository.UpdateAsync(currencyAccount);
 

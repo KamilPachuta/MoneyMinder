@@ -1,0 +1,192 @@
+﻿@page "/Profile"
+
+
+<PageTitle>Profile</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        <MudCard Elevation="5" Class="mx-auto pa-10" Style="width: 60%; min-width: 300px;">
+            <MudCardHeader >
+                <h1>Your personal info.</h1>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudCard>
+                    <MudCardHeader >
+                        <h3>Uneditable</h3>
+                    </MudCardHeader>
+                    @* <MudCardContent> *@
+                    @*     <MudTextField @bind-Value="response.Name.FirstName" *@
+                    @*                   For="() => response.Name.FirstName" *@
+                    @*                   Label="First Name" *@
+                    @*                   Variant="Variant.Outlined" *@
+                    @*                   Disabled="true"/> *@
+                    @* *@
+                    @*     <MudTextField @bind-Value="response.Name.LastName" *@
+                    @*                   For="() => response.Name.LastName" *@
+                    @*                   Label="Last Name" *@
+                    @*                   Variant="Variant.Outlined" *@
+                    @*                   Disabled="true"/> *@
+                    @*     <MudTextField @bind-Value="response.BirthDate" *@
+                    @*                   For="() => response.BirthDate" *@
+                    @*                   Label="Birth Date" *@
+                    @*                   Variant="Variant.Outlined" *@
+                    @*                   Disabled="true"/> *@
+                    @*     $1$ DODAC GENDER #1# *@
+                    @* *@
+                    @* </MudCardContent> *@
+                </MudCard>
+
+                <MudCard>
+                    <MudCardHeader >
+                        <h3>Email</h3>
+                    </MudCardHeader>
+                    @* <MudCardContent> *@
+                    @*     <MudTextField @bind-Value="response.Email" *@
+                    @*                   For="() => response.Email" *@
+                    @*                   InputType="InputType.Email" *@
+                    @*                   ReadOnly="true" *@
+                    @*                   Immediate="true" *@
+                    @*                   Label="Email" *@
+                    @*                   Variant="Variant.Outlined" *@
+                    @*                   Adornment="Adornment.End" *@
+                    @*                   AdornmentIcon="@Icons.Material.Filled.Edit" *@
+                    @*                   OnAdornmentClick="EditPhoneNumber" *@
+                    @*                   AdornmentAriaLabel="Edit PhoneNumber"/> *@
+                    @* *@
+                    @* </MudCardContent> *@
+                </MudCard>
+                <MudCard>
+                    <MudCardHeader >
+                        <h3>Phone Number</h3>
+                    </MudCardHeader>
+                    <MudCardContent>
+
+                        <MudTextField @bind-Value="tel"
+                                      Label="Phone Number"
+                                      InputType="InputType.Telephone"
+                                      ReadOnly="true"
+                                      Variant="Variant.Outlined"
+                                      Adornment="Adornment.End"
+                                      AdornmentIcon="@Icons.Material.Filled.Edit"
+                                      OnAdornmentClick="EditPhoneNumber"
+                                      AdornmentAriaLabel="Edit PhoneNumber"/>
+
+
+                    </MudCardContent>
+                </MudCard>
+
+                <MudCard>
+                    <MudCardHeader >
+                        <h3>Address</h3>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        @* <MudTextField @bind-Value="response.Address.Country" *@
+                        @*               For="() => response.Address.Country" *@
+                        @*               Label="Country" *@
+                        @*               Variant="Variant.Outlined" *@
+                        @*               Disabled="true"/> *@
+                        @* *@
+                        @* <MudTextField @bind-Value="response.Address.City" *@
+                        @*               For="() => response.Address.City" *@
+                        @*               Label="City" *@
+                        @*               Variant="Variant.Outlined" *@
+                        @*               Disabled="true"/> *@
+                        @* *@
+                        @* <MudTextField @bind-Value="response.Address.Street" *@
+                        @*               For="() => response.Address.Street" *@
+                        @*               Label="Street" *@
+                        @*               Variant="Variant.Outlined" *@
+                        @*               Disabled="true"/> *@
+                        @* *@
+                        @* <MudTextField @bind-Value="response.Address.PostalCode" *@
+                        @*               For="() => response.Address.PostalCode" *@
+                        @*               Label="Postal Code" *@
+                        @*               Variant="Variant.Outlined" *@
+                        @*               Disabled="true"/> *@
+                        @* *@
+                        @* <MudTextField @bind-Value="response.Address.HouseNumber" *@
+                        @*               For="() => response.Address.HouseNumber" *@
+                        @*               Label="House Number" *@
+                        @*               Variant="Variant.Outlined" *@
+                        @*               Disabled="true"/> *@
+                        @* *@
+                        @* <MudTextField @bind-Value="response.Address.ApartmentNumber" *@
+                        @*               For="() => response.Address.ApartmentNumber" *@
+                        @*               Label="Apartment Number" *@
+                        @*               Variant="Variant.Outlined" *@
+                        @*               Disabled="true"/> *@
+                    </MudCardContent>
+                     <MudCardActions>
+                         <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.Edit"Class="ml-auto" OnClick="@(async () => await EditAddress())">Edit Address</MudButton>
+                         </MudCardActions>
+                </MudCard>
+            </MudCardContent>
+
+        </MudCard>
+
+    </Authorized>
+</AuthorizeView>
+
+
+@* *@
+@* <AuthorizeView> *@
+@*     <NotAuthorized> *@
+@*         <MudCard Elevation="5" Class="mx-auto pa-10 mt-10 rounded-xl" Style="width: 40%; min-width: 300px;"> *@
+@*             <MudCardHeader ><h1>Your personal info.</h1></MudCardHeader> *@
+@*             <MudForm Model="request" @ref="@form" Validation="@(validator.ValidateValue)" ValidationDelay="0"> *@
+@*                 <MudCardContent> *@
+@*                      *@
+@*                     <MudTextField @bind-Value="request.Login" *@
+@*                                   For="@(() => request.Login)" *@
+@*                                   Immediate="true" *@
+@*                                   Label="Login"/> *@
+@*                     <MudTextField @bind-Value="request.Password" *@
+@*                                   For="@(() => request.Password)" *@
+@*                                   InputType="InputType.Password" *@
+@*                                   Immediate="true" *@
+@*                                   Label="Password" *@
+@*                                   HelperText="ex. abc132Das" *@
+@*                                   Variant="Variant.Filled"/> *@
+@*                     <MudTextField @bind-Value="request.ConfirmPassword" *@
+@*                                   For="@(() => request.ConfirmPassword)" *@
+@*                                   InputType="InputType.Password" *@
+@*                                   Immediate="true" *@
+@*                                   Label="Password" *@
+@*                                   HelperText="ex. abc132Das" *@
+@*                                   Variant="Variant.Filled"/> *@
+@*                      *@
+@*                      *@
+@*                      *@
+@*                 </MudCardContent> *@
+@*             </MudForm> *@
+@*         </MudCard> *@
+@*     </NotAuthorized> *@
+@* </AuthorizeView> *@
+
+@code {
+    private string tel;
+    //Wypełnić response requestem
+    // readonly UserDetailsResponse response = new()
+    // {
+    //     Email = "aaa@aaa.pl",
+    //     Name = new UserNameWriteModel("Kamil", "Nowak"),
+    //     PhoneNumber = new UserPhoneNumberWriteModel("+48", "123123123"),
+    //     BirthDate = new DateTime(2001, 11, 11),
+    //     Address = new UserAddressWriteModel("Polska", "Katowice", "Adolfa", "41-400", "20a", null)
+    // };
+
+    // protected override Task OnInitializedAsync()
+    // {
+    //     tel = $@"{response.PhoneNumber.Code} {response.PhoneNumber.Number}";
+    //     return base.OnInitializedAsync();
+    // }
+
+    private Task EditPhoneNumber()
+    {
+        return Task.CompletedTask;
+    }
+    private Task EditAddress()
+    {
+        return Task.CompletedTask;
+    }
+}

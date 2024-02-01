@@ -15,7 +15,7 @@ internal sealed class AcceptMonthlyPaymentHandler : CurrencyCommandHandler<Accep
     {
         var currencyAccount = await GetCurremcyAccount(request.AccountId, request.CurrencyAccountId);
         
-        currencyAccount.AcceptMonthlyPayment(request.Name, request.Amount);
+        currencyAccount.AcceptMonthlyPayment(request.Name, request.Amount, request.Currency);
 
         await _repository.UpdateAsync(currencyAccount);
     }

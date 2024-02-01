@@ -1,0 +1,29 @@
+﻿@page "/CurrencyAccount/{name}/Budget"
+@inject ICurrencyAccountService CurrencyService
+
+<h3>Budget</h3>
+
+@code {
+    [Parameter] 
+    public string name { get; set; }
+
+    private Guid _id;
+    private bool _succeded = false;
+    private List<string> _errors;
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        var firstResult = await CurrencyService.GetIdByName(name);
+        if (!firstResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = firstResult.ErrorList;
+            return;
+        }
+
+        _id = firstResult.Response.Id;
+
+        _succeded = true;
+    }
+
+}

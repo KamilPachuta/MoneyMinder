@@ -1,0 +1,50 @@
+﻿@using Client.Models.Enums
+@inherits MudBaseInput<Currency>
+
+<MudSelect @bind-Value="CurrencyValue"
+           Label="Currency"
+           Variant="Variant.Outlined"
+           For="(() => CurrencyValue)">
+    <MudSelectItem Value="Currency.USD">USD</MudSelectItem>
+    <MudSelectItem Value="Currency.EUR">EUR</MudSelectItem>
+    <MudSelectItem Value="Currency.PLN">PLN</MudSelectItem>
+    <MudSelectItem Value="Currency.CZK">CZK</MudSelectItem>
+    <MudSelectItem Value="Currency.JPY">JPY</MudSelectItem>
+    <MudSelectItem Value="Currency.GBP">GBP</MudSelectItem>
+    <MudSelectItem Value="Currency.AED">AED</MudSelectItem>
+</MudSelect>
+
+@code {
+    [Parameter] public Currency CurrencyValue { get; set; }
+    
+    
+    
+    
+    
+    
+    /*
+     *
+     *
+     *
+     *
+
+<MudSelect @bind-Value="request.Currency"
+           Label="Currency"
+           Variant="Variant.Outlined"
+           For="(() => request.Currency)">
+    <MudSelectItem Value="Currency.USD">USD</MudSelectItem>
+    <MudSelectItem Value="Currency.EUR">EUR</MudSelectItem>
+    <MudSelectItem Value="Currency.PLN">PLN</MudSelectItem>
+    <MudSelectItem Value="Currency.CZK">CZK</MudSelectItem>
+    <MudSelectItem Value="Currency.JPY">JPY</MudSelectItem>
+    <MudSelectItem Value="Currency.GBP">GBP</MudSelectItem>
+    <MudSelectItem Value="Currency.AED">AED</MudSelectItem>
+</MudSelect>
+
+
+
+     *
+     *
+     * 
+     */
+}

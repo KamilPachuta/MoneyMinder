@@ -13,6 +13,11 @@ public record BudgetDate
             throw new InvalidBudgetDateException(date);
         }
 
+        if (date.Kind != DateTimeKind.Utc)
+        {
+            date = date.ToUniversalTime();
+        }
+        
         Date = date;
     }
     

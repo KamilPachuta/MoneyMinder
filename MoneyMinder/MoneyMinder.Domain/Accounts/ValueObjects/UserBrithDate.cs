@@ -13,6 +13,11 @@ public record UserBrithDate
             throw new InvalidUserBirthDateException(date);
         }
         
+        if (date.Kind != DateTimeKind.Utc)
+        {
+            date = date.ToUniversalTime();
+        }
+        
         Date = date;
     }
 

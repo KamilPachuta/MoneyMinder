@@ -14,17 +14,80 @@ internal static class CurrencyAccountReadEndpoints
 {
     [Authorize]
     public static async Task<IResult> Get(
-        [FromQuery]GetCurrencyAccount query,
+        [FromRoute]Guid id,
         [FromServices]ISender sender)
     {
+
+        var query = new Get(id);
         var response = await sender.Send(query);
         return Results.Ok(response);
     }
     
-    [Authorize] // Rola Admin
+    [Authorize]
     public static async Task<IResult> GetAll([FromServices]ISender sender)
     {
-        var query = new GetCurrencyAccounts();
+        var query = new GetAll();
+        
+        var response = await sender.Send(query);
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> GetNames(
+        [FromServices]ISender sender, 
+        [FromServices]IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+        
+        var query = new GetNames(accountId);
+        
+        var response = await sender.Send(query);
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> GetBalances(
+        [FromRoute]Guid id,
+        [FromServices]ISender sender)
+    {
+        var query = new GetBalances(id);
+        
+        var response = await sender.Send(query);
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> GetIdByName(
+        [FromRoute]string name,
+        [FromServices]ISender sender,
+        [FromServices]IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+
+        
+        var query = new GetIdByName(name, accountId);
+        
+        var response = await sender.Send(query);
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> GetTransactions(
+        [FromRoute]Guid id,
+        [FromServices]ISender sender)
+    {
+        var query = new GetTransactions(id);
+        
+        var response = await sender.Send(query);
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> GetMonthlyTransactions(
+        [FromRoute]Guid id,
+        [FromServices]ISender sender)
+    {
+        var query = new GetMonthlyTransactions(id);
         
         var response = await sender.Send(query);
         return Results.Ok(response);

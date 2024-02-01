@@ -13,12 +13,22 @@ public record Month
             throw new InvalidMonthException(date);
         }
 
+        if (date.Kind != DateTimeKind.Utc)
+        {
+            date = date.ToUniversalTime();
+        }
+        
         Date = date;
     }
 
     public Month NextMonth()
         => new(Date.AddMonths(1));
-    
+
+    public override string ToString()
+    {
+        return Date.ToString();
+    }
+
     public static implicit operator DateTime(Month date)
         => date.Date; 
 
