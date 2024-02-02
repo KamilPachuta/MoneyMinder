@@ -154,6 +154,7 @@
             _secondVariant = Variant.Outlined;
             type = true;
         }
+        Console.WriteLine(($"ID: {id}"));
         return Task.CompletedTask;
     }
     
@@ -161,6 +162,8 @@
     {
         if (type)
         {
+            Console.WriteLine(($"ID: {id}"));
+
             _firstVariant = Variant.Outlined;
             _secondVariant = Variant.Filled;
             type = false;
@@ -185,6 +188,7 @@
             {
                 requestIncome.Id = id;
                 Console.WriteLine($"{requestIncome.Id}, {requestIncome.Name}, {requestIncome.Date.ToString()}, {requestIncome.Amount}, {requestIncome.Currency}");
+
                 result = await CurrencyService.PostIncome(requestIncome);
 
             }

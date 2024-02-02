@@ -19,10 +19,6 @@ public sealed class ProcessSavingsTransactionValidator : AbstractValidator<Proce
         RuleFor(x => x.Date)
             .NotEmpty();
 
-        RuleFor(x => x.Currency)
-            .Must(value => Enum.IsDefined(typeof(Currency), value))
-            .WithMessage("Invalid value for the Currency field.");
-
         RuleFor(x => x.Amount)
             .NotEmpty();
 

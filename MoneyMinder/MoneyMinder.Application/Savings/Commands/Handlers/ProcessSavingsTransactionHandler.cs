@@ -33,7 +33,7 @@ internal sealed class ProcessSavingsTransactionHandler : IRequestHandler<Process
         }
 
         var transaction =
-            new SavingsTransaction(request.Name, request.Date, request.Currency, request.Amount, request.Type);
+            new SavingsTransaction(request.Name, request.Date, savingsPortfolio.Currency, request.Amount, request.Type);
         
         savingsPortfolio.ProcessTransaction(transaction);
 

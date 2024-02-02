@@ -1,0 +1,318 @@
+﻿@page "/SavingsPortfolio/{name}"
+@using Client.Models.ReadModels
+@using Client.Components.Dialogs
+@using Client.Models.Enums
+@using Client.Models.Requests.SavingsPortfolios.Commands
+@using MoneyMinderClient.Models
+@inject ISavingsService SavingsService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+
+<MudPaper Elevation="2" Class="px-4 py-4">
+
+<MudGrid>
+    
+        <MudItem xs="12" sm="12">
+                 <MudPaper Elevation="2" Class="align-start px-4 py-4">
+                                <MudText Typo="Typo.h3">Savings Portfolio</MudText>
+                                <MudText Typo="Typo.h5">@name</MudText>
+                                <MudText Typo="Typo.h6">@_model?.Currency</MudText>
+                            </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="0">
+                    <MudPaper Elevation="2" Class="px-4 py-4">
+                                        <MudText Typo="Typo.h6"> Actual Amount / Planned Amount</MudText>
+                                        @if (_succeded && _model is not null)
+                                        {
+                                            <MudText Typo="Typo.body1">@_model.ActualAmount / @_model.PlannedAmount</MudText>
+                    
+                                        }
+                                    </MudPaper>
+                                    <MudPaper Elevation="2" Class="px-4 py-4">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="NewTransaction"></MudIconButton>
+                                        <MudIconButton Icon="@Icons.Material.Filled.EditNote" OnClick="ChangeName"></MudIconButton>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit"OnClick="ChangePlannedAmount"></MudIconButton>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Remove"OnClick="NewRemoveDialog"></MudIconButton>
+                    
+                                    </MudPaper>
+                </MudPaper>
+                
+            </MudItem>
+   
+    
+     
+    <MudItem xs="12" sm="8">
+       
+            <MudPaper Elevation="2" Class="align-start d-flex">
+                
+                                <MudPaper Elevation="0" Width="100%" MinWidth="300px">
+                                            <MudContainer Style="max-height: 800px; overflow-y: scroll;"  Class="px-0">
+                                                <MudTable T="SavingsTransactionModel" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
+                                                          RowClass="cursor-pointer">
+                                                    <HeaderContent>
+                                                        <MudTh>Type</MudTh>
+                                                        <MudTh>Name</MudTh>
+                                                        <MudTh>Date</MudTh>
+                                                        <MudTh>Amount</MudTh>
+                                                        <MudTh>Currency</MudTh>
+                                                    </HeaderContent>
+                                                    <RowTemplate>
+                                                        <MudTd DataLabel="Type">@context.Type</MudTd>
+                                                        <MudTd DataLabel="Name">@context.Name</MudTd>
+                                                        <MudTd DataLabel="Date">@context.Date.ToString("dd-MM-yyyy")</MudTd>
+                                                        <MudTd DataLabel="Amount">@context.Amount</MudTd>
+                                                        <MudTd DataLabel="Currency">@context.Currency</MudTd>
+                                                    </RowTemplate>
+                                                </MudTable>
+                                            </MudContainer>
+                                        </MudPaper>
+                            </MudPaper>
+            
+        </MudItem>
+            
+
+</MudGrid>
+
+</MudPaper>
+
+
+@id
+
+
+
+
+
+@code {
+    [Parameter] 
+    public string name { get; set; }
+    [CascadingParameter]
+    public Guid id { get; set; } 
+    [CascadingParameter]
+    public Currency currency { get; set; }
+
+    private SavingsPortfolioModel? _model = null;
+    
+    private MudTable<SavingsTransactionModel> mudTable;
+    private int selectedRowNumber = -1;
+    private SavingsTransactionModel? selectedTransactionModel;
+
+    private List<SavingsTransactionModel> _transactions = new();
+    private bool _succeded = false;
+    private List<string> _errors;
+    
+    
+    private async Task SetParams()
+    {
+        var firstResult = await SavingsService.GetIdByName(name);
+        
+        if (!firstResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = firstResult.ErrorList;
+            return;
+        }
+        
+        Console.WriteLine($"SetParams Savings\n ID:{firstResult.Response.Id}");
+        
+        id = firstResult.Response.Id;
+        
+        var secondResult = await SavingsService.GetSavingsPortfolio(id);
+        
+        if (!secondResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = secondResult.ErrorList;
+            return;
+        }
+
+        _model = secondResult.Response.SavingsPortfolio;
+        currency = _model.Currency;
+        if (_model.Transactions is not null)
+        {
+            _transactions = _model.Transactions.ToList();
+
+        }
+
+        _succeded = true;
+    }
+    
+    protected async override Task OnParametersSetAsync()
+    {
+        await SetParams();
+    }
+
+
+
+    private async Task NewTransaction()
+    {
+        var parameters = new DialogParameters
+        {
+            { "id", id }
+        };
+        var dialog = await DialogService.ShowAsync<NewSavingsTransaction>("Add Savings Transaction" ,parameters);
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted adding savings transaction!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
+
+    private async Task ChangeName()
+    {
+        var parameters = new DialogParameters
+        {
+            { "id", id }
+        };
+        var dialog = await DialogService.ShowAsync<EditSavingsPortfolioNameDialog>("Edit Savings Name" ,parameters);
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted editing savings name!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
+
+    private async Task ChangePlannedAmount()
+    {
+        var parameters = new DialogParameters
+        {
+            { "id", id }
+        };
+        var dialog = await DialogService.ShowAsync<EditSavingsPortfolioPlannedAmountDialog>("Edit Savings Planned Amount" ,parameters);
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted editing savings planned amount!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        } 
+    }
+    
+    private async Task NewRemoveDialog()
+    {
+        
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you really want to delete this savings portfolio? This process cannot be undone.");
+        parameters.Add(x => x.ButtonText, "Delete");
+        parameters.Add(x => x.Color, Color.Error);
+        
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters, options);
+        
+        var result = await dialog.Result;
+        
+        
+        if (result.Canceled)
+        {
+            return;
+        }
+        
+        var agree  = await dialog.GetReturnValueAsync<bool>();
+
+        if (agree)
+        {
+            var isSucces = new Result();
+            
+            var delRequest = new DeleteSavingsPortfolioRequest(id);
+                
+            isSucces = await SavingsService.DeleteSavings(delRequest);
+            
+            if (isSucces.Succeeded)
+            {
+                Snackbar.Add("Submitted removing transaction!");
+                NavManager.NavigateTo("/", true);
+            }
+            else
+            {
+                Snackbar.Add("Saving error!");
+                foreach (var error in isSucces.ErrorList)
+                {
+                    Snackbar.Add(error);
+                }
+            }
+        }
+    }
+    
+    private void RowClickEvent(TableRowClickEventArgs<SavingsTransactionModel> tableRowClickEventArgs)
+    {
+    }
+    private string SelectedRowClassFunc(SavingsTransactionModel transaction, int rowNumber)
+    {
+        if (selectedRowNumber == rowNumber)
+        {
+            selectedRowNumber = -1;
+
+            selectedTransactionModel = transaction;
+            
+            
+            return string.Empty;
+        }
+        
+        if (mudTable.SelectedItem != null && mudTable.SelectedItem.Equals(transaction))
+        {
+            selectedRowNumber = rowNumber;
+            selectedTransactionModel = transaction;
+            
+            return "selected";
+        }
+        
+            return string.Empty;
+        
+    }
+
+    
+}

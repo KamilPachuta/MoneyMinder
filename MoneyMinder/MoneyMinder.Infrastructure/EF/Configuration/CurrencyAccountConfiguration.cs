@@ -142,7 +142,7 @@ IEntityTypeConfiguration<Expense>
         
         builder
             .Property(mi => mi.Month)
-            .HasConversion(m => m.Date, m => new Month(m))
+            .HasConversion(m => m.Date, m => Month.Create(m))
             .IsRequired();
         
         builder
@@ -168,7 +168,7 @@ IEntityTypeConfiguration<Expense>
         
         builder
             .Property(mp => mp.Month)
-            .HasConversion(m => m.Date, m => new Month(m))
+            .HasConversion(m => m.Date, m => Month.Create(m))
             .IsRequired();
 
         builder

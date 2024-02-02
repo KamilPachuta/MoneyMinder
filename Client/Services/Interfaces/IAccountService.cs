@@ -1,10 +1,8 @@
 ﻿using Client.Models.Enums;
-using Client.Models.Requests.Account;
 using Client.Models.Requests.Account.Commands;
-using MoneyMinder.API.Requests.Accounts;
 using MoneyMinderClient.Models;
 
-namespace MoneyMinderClient.Services.Interfaces;
+namespace Client.Services.Interfaces;
 
 public interface IAccountService
 {

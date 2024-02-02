@@ -4,8 +4,12 @@ namespace MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
 
 public record Month
 {
-    public DateTime Date { get; }
+    public DateTime Date { get; private set; }
 
+    private Month()
+    {
+    }
+    
     public Month(DateTime date)
     {
         if (date.Month != DateTime.Now.Month && date.Month != DateTime.Now.AddMonths(1).Month) 
@@ -24,6 +28,16 @@ public record Month
     public Month NextMonth()
         => new(Date.AddMonths(1));
 
+    public static Month Create(DateTime date)
+    {
+        var month = new Month()
+        {   
+            Date = date
+        };
+
+        return month;
+    }
+    
     public override string ToString()
     {
         return Date.ToString();

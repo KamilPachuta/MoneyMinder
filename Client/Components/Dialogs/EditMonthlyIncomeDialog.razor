@@ -1,0 +1,73 @@
+﻿@using Client.Models.Requests.CurrencyAccount.Commands
+@using Client.Models.Requests.CurrencyAccount.Validators
+@using Client.Models.Enums
+@inject ICurrencyAccountService CurrencyService
+
+
+<MudDialog DisableSidePadding="true">
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
+            <MudText Typo="Typo.h5">Edit Monthly Income</MudText>
+
+            <MudForm Model="_request" @ref="@form" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
+                <MudNumericField @bind-Value="_request.NewAmount" 
+                                 Label="Outlined" 
+                                 Variant="Variant.Outlined" 
+                                 Step="10M" 
+                                 DebounceInterval="500"/>
+                
+                <MudSelect @bind-Value="_request.NewCurrency"
+                           Label="Currency"
+                           Variant="Variant.Outlined"
+                           For="(() => _request.NewCurrency)">
+                    <MudSelectItem Value="Currency.USD">USD</MudSelectItem>
+                    <MudSelectItem Value="Currency.EUR">EUR</MudSelectItem>
+                    <MudSelectItem Value="Currency.PLN">PLN</MudSelectItem>
+                    <MudSelectItem Value="Currency.CZK">CZK</MudSelectItem>
+                    <MudSelectItem Value="Currency.JPY">JPY</MudSelectItem>
+                    <MudSelectItem Value="Currency.GBP">GBP</MudSelectItem>
+                    <MudSelectItem Value="Currency.AED">AED</MudSelectItem>
+                </MudSelect>
+                
+            </MudForm>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
+        <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public Guid id { get; set; }
+    [Parameter]
+    public string transactionName { get; set; }
+    
+    MudForm form = new();
+    
+    EditMonthlyIncomeRequest _request = new();
+    EditMonthlyIncomeValidator _validator = new();
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            _request.Id = id;
+            _request.Name = transactionName;
+            var result = await CurrencyService.EditMonthlyIncome(_request);
+
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+}

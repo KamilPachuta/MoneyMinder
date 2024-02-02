@@ -7,8 +7,6 @@ using MudBlazor.Services;
 using Client.Components;
 using Client.Services;
 using Client.Services.Interfaces;
-using MoneyMinderClient.Services;
-using MoneyMinderClient.Services.Interfaces;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -38,6 +36,7 @@ builder.Services.AddScoped(
     sp => (IAccountService)sp.GetRequiredService<AuthenticationStateProvider>());
 
 builder.Services.AddScoped<ICurrencyAccountService, CurrencyAccountService>();
+builder.Services.AddScoped<ISavingsService, SavingsService>();
 
 
 builder.Services.AddAuthorizationCore();

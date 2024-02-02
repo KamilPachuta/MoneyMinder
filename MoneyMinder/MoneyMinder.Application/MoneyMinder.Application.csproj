@@ -12,8 +12,6 @@
 
     <ItemGroup>
       <Folder Include="Accounts\Models\" />
-      <Folder Include="Savings\Models\" />
-      <Folder Include="Savings\Queries\" />
     </ItemGroup>
 
     <ItemGroup>

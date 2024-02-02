@@ -1,0 +1,77 @@
+﻿@using Client.Models.Enums
+@using Client.Models.Requests.SavingsPortfolios.Commands
+@using Client.Models.Requests.SavingsPortfolios.Validators
+@inject ISavingsService SavingsService
+
+
+<MudDialog DisableSidePadding="true">
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
+            <MudText Typo="Typo.h5">Currency Account</MudText>
+
+                    <MudForm Model="_request" @ref="@form" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
+                        <MudTextField @bind-Value="_request.Name" 
+                                      For="@(() => _request.Name)" 
+                                      Immediate="true" 
+                                      Label="Currency Account Name" 
+                                      Variant="Variant.Outlined" />
+                        
+                        <MudSelect @bind-Value="_request.Currency"
+                                   Label="Currency"
+                                   Variant="Variant.Outlined"
+                                   For="(() => _request.Currency)">
+                            <MudSelectItem Value="Currency.USD">USD</MudSelectItem>
+                            <MudSelectItem Value="Currency.EUR">EUR</MudSelectItem>
+                            <MudSelectItem Value="Currency.PLN">PLN</MudSelectItem>
+                            <MudSelectItem Value="Currency.CZK">CZK</MudSelectItem>
+                            <MudSelectItem Value="Currency.JPY">JPY</MudSelectItem>
+                            <MudSelectItem Value="Currency.GBP">GBP</MudSelectItem>
+                            <MudSelectItem Value="Currency.AED">AED</MudSelectItem>
+                        </MudSelect>
+                        
+                        <MudNumericField @bind-Value="_request.PlannedAmount" 
+                                         Label="Outlined" 
+                                         For="(() => _request.PlannedAmount)"
+                                         Variant="Variant.Outlined" 
+                                         Step="100M" 
+                                         DebounceInterval="500"/>
+                        
+                    </MudForm>
+                       
+
+                    
+
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
+        <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    MudDialogInstance MudDialog { get; set; }
+
+    MudForm form = new();
+    
+    CreateSavingsPortfolioRequest _request = new();
+    CreateSavingsPortfolioValidator _validator = new();
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            var result = await SavingsService.PutSavings(_request);
+
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+}

@@ -5,14 +5,14 @@ namespace Client.Models.Responses;
 
 public class GetMonthlyTransactionsResponse : IResponse
 {
-    public IEnumerable<TransactionModel> Transactions { get; set; }
+    public IEnumerable<MonthlyTransactionModel> Transactions { get; set; }
 
     public GetMonthlyTransactionsResponse()
     {
         
     }
     
-    public GetMonthlyTransactionsResponse(IEnumerable<TransactionModel> transactions)
+    public GetMonthlyTransactionsResponse(IEnumerable<MonthlyTransactionModel> transactions)
     {
         Transactions = transactions;
     }

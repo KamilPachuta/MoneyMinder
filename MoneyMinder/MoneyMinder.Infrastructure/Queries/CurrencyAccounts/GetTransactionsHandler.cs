@@ -10,9 +10,9 @@ namespace MoneyMinder.Infrastructure.Queries.CurrencyAccounts;
 
 internal sealed class GetTransactionsHandler : IRequestHandler<GetTransactions, IEnumerable<TransactionModel>>
 {
-    private readonly MoneyMinderDbContext _dbContext;
+    private readonly MoneyMinderReadDbContext _dbContext;
 
-    public GetTransactionsHandler(MoneyMinderDbContext dbContext)
+    public GetTransactionsHandler(MoneyMinderReadDbContext dbContext)
     {
         _dbContext = dbContext;
     }

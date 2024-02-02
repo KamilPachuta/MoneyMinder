@@ -212,7 +212,7 @@ public class CurrencyAccount : AggregateRoot
             throw new IncomeAlreadyExistException(income);
         }
         
-        if (income.Date.Day > DateTime.Today.Day)
+        if (income.Date > DateTime.Today)
         {
             throw new TransactionDateLaterThanExpectedException(income);
         }
@@ -237,7 +237,7 @@ public class CurrencyAccount : AggregateRoot
             throw new PaymentAlreadyExistException(payment);
         }
         
-        if (payment.Date.Day > DateTime.Today.Day)
+        if (payment.Date > DateTime.Today)
         {
             throw new TransactionDateLaterThanExpectedException(payment);
         }

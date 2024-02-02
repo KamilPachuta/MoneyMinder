@@ -7,7 +7,7 @@ namespace MoneyMinder.API.Modules;
 public class SavingsPortfolioModule : BaseModule
 {
     public SavingsPortfolioModule() 
-        : base("/Savings/")
+        : base("/Savings")
     {
     }
 
@@ -25,6 +25,16 @@ public class SavingsPortfolioModule : BaseModule
         group.MapPost("/PlannedAmount/", SavingsPortfolioEndpoints.PostAmount);
 
         group.MapPost("/transaction/", SavingsPortfolioEndpoints.PostTransaction);
+
+        
+        var queries = app.MapGroup("").AddFluentValidationAutoValidation();
+
+        queries.MapGet("/{id}", SavingsPortfolioReadEndpoints.Get);
+        
+        queries.MapGet("/id/{name}", SavingsPortfolioReadEndpoints.GetIdByName);
+
+        queries.MapGet("/names", SavingsPortfolioReadEndpoints.GetNames);
+        
 
     }
 }

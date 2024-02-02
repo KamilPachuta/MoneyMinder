@@ -23,7 +23,7 @@
                                 <MudTextField @bind-Value="_loginUserRequest.Email"
                                               For="@(() => _loginUserRequest.Email)"
                                               Immediate="true"
-                                              Label="Login"/>
+                                              Label="Email"/>
                                 <MudTextField @bind-Value="_loginUserRequest.Password"
                                               For="@(() => _loginUserRequest.Password)"
                                               InputType="InputType.Password"
@@ -98,7 +98,7 @@
             if (isSucces.Succeeded)
             {
                 Snackbar.Add("Submitted Login!");
-                NavManager.NavigateTo("/");
+                NavManager.NavigateTo("/", true);
             }
             else
             {
@@ -107,11 +107,6 @@
             }
 
         }
-    }
-    
-    private void NavigateToRegistration()
-    {
-        NavManager.NavigateTo("/registration", true);
     }
     
 }

@@ -73,7 +73,7 @@ internal static class SavingsPortfolioEndpoints
     {
         var accountId = userService.GetAccountId();
         
-        var command = new ProcessSavingsTransactionCommand(accountId, request.Id, request.Name, request.Date, request.Currency, request.Amount, request.Type);
+        var command = new ProcessSavingsTransactionCommand(accountId, request.Id, request.Name, request.Date, request.Amount, request.Type);
         
         await sender.Send(command);
         return Results.Ok();

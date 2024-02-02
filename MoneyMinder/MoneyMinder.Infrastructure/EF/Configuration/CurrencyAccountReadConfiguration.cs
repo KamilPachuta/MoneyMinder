@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MoneyMinder.Application.CurrencyAccounts.Models;
+using MoneyMinder.Infrastructure.EF.ReadModels.CurrencyAccount;
 
 
 namespace MoneyMinder.Infrastructure.EF.Configuration;
@@ -10,16 +11,16 @@ namespace MoneyMinder.Infrastructure.EF.Configuration;
 
 
 internal sealed class CurrencyAccountReadConfiguration : 
-    IEntityTypeConfiguration<CurrencyAccountModel>,
-    IEntityTypeConfiguration<BalanceModel>,
-    IEntityTypeConfiguration<IncomeModel>,
-    IEntityTypeConfiguration<PaymentModel>,
-    IEntityTypeConfiguration<MonthlyIncomeModel>,
-    IEntityTypeConfiguration<MonthlyPaymentModel>,
-    IEntityTypeConfiguration<BudgetModel>,
-IEntityTypeConfiguration<ExpenseModel>
+    IEntityTypeConfiguration<CurrencyAccountReadModel>,
+    IEntityTypeConfiguration<BalanceReadModel>,
+    IEntityTypeConfiguration<IncomeReadModel>,
+    IEntityTypeConfiguration<PaymentReadModel>,
+    IEntityTypeConfiguration<MonthlyIncomeReadModel>,
+    IEntityTypeConfiguration<MonthlyPaymentReadModel>,
+    IEntityTypeConfiguration<BudgetReadModel>,
+IEntityTypeConfiguration<ExpenseReadModel>
 {
-    public void Configure(EntityTypeBuilder<CurrencyAccountModel> builder)
+    public void Configure(EntityTypeBuilder<CurrencyAccountReadModel> builder)
     {
         builder.ToTable(TableNames.CurrencyAccounts);
         builder.HasKey(ca => ca.Id);
@@ -55,10 +56,10 @@ IEntityTypeConfiguration<ExpenseModel>
         builder
             .HasOne(ca => ca.Budget)
             .WithOne()
-            .HasForeignKey<BudgetModel>();
+            .HasForeignKey<BudgetReadModel>();
     }
 
-    public void Configure(EntityTypeBuilder<BalanceModel> builder)
+    public void Configure(EntityTypeBuilder<BalanceReadModel> builder)
     {
         builder.ToTable(TableNames.Balances);
         builder.HasKey(b => b.Id);
@@ -68,7 +69,7 @@ IEntityTypeConfiguration<ExpenseModel>
         builder.Property(b => b.Currency);
     }
 
-    public void Configure(EntityTypeBuilder<IncomeModel> builder)
+    public void Configure(EntityTypeBuilder<IncomeReadModel> builder)
     {
         builder.ToTable(TableNames.Incomes);
         builder.HasKey(i => i.Id);
@@ -82,7 +83,7 @@ IEntityTypeConfiguration<ExpenseModel>
 
     }
 
-    public void Configure(EntityTypeBuilder<PaymentModel> builder)
+    public void Configure(EntityTypeBuilder<PaymentReadModel> builder)
     {
         builder.ToTable(TableNames.Payments);
         builder.HasKey(p => p.Id);
@@ -94,7 +95,7 @@ IEntityTypeConfiguration<ExpenseModel>
         builder.Property(t => t.Amount);
     }
 
-    public void Configure(EntityTypeBuilder<MonthlyIncomeModel> builder)
+    public void Configure(EntityTypeBuilder<MonthlyIncomeReadModel> builder)
     {
         builder.ToTable(TableNames.MonthlyIncomes);
         builder.HasKey(mi => mi.Id);
@@ -106,7 +107,7 @@ IEntityTypeConfiguration<ExpenseModel>
         builder.Property(t => t.Amount);
     }
 
-    public void Configure(EntityTypeBuilder<MonthlyPaymentModel> builder)
+    public void Configure(EntityTypeBuilder<MonthlyPaymentReadModel> builder)
     {
         builder.ToTable(TableNames.MonthlyPayments);
         builder.HasKey(mp => mp.Id);
@@ -118,7 +119,7 @@ IEntityTypeConfiguration<ExpenseModel>
         builder.Property(t => t.Amount);
     }
 
-    public void Configure(EntityTypeBuilder<BudgetModel> builder)
+    public void Configure(EntityTypeBuilder<BudgetReadModel> builder)
     {
         builder.ToTable(TableNames.Budgets);
         builder.HasKey(b => b.Id);
@@ -137,7 +138,7 @@ IEntityTypeConfiguration<ExpenseModel>
 
     }
     
-    public void Configure(EntityTypeBuilder<ExpenseModel> builder)
+    public void Configure(EntityTypeBuilder<ExpenseReadModel> builder)
     {
         builder.ToTable(TableNames.Expenses);
         builder.HasKey(e => e.Id);

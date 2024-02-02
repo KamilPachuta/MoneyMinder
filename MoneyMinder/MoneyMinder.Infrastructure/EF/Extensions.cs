@@ -7,6 +7,9 @@ using MoneyMinder.Domain.CurrencyAccounts.Entities;
 using MoneyMinder.Domain.SavingsPortfolios;
 using MoneyMinder.Domain.SavingsPortfolios.Entities;
 using MoneyMinder.Infrastructure.EF.Configuration;
+using MoneyMinder.Infrastructure.EF.ReadModels.Account;
+using MoneyMinder.Infrastructure.EF.ReadModels.CurrencyAccount;
+using MoneyMinder.Infrastructure.EF.ReadModels.Savings;
 
 namespace MoneyMinder.Infrastructure.EF;
 
@@ -39,21 +42,25 @@ public static class Extensions
     
     public static ModelBuilder AddEFReadConfig(this ModelBuilder modelBuilder)
     {
-        //var accountReadConfiguration = new AccountReadConfiguration();
-        
+        var accountReadConfiguration = new AccountReadConfiguration();
+        modelBuilder.ApplyConfiguration<AccountReadModel>(accountReadConfiguration);
+        modelBuilder.ApplyConfiguration<UserReadModel>(accountReadConfiguration);
+        modelBuilder.ApplyConfiguration<AddressReadModel>(accountReadConfiguration);
 
         var currencyAccountReadConfiguration = new CurrencyAccountReadConfiguration();
-        modelBuilder.ApplyConfiguration<CurrencyAccountModel>(currencyAccountReadConfiguration);
-        modelBuilder.ApplyConfiguration<BalanceModel>(currencyAccountReadConfiguration);
-        modelBuilder.ApplyConfiguration<IncomeModel>(currencyAccountReadConfiguration);
-        modelBuilder.ApplyConfiguration<PaymentModel>(currencyAccountReadConfiguration);
-        modelBuilder.ApplyConfiguration<MonthlyIncomeModel>(currencyAccountReadConfiguration);
-        modelBuilder.ApplyConfiguration<MonthlyPaymentModel>(currencyAccountReadConfiguration);
-        modelBuilder.ApplyConfiguration<BudgetModel>(currencyAccountReadConfiguration);
-        modelBuilder.ApplyConfiguration<ExpenseModel>(currencyAccountReadConfiguration);
+        modelBuilder.ApplyConfiguration<CurrencyAccountReadModel>(currencyAccountReadConfiguration);
+        modelBuilder.ApplyConfiguration<BalanceReadModel>(currencyAccountReadConfiguration);
+        modelBuilder.ApplyConfiguration<IncomeReadModel>(currencyAccountReadConfiguration);
+        modelBuilder.ApplyConfiguration<PaymentReadModel>(currencyAccountReadConfiguration);
+        modelBuilder.ApplyConfiguration<MonthlyIncomeReadModel>(currencyAccountReadConfiguration);
+        modelBuilder.ApplyConfiguration<MonthlyPaymentReadModel>(currencyAccountReadConfiguration);
+        modelBuilder.ApplyConfiguration<BudgetReadModel>(currencyAccountReadConfiguration);
+        modelBuilder.ApplyConfiguration<ExpenseReadModel>(currencyAccountReadConfiguration);
         
-        //var savingsPortfolioReadConfiguration = new SavingsPortfolioReadConfiguration();
-
+        var savingsPortfolioReadConfiguration = new SavingsPortfolioReadConfiguration();
+        modelBuilder.ApplyConfiguration<SavingsPortfolioReadModel>(savingsPortfolioReadConfiguration);
+        modelBuilder.ApplyConfiguration<SavingsTransactionReadModel>(savingsPortfolioReadConfiguration);
+        
 
         return modelBuilder;
     }

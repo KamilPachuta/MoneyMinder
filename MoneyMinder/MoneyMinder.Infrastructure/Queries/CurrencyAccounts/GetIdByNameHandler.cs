@@ -7,9 +7,9 @@ namespace MoneyMinder.Infrastructure.Queries.CurrencyAccounts;
 
 internal sealed class GetIdByNameHandler : IRequestHandler<GetIdByName, Guid>
 {
-    private readonly MoneyMinderDbContext _dbContext;
+    private readonly MoneyMinderReadDbContext _dbContext;
 
-    public GetIdByNameHandler(MoneyMinderDbContext dbContext)
+    public GetIdByNameHandler(MoneyMinderReadDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -17,7 +17,7 @@ internal sealed class GetIdByNameHandler : IRequestHandler<GetIdByName, Guid>
     public async Task<Guid> Handle(GetIdByName request, CancellationToken cancellationToken)
     {
         var result = await _dbContext.CurrencyAccounts
-            .FirstOrDefaultAsync(ca => ca.Name == request.Name && ca.Account.Id == request.AccountId,
+            .FirstOrDefaultAsync(ca => ca.Name == request.Name && ca.AccountId == request.AccountId,
                 cancellationToken: cancellationToken);
 
         return result.Id;

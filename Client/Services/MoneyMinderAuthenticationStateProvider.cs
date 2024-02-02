@@ -7,10 +7,10 @@ using Blazored.LocalStorage;
 using Client.Models.Enums;
 using Client.Models.Requests.Account;
 using Client.Models.Requests.Account.Commands;
+using Client.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using MoneyMinder.API.Requests.Accounts;
 using MoneyMinderClient.Models;
-using MoneyMinderClient.Services.Interfaces;
 
 namespace Client.Services;
 

@@ -2,12 +2,13 @@
 @using Client.Models.Responses
 @using MoneyMinder.API.Requests.CurrencyAccounts
 @using Client.Models.ReadModels
-@using MoneyMinderClient.Services.Interfaces
 @using Client.Components.Dialogs
+@using Client.Models.Requests.CurrencyAccount.Commands
 @using MoneyMinderClient.Models
 @inject ICurrencyAccountService CurrencyService
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject NavigationManager NavManager
 
 
 
@@ -39,9 +40,13 @@
     <MudItem xs="12" sm="8">
          <MudPaper Elevation="2" Class="mx-4 my-4">
                 <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="NewTransactionDialog"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="NewMonthlyTransactionDialog"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.CurrencyExchange"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.AddReaction"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.AddAlarm" OnClick="NewMonthlyTransactionDialog"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.CurrencyExchange" OnClick="NewConvertDialog"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.EditNote" OnClick="NewEditCurrencyNameDialog"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.History"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Repeat"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.BarChart"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" OnClick="NewDeleteDialog"></MudIconButton>
             </MudPaper>
     </MudItem>
     
@@ -72,7 +77,7 @@
             _errors = firstResult.ErrorList;
             return;
         }
-
+        Console.WriteLine($"SetParams CurrencyAccount\n ID:{firstResult.Response.Id}");
         id = firstResult.Response.Id;
         
         var secondResult = await CurrencyService.GetCurrencyAccountBalances(id);
@@ -105,7 +110,7 @@
         {
             { "id", id }
         };
-        var dialog = await DialogService.ShowAsync<NewTransaction>("Add Transaction" ,parameters);
+        var dialog = await DialogService.ShowAsync<NewTransaction>("Add Transaction", parameters);
         
         var result = await dialog.Result;
 
@@ -163,6 +168,114 @@
         }
     }
 
+    private async Task NewConvertDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "id", id }
+        };
+        var dialog = await DialogService.ShowAsync<ConvertDialog>("Convert funds" ,parameters);
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted adding monthly transaction!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
+    
+    private async Task NewEditCurrencyNameDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "id", id }
+        };
+        var dialog = await DialogService.ShowAsync<EditCurrencyAccountNameDialog>("Edit currency account name." ,parameters);
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted adding monthly transaction!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
+
+    private async Task NewDeleteDialog()
+    {
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you really want to delete this currency account? This process cannot be undone.");
+        parameters.Add(x => x.ButtonText, "Delete");
+        parameters.Add(x => x.Color, Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters, options);
+
+        var result = await dialog.Result;
+
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        var agree = await dialog.GetReturnValueAsync<bool>();
+
+        if (agree)
+        {
+            var isSucces = new Result();
+
+            var delRequest = new DeleteCurrencyAccountRequest(id);
+
+            isSucces = await CurrencyService.DeleteCurrencyAccount(delRequest);
+
+            if (isSucces.Succeeded)
+            {
+                Snackbar.Add("Submitted removing transaction!");
+                NavManager.NavigateTo("/", true);
+            }
+            else
+            {
+                Snackbar.Add("Saving error!");
+                foreach (var error in isSucces.ErrorList)
+                {
+                    Snackbar.Add(error);
+                }
+            }
+        }
+    }
 
     // private async Task SendAsync()
     // {

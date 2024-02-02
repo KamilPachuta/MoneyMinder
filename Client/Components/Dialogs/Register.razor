@@ -18,11 +18,12 @@
                     <MudTextField @bind-Value="request.Email"
                                   For="@(() => request.Email)"
                                   Immediate="true"
-                                  Label="Login"/>
+                                  Label="Email"/>
 
                     <MudTextField @bind-Value="request.Password"
                                   For="@(() => request.Password)"
                                   Immediate="true"
+                                  InputType="InputType.Password"
                                   Label="Password"/>
                     <MudTextField @bind-Value="request.FirstName"
                                   For="@(() => request.FirstName)"

@@ -5,11 +5,11 @@ using MoneyMinder.Infrastructure.EF.ReadModels.Account;
 namespace MoneyMinder.Infrastructure.EF.Configuration;
 
 public class AccountReadConfiguration : 
-    IEntityTypeConfiguration<AccountModel>,
-    IEntityTypeConfiguration<UserModel>,
-    IEntityTypeConfiguration<AddressModel>
+    IEntityTypeConfiguration<AccountReadModel>,
+    IEntityTypeConfiguration<UserReadModel>,
+    IEntityTypeConfiguration<AddressReadModel>
 {
-    public void Configure(EntityTypeBuilder<AccountModel> builder)
+    public void Configure(EntityTypeBuilder<AccountReadModel> builder)
     {
         builder.ToTable(TableNames.Accounts);
         builder.HasKey(a => a.Id);
@@ -23,29 +23,58 @@ public class AccountReadConfiguration :
         builder
             .Property(a => a.Role);
 
-        //
-        //
-        // builder
-        //     .HasOne(a => a.User)
-        //     .WithOne()
-        //     .HasForeignKey<User>();
-        //
-        // builder
-        //     .HasMany(a => a.CurrencyAccounts)
-        //     .WithOne(ca => ca.Account);
-        //
-        // builder
-        //     .HasMany(a => a.SavingsPortfolios)
-        //     .WithOne(sp => sp.Account);
+        builder
+            .HasOne(a => a.User)
+            .WithOne()
+            .HasForeignKey<UserReadModel>();
+
+        builder
+            .HasMany(a => a.CurrencyAccounts)
+            .WithOne()
+            .HasForeignKey(ca => ca.AccountId);
+        
+        builder
+            .HasMany(a => a.SavingsPortfolios)
+            .WithOne()
+            .HasForeignKey(sp => sp.AccountId);
     }
 
-    public void Configure(EntityTypeBuilder<UserModel> builder)
+    public void Configure(EntityTypeBuilder<UserReadModel> builder)
     {
-        throw new NotImplementedException();
+        builder.ToTable(TableNames.Users);
+        builder.HasKey(u => u.Id);
+
+        builder
+            .Property(u => u.Name);
+        
+        builder
+            .Property(a => a.PhoneNumber);
+        
+        builder
+            .Property(a => a.BirthDate);
+        
+        builder
+            .HasOne(u => u.Address)
+            .WithOne()
+            .HasForeignKey<AddressReadModel>();
     }
 
-    public void Configure(EntityTypeBuilder<AddressModel> builder)
+    public void Configure(EntityTypeBuilder<AddressReadModel> builder)
     {
-        throw new NotImplementedException();
+        builder.ToTable(TableNames.Addresses);
+        builder.HasKey(a => a.Id);
+
+        builder
+            .Property(a => a.Country);
+
+        builder
+            .Property(a => a.City);
+
+        builder
+            .Property(a => a.PostalCode);
+
+        builder
+            .Property(a => a.Street);
+        
     }
 }

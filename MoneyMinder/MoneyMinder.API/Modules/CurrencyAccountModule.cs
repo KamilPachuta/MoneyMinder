@@ -36,7 +36,7 @@ public class CurrencyAccountModule : BaseModule
         
         commands.MapPut("/monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeAdd);
 
-        commands.MapPost("monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeEdit);
+        commands.MapPost("/monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeEdit);
 
         commands.MapDelete("/monthlyIncome", CurrencyAccountEndpoints.MonthlyIncomeRemove);
 
@@ -45,7 +45,7 @@ public class CurrencyAccountModule : BaseModule
         
         commands.MapPut("/monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentAdd);
 
-        commands.MapPost("monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentEdit);
+        commands.MapPost("/monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentEdit);
 
         commands.MapDelete("/monthlyPayment", CurrencyAccountEndpoints.MonthlyPaymentRemove);
 

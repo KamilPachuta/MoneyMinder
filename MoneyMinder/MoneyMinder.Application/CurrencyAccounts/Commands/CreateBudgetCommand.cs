@@ -9,7 +9,7 @@ public record CreateBudgetCommand(
     Guid CurrencyAccountId, 
     string Name, 
     decimal ExpectedIncome, 
-    IEnumerable<ExpenseModel> Expenses, 
+    IEnumerable<KeyValuePair<Category,decimal>> Expenses,
     DateTime Date, 
     Currency Currency) 
     : CurrencyCommand(AccountId, CurrencyAccountId);
