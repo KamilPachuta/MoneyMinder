@@ -1,3 +1,4 @@
+using System.Collections;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -22,17 +23,61 @@ internal sealed class GetHandler : IRequestHandler<Get, CurrencyAccountModel>
     public async Task<CurrencyAccountModel> Handle(Get request,
         CancellationToken cancellationToken)
     {
-        var result = await _dbContext.CurrencyAccounts
+        var currencyAccount = await _dbContext.CurrencyAccounts
             .Include(ca => ca.Balances)
             .Include(ca => ca.Incomes)
             .Include(ca => ca.Payments)
             .Include(ca => ca.MonthlyIncomes)
             .Include(ca => ca.MonthlyPayments)
             .Include(ca => ca.Budget)
+            .ThenInclude(b => b.Expenses)
             .FirstOrDefaultAsync(ca => ca.Id == request.Id);
 
-        var response = result.Adapt<CurrencyAccountModel>();
-        return response;
+        if (currencyAccount is null)
+        {
+            return null;
+        }
+
+        var transactions = new List<TransactionModel>();
+
+        var incomes = currencyAccount.Incomes.Adapt<IEnumerable<TransactionModel>>();
+        var payments = currencyAccount.Payments.Adapt<IEnumerable<TransactionModel>>();
+        if (incomes is not null)
+        {
+            transactions.AddRange(incomes);
+        }
+
+        if (payments is not null)
+        {
+            transactions.AddRange(payments);
+        }
+
+         transactions.OrderByDescending(t => t.Date).ToList();
+
+         var monthlyTransactions = new List<MonthlyTransactionModel>();
+
+         var monthlyIncomes = currencyAccount.MonthlyIncomes.Adapt<IEnumerable<MonthlyTransactionModel>>();
+         var monthlyPayments = currencyAccount.MonthlyPayments.Adapt<IEnumerable<MonthlyTransactionModel>>();
+         if (monthlyIncomes is not null)
+         {
+             monthlyTransactions.AddRange(monthlyIncomes);
+         }
+
+         if (monthlyPayments is not null)
+         {
+             monthlyTransactions.AddRange(monthlyPayments);
+         }
+
+         monthlyTransactions.OrderByDescending(t => t.Month).ToList();
+
+        return new CurrencyAccountModel(
+            currencyAccount.Id, 
+            currencyAccount.Name, 
+            currencyAccount.Budget.Adapt<BudgetModel>(), 
+            currencyAccount.Balances.Adapt<IEnumerable<BalanceModel>>(), 
+            transactions, 
+              monthlyTransactions);
+        
     }
 
 }

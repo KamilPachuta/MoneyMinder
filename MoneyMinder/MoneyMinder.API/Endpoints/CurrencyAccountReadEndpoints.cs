@@ -92,4 +92,48 @@ internal static class CurrencyAccountReadEndpoints
         var response = await sender.Send(query);
         return Results.Ok(response);
     }
+    
+    [Authorize]
+    public static async Task<IResult> GetIncomes(
+        [FromRoute]Guid id,
+        [FromServices]ISender sender)
+    {
+        var query = new GetCurrencyAccountMonthIncomes(id);
+        
+        var response = await sender.Send(query);
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> GetPayments(
+        [FromRoute]Guid id,
+        [FromServices]ISender sender)
+    {
+        var query = new GetCurrencyAccountMonthPayments(id);
+        
+        var response = await sender.Send(query);
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> GetCurrentMonthPayments(
+        [FromRoute]Guid id,
+        [FromServices]ISender sender)
+    {
+        var query = new GetActualExpensesFromCurrentMonth(id);
+        
+        var response = await sender.Send(query);
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> GetBudgetDetails(
+        [FromRoute]Guid id,
+        [FromServices]ISender sender)
+    {
+        var query = new GetBudgetDetails(id);
+        
+        var response = await sender.Send(query);
+        return Results.Ok(response);
+    }
 }

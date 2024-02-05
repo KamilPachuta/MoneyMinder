@@ -1,6 +1,7 @@
 using MoneyMinder.Application.CurrencyAccounts.Commands.Handlers.Abstractions;
 using MoneyMinder.Application.CurrencyAccounts.Models;
 using MoneyMinder.Application.CurrencyAccounts.Services;
+using MoneyMinder.Application.CurrencyAccounts.WriteModels;
 using MoneyMinder.Domain.CurrencyAccounts.Entities;
 using MoneyMinder.Domain.CurrencyAccounts.Enums;
 using MoneyMinder.Domain.Repository;
@@ -27,13 +28,13 @@ internal sealed class CreateBudgetHandler : CurrencyCommandHandler<CreateBudgetC
         await _repository.UpdateAsync(currencyAccount);
     }
 
-    private IEnumerable<Expense> ToExpenses(IEnumerable<KeyValuePair<Category, decimal>> expenseModels)
+    private IEnumerable<Expense> ToExpenses(IEnumerable<ExpenseWriteModel> expenseModels)
     {
         var expenses = new List<Expense>();
         
         foreach (var expenseModel in expenseModels)
         {
-            expenses.Add(new Expense(expenseModel.Key, expenseModel.Value));
+            expenses.Add(new Expense(expenseModel.Category, expenseModel.Amount));
         }
 
         return expenses;

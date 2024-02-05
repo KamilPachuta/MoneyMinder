@@ -1,7 +1,9 @@
 using Client.Models.Enums;
+using Client.Models.Requests.CurrencyAccount.Commands;
 using FluentValidation;
+using MoneyMinder.API.Requests.CurrencyAccounts;
 
-namespace MoneyMinder.API.Requests.CurrencyAccounts.Validators;
+namespace Client.Models.Requests.CurrencyAccount.Validators;
 
 public sealed class CreateBudgetValidator : AbstractValidator<CreateBudgetRequest>
 {
@@ -28,4 +30,12 @@ public sealed class CreateBudgetValidator : AbstractValidator<CreateBudgetReques
             .Must(value => Enum.IsDefined(typeof(Currency), value))
             .WithMessage("Invalid value for the Currency field.");
     }
+    
+    public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+    {
+        var result = await ValidateAsync(ValidationContext<CreateBudgetRequest>.CreateWithOptions((CreateBudgetRequest)model, x => x.IncludeProperties(propertyName)));
+        if (result.IsValid)
+            return Array.Empty<string>();
+        return result.Errors.Select(e => e.ErrorMessage);
+    };
 }

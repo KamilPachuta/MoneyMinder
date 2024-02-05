@@ -8,8 +8,6 @@ public class AddressReadModel
     public string PostalCode { get; set; }
     public string Street { get; set; }
 
-    public Guid UserId { get; set; }
-
     public AddressReadModel()
     {
         

@@ -275,13 +275,99 @@ public class CurrencyAccountService : ICurrencyAccountService
         
         return new (){ Succeeded = true };
     }
+
     
+    public async Task<Result> PutBudget(CreateBudgetRequest request)
+    {
+        var responseMessage = await _httpClient.PutAsJsonAsync("api/CurrencyAccount/Budget", request);
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Status Code: {responseMessage.StatusCode}" + $"Content: {await responseMessage.Content.ReadAsStringAsync()}");
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        return new (){ Succeeded = true };
+    }
+
+    public async Task<Result> PostBudget(ChangeBudgetNameRequest request)
+    {
+        var responseMessage = await _httpClient.PostAsJsonAsync("api/CurrencyAccount/Budget", request);
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Status Code: {responseMessage.StatusCode}" + $"Content: {await responseMessage.Content.ReadAsStringAsync()}");
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        return new (){ Succeeded = true };
+    }
+
+    public async Task<Result> DeleteBudget(DeleteBudgetRequest request)
+    {
+        var httpRequest = new HttpRequestMessage(HttpMethod.Delete, "api/CurrencyAccount/Budget");
+        
+        httpRequest.Content = new ObjectContent<DeleteBudgetRequest>(request, new JsonMediaTypeFormatter());
+        
+        var responseMessage = await _httpClient.SendAsync(httpRequest);
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Status Code: {responseMessage.StatusCode}" + $"Content: {await responseMessage.Content.ReadAsStringAsync()}");
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        return new (){ Succeeded = true };
+    }
+
     
-    
-    
+    public async Task<Result> PutExpense(AddExpenseRequest request)
+    {
+        var responseMessage = await _httpClient.PutAsJsonAsync("api/CurrencyAccount/Budget/expense", request);
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Status Code: {responseMessage.StatusCode}" + $"Content: {await responseMessage.Content.ReadAsStringAsync()}");
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        return new (){ Succeeded = true };
+    }
+
+    public async Task<Result> PostExpense(EditExpenseRequest request)
+    {
+        var responseMessage = await _httpClient.PostAsJsonAsync("api/CurrencyAccount/Budget/expense", request);
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Status Code: {responseMessage.StatusCode}" + $"Content: {await responseMessage.Content.ReadAsStringAsync()}");
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        return new (){ Succeeded = true };
+    }
+
+    public async Task<Result> DeleteExpense(RemoveExpenseRequest request)
+    {
+        var httpRequest = new HttpRequestMessage(HttpMethod.Delete, "api/CurrencyAccount/Budget/expense");
+        
+        httpRequest.Content = new ObjectContent<RemoveExpenseRequest>(request, new JsonMediaTypeFormatter());
+        
+        var responseMessage = await _httpClient.SendAsync(httpRequest);
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Status Code: {responseMessage.StatusCode}" + $"Content: {await responseMessage.Content.ReadAsStringAsync()}");
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        return new (){ Succeeded = true };
+    }
+
+
     public async Task<Result<GetCurrencyAccountNamesResponse>> GetCurrencyAccountNames()
     {
-        var responseMessage = await _httpClient.GetAsync("api/CurrencyAccount/names"); //.PostAsJsonAsync("api/Account", request);
+        var responseMessage = await _httpClient.GetAsync("api/CurrencyAccount/names"); 
         
         if (!responseMessage.IsSuccessStatusCode)
         {
@@ -298,9 +384,29 @@ public class CurrencyAccountService : ICurrencyAccountService
         return new (){ Succeeded = true, Response = new (response)};
     }
 
+    public async Task<Result<GetCurrencyAccountDetailsResponse>> GetCurrencyAccountDetails(Guid id)
+    {
+        var responseMessage = await _httpClient.GetAsync($"api/CurrencyAccount/{id}");
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        var response = await responseMessage.Content.ReadFromJsonAsync<CurrencyAccountModel>();
+        
+        if (response == null)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {"Response is null.", $"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        return new (){ Succeeded = true, Response = new (response)};
+
+    }
+
     public async Task<Result<GetCurrencyAccountBalancesResponse>> GetCurrencyAccountBalances(Guid id)
     {
-        var responseMessage = await _httpClient.GetAsync($"api/CurrencyAccount/{id}/balances"); //.PostAsJsonAsync("api/Account", request);
+        var responseMessage = await _httpClient.GetAsync($"api/CurrencyAccount/{id}/balances");
         
         if (!responseMessage.IsSuccessStatusCode)
         {
@@ -315,11 +421,11 @@ public class CurrencyAccountService : ICurrencyAccountService
         }
         
         return new (){ Succeeded = true, Response = new (response)};
-    }
+       }
 
     public async Task<Result<GetCurrencyAccountTransactionsResponse>> GetCurrencyAccountTransactions(Guid id)
     {
-        var responseMessage = await _httpClient.GetAsync($"api/CurrencyAccount/{id}/transactions"); //.PostAsJsonAsync("api/Account", request);
+        var responseMessage = await _httpClient.GetAsync($"api/CurrencyAccount/{id}/transactions"); 
         
         if (!responseMessage.IsSuccessStatusCode)
         {
@@ -357,7 +463,7 @@ public class CurrencyAccountService : ICurrencyAccountService
 
     public async Task<Result<GetCurrencyAccountIdByNameResponse>> GetIdByName(string name)
     {
-        var responseMessage = await _httpClient.GetAsync($"api/CurrencyAccount/id/{name}"); //.PostAsJsonAsync("api/Account", request);
+        var responseMessage = await _httpClient.GetAsync($"api/CurrencyAccount/id/{name}"); 
         
         if (!responseMessage.IsSuccessStatusCode)
         {
@@ -370,7 +476,83 @@ public class CurrencyAccountService : ICurrencyAccountService
         {
             return new (){ Succeeded = false, ErrorList = new() {"Response is null.", $"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
         }
-        Console.WriteLine(response.ToString() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+        return new (){ Succeeded = true, Response = new (response)};
+    }
+
+    public async Task<Result<GetCurrencyIncomesResponse>> GetCurrencyIncomes(Guid id)
+    {
+        var responseMessage = await _httpClient.GetAsync($"api/CurrencyAccount/{id}/incomes"); 
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        var response = await responseMessage.Content.ReadFromJsonAsync<IEnumerable<TransactionModel>>();
+        
+        if (response == null)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {"Response is null.", $"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+
+        return new (){ Succeeded = true, Response = new (response)};
+    }
+
+    public async Task<Result<GetCurrencyPaymentsResponse>> GetCurrencyPayments(Guid id)
+    {
+        var responseMessage = await _httpClient.GetAsync($"api/CurrencyAccount/{id}/payments"); 
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        var response = await responseMessage.Content.ReadFromJsonAsync<IEnumerable<TransactionModel>>();
+        
+        if (response == null)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {"Response is null.", $"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+
+        return new (){ Succeeded = true, Response = new (response)};
+    }
+
+    public async Task<Result<GetBudgetDetailsResponse>> GetBudgetDetails(Guid id)
+    {
+        var responseMessage = await _httpClient.GetAsync($"api/CurrencyAccount/{id}/budget"); 
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        var response = await responseMessage.Content.ReadFromJsonAsync<BudgetModel>();
+        
+        if (response == null)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {"Response is null.", $"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+
+        return new (){ Succeeded = true, Response = new (response)};
+    }
+
+    public async Task<Result<GetCurrentMonthPaymentsResponse>> GetCurrentMonthPayments(Guid id)
+    {
+        var responseMessage = await _httpClient.GetAsync($"api/CurrencyAccount/{id}/currentPayments"); 
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        var response = await responseMessage.Content.ReadFromJsonAsync<IEnumerable<PaymentModel>>();
+        
+        if (response == null)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {"Response is null.", $"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+
         return new (){ Succeeded = true, Response = new (response)};
     }
 }

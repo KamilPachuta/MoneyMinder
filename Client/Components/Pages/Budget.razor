@@ -1,13 +1,105 @@
 ﻿@page "/CurrencyAccount/{name}/Budget"
+@using Client.Models.ReadModels
+@using Client.Models.Enums
 @inject ICurrencyAccountService CurrencyService
 
 <h3>Budget</h3>
+@if (_budget is not null)
+{
+    <MudPaper Elevation="2" Class="px-4 py-4">
+        <MudGrid>
+            <MudItem xs="12" sm="3">
+                <MudPaper Elevation="2" Class="px-4 py-4">
+                    <MudText Class="mx-4 my-5" Typo="Typo.h3">@name Budget</MudText>
+                    <MudText Class="mx-4 my-2" Typo="Typo.h4">@DateTime.UtcNow.ToString("MMMM")</MudText>
+                    <MudText Class="mx-4 my-2" Typo="Typo.h4">@_budget.ExpectedIncome @_budget.Currency</MudText>
+                </MudPaper>
+                <MudPaper Elevation="2" Class="align-start d-flex">
+                    <MudPaper Elevation="0">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"></MudIconButton>
+                    </MudPaper>
+                    <MudSpacer/>
+                    <MudPaper Elevation="0">
+                        <MudIconButton Icon="@Icons.Material.Filled.Remove"></MudIconButton>
+                    </MudPaper>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="9">
+                <MudPaper Elevation="2" Class="px-4 py-4">
+                    @*MudPieChart albo MudDonutChart  x kilka + może wykres liniowy (może w osobnym Item) sumy wydatków na przeciągu miesiąca*@
+                    <MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Left" Width="200px" Height="200px"
+                              InputData="@_expenses.Select(e => (double)e.PlannedAmount).ToArray()" 
+                              InputLabels="@_expenses.Select(e => e.Category.ToString()).ToArray()"/>
+                    
+                    <MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Left" Width="200px" Height="200px"
+                              InputData="@_expenses.Select(e => (double)e.PlannedAmount).ToArray()" 
+                              InputLabels="@_expenses.Select(e => e.Category.ToString()).ToArray()"/>
+                    
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="5">
+                <MudCard>
+                    <MudCardHeader>
+                        <MudPaper Elevation="2" Class="align-start d-flex">
+                            <MudPaper Elevation="0">
+                                <MudIconButton Icon="@Icons.Material.Filled.Add"></MudIconButton>
+                            </MudPaper>
+                            <MudSpacer/>
+                            <MudPaper Elevation="0">
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit"></MudIconButton>
+                            </MudPaper>
+                            <MudSpacer/>
+                            <MudPaper Elevation="0">
+                                <MudIconButton Icon="@Icons.Material.Filled.Remove"></MudIconButton>
+                            </MudPaper>
+                        </MudPaper>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudTable Items="@_expenses" Hover="true" Breakpoint="Breakpoint.Sm">
+                            <HeaderContent>
+                                <MudTh>Category</MudTh>
+                                <MudTh>Actual Amount</MudTh>
+                                <MudTh>Planned Amount</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Nr">@context.Category</MudTd>
+                                <MudTd DataLabel="Nr">@context.ActualAmount</MudTd>
+                                <MudTd DataLabel="Nr">@context.PlannedAmount</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudCardContent>
+                </MudCard>
+                
+                
+            </MudItem>
+             <MudItem xs="12" sm="7">
+                            <MudPaper Elevation="2" Class="px-4 py-4">
+                                <MudChart ChartType="ChartType.Bar" ChartSeries="_chartSeries" XAxisLabels="_expenses.Select(e => e.Category.ToString()).ToArray()"></MudChart>
+                            </MudPaper>
+                        </MudItem>
+        </MudGrid>
+    </MudPaper>
+}
+else
+{
+    <MudText Typo="Typo.h3">You dont created budget for current month yet.</MudText>
+    <MudButton EndIcon="@Icons.Material.Filled.Add" OnClick="NewBudget">Create Budget</MudButton>
+}
+
+
 
 @code {
     [Parameter] 
     public string name { get; set; }
 
     private Guid _id;
+    private BudgetModel _budget;
+    private IEnumerable<PaymentModel> _payments;
+    private List<Expense> _expenses = new();
+    private List<ChartSeries> _chartSeries = new();
+
+    private bool _currencySwitch = true; // If true Budget will read only payments with budget currency, if false it will read all payments and convert currencies to match budget currency 
+    
     private bool _succeded = false;
     private List<string> _errors;
     
@@ -23,7 +115,107 @@
 
         _id = firstResult.Response.Id;
 
+        var secondResult = await CurrencyService.GetBudgetDetails(_id);
+        if (!secondResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = firstResult.ErrorList;
+            return;
+        }
+
+        _budget = secondResult.Response.Budget;
+
+        var thirdResult = await CurrencyService.GetCurrentMonthPayments(_id);
+        if (!thirdResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = firstResult.ErrorList;
+            return;
+        }
+
+        _payments = thirdResult.Response.Payments;
+
+        await SetExpenses();
+        
         _succeded = true;
     }
 
+    private Task SetExpenses()
+    {
+        if (_currencySwitch)
+        {
+            var groups = _payments
+                .Where(p => p.Currency == _budget.Currency)
+                .GroupBy(p => p.Category);
+
+            foreach (var group in groups)
+            {
+                var category = group.Key;
+                
+                var actualAmount = group.Sum(p => p.Amount);
+
+                if (_budget.Expenses.Any(e => e.Category == category))
+                {
+                    var plannedAmount = _budget.Expenses.FirstOrDefault(e => e.Category == category).Amount;
+
+                    _expenses.Add(new Expense(category, actualAmount, plannedAmount));
+                    _chartSeries.Add(new ChartSeries()
+                    {
+                        Name = category.ToString(),
+                        Data = new[]
+                        {
+                            (double)actualAmount,
+                            (double)plannedAmount
+                        }
+                    });
+
+                }
+                else
+                {
+                    if (_expenses.Any(e => e.Category == Category.Other))
+                    {
+                        _expenses.FirstOrDefault(e => e.Category == Category.Other).ActualAmount += actualAmount;
+                        
+                        _chartSeries.Find(cs => cs.Name == category.ToString()).Data[0] += (double)actualAmount;
+                    }
+                }
+                
+
+                
+                
+            }
+        }
+        
+        
+        return Task.CompletedTask;
+    }
+
+
+    private async Task NewBudget()
+    {
+        return;
+    }
+
+
+
+
+    private class Expense
+    {
+        public Category Category { get; set; }
+        public decimal ActualAmount { get; set; }
+        public decimal PlannedAmount { get; set; }
+
+        public Expense()
+        {
+            
+        }
+        
+        public Expense(Category category, decimal actualAmount, decimal plannedAmount)
+        {
+            Category = category;
+            ActualAmount = actualAmount;
+            PlannedAmount = plannedAmount;
+        }
+        
+    }
 }

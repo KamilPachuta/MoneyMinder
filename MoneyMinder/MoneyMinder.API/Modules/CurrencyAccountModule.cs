@@ -84,6 +84,13 @@ public class CurrencyAccountModule : BaseModule
         queries.MapGet("/{id}/monthlyTransactions", CurrencyAccountReadEndpoints.GetMonthlyTransactions);
         
         queries.MapGet("/id/{name}", CurrencyAccountReadEndpoints.GetIdByName);
+        
+        queries.MapGet("/{id}/incomes", CurrencyAccountReadEndpoints.GetIncomes);
+        queries.MapGet("/{id}/payments", CurrencyAccountReadEndpoints.GetPayments);
+        
+        queries.MapGet("/{id}/budget", CurrencyAccountReadEndpoints.GetBudgetDetails);
+        
+        queries.MapGet("/{id}/currentPayments", CurrencyAccountReadEndpoints.GetCurrentMonthPayments);
 
 
         //app.MapGet("/", CurrencyAccountReadEndpoints.Get);

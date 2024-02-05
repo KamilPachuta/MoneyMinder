@@ -1,13 +1,13 @@
 using Client.Models.Enums;
 
-namespace MoneyMinderClient.Models.ReadModels;
+namespace Client.Models.ReadModels;
 
-public class ExpenseReadModel
+public class ExpenseModel
 {
     public Category Category { get; set; }
     public decimal Amount { get; set; }
 
-    public ExpenseReadModel(Category category, decimal amount)
+    public ExpenseModel(Category category, decimal amount)
     {
         Category = category;
         Amount = amount;

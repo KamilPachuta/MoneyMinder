@@ -11,7 +11,8 @@ public interface ISavingsService
     public Task<Result> PostSavingsName(ChangeSavingsNameRequest request);
     public Task<Result> PostSavingsPlannedAmount(ChangeSavingsPlannedAmountRequest request);
     public Task<Result> PostTransaction(ProcessSavingsTransactionRequest request);
-
+    
+    public Task<Result<GetAllSavingsDetailsResponse>> GetAllSavingsDetails();
     public Task<Result<GetSavingsPortfolioIdByNameResponse>> GetIdByName(string name);
     public Task<Result<GetSavingsNamesResponse>> GetSavingsNames();
     public Task<Result<GetSavingsPortfolioResponse>> GetSavingsPortfolio(Guid id);

@@ -9,13 +9,16 @@
 
 <MudLayout>
     <MudAppBar Color=Color.Primary Elevation="7" Fixed="true">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        <AuthorizeView>
+            <Authorized>
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+            </Authorized>
+        </AuthorizeView>
         <MudText Typo="Typo.h5" Class="ml-3">MoneyMinder</MudText>
         <MudSpacer />
         <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="@((e) => ToggleOpen())"/>
         <AuthorizeView>
             <Authorized>
-                <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" />  @**@ 
                 <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="@((e) => HandleLogout())"/> @*OnClick="@((e) => DrawerToggle())"*@
             </Authorized>
         </AuthorizeView>
@@ -60,7 +63,7 @@
 @code {
     private bool _isDarkMode = false;
     private MudTheme _theme = new();
-    private bool _drawerOpen = false;
+    private bool _drawerOpen = true;
     public bool _isOpen = false;
 
     public void ToggleOpen()

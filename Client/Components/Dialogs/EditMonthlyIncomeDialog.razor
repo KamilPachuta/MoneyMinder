@@ -9,17 +9,17 @@
         <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
             <MudText Typo="Typo.h5">Edit Monthly Income</MudText>
 
-            <MudForm Model="_request" @ref="@form" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
-                <MudNumericField @bind-Value="_request.NewAmount" 
+            <MudForm Model="_requestIncome" @ref="@form" Validation="@(_validatorIncome.ValidateValue)" ValidationDelay="0">
+                <MudNumericField @bind-Value="_requestIncome.NewAmount" 
                                  Label="Outlined" 
                                  Variant="Variant.Outlined" 
                                  Step="10M" 
                                  DebounceInterval="500"/>
                 
-                <MudSelect @bind-Value="_request.NewCurrency"
+                <MudSelect @bind-Value="_requestIncome.NewCurrency"
                            Label="Currency"
                            Variant="Variant.Outlined"
-                           For="(() => _request.NewCurrency)">
+                           For="(() => _requestIncome.NewCurrency)">
                     <MudSelectItem Value="Currency.USD">USD</MudSelectItem>
                     <MudSelectItem Value="Currency.EUR">EUR</MudSelectItem>
                     <MudSelectItem Value="Currency.PLN">PLN</MudSelectItem>
@@ -46,11 +46,13 @@
     public Guid id { get; set; }
     [Parameter]
     public string transactionName { get; set; }
+    [Parameter]
+    public TransactionType transactionType { get; set; }
     
     MudForm form = new();
     
-    EditMonthlyIncomeRequest _request = new();
-    EditMonthlyIncomeValidator _validator = new();
+    EditMonthlyIncomeRequest _requestIncome = new();
+    EditMonthlyIncomeValidator _validatorIncome = new();
 
     private void CloseDialog()
     {
@@ -63,9 +65,9 @@
 
         if (form.IsValid)
         {
-            _request.Id = id;
-            _request.Name = transactionName;
-            var result = await CurrencyService.EditMonthlyIncome(_request);
+            _requestIncome.Id = id;
+            _requestIncome.Name = transactionName;
+            var result = await CurrencyService.EditMonthlyIncome(_requestIncome);
 
             MudDialog.Close(DialogResult.Ok(result));
         }

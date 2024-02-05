@@ -1,0 +1,59 @@
+﻿@using MoneyMinder.API.Requests.CurrencyAccounts.Validators
+@using Client.Models.Requests.CurrencyAccount.Commands
+@using Client.Components.Selectors
+@using Client.Models.Enums
+@using MoneyMinderClient.Models
+@inject ICurrencyAccountService CurrencyService
+
+
+<MudDialog DisableSidePadding="true">
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
+            <MudCard Elevation="4">
+                <MudCardContent>
+                    <MudSelect @bind-Value="category"
+                               Label="Category"
+                               Variant="Variant.Outlined"
+                               For="(() => category)">
+                        <MudSelectItem Value="Category.Housing">Housing</MudSelectItem>
+                        <MudSelectItem Value="Category.Transportation">Transportation</MudSelectItem>
+                        <MudSelectItem Value="Category.Healthcare">Healthcare</MudSelectItem>
+                        <MudSelectItem Value="Category.Groceries">Groceries</MudSelectItem>
+                        <MudSelectItem Value="Category.Education">Education</MudSelectItem>
+                        <MudSelectItem Value="Category.Travel">Travel</MudSelectItem>
+                        <MudSelectItem Value="Category.Taxes">Taxes</MudSelectItem>
+                        <MudSelectItem Value="Category.Services">Services</MudSelectItem>
+                        <MudSelectItem Value="Category.Child">Child</MudSelectItem>
+                        <MudSelectItem Value="Category.Other">Other</MudSelectItem>
+                    </MudSelect>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
+                </MudCardActions>
+    
+            </MudCard>
+
+
+        </MudContainer>
+    </DialogContent>
+
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    MudDialogInstance MudDialog { get; set; }
+    
+    Category category = Category.Other;
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(category));
+    }
+    
+}

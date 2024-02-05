@@ -1,18 +1,10 @@
 ﻿@using Client.Models.Enums
 @inherits MudBaseInput<Category>
 
-
-
-@code {
-    //[Parameter] public Category Value { get; set; }
-    
-    /*
-     
-     
-     <MudSelect @bind-Value="request.Category"
+    <MudSelect @bind-Value="CategoryValue"
            Label="Category"
            Variant="Variant.Outlined"
-For="(() => request.Category)">
+For="(() => CategoryValue)">
     <MudSelectItem Value="Category.Housing">Housing</MudSelectItem>
     <MudSelectItem Value="Category.Transportation">Transportation</MudSelectItem>
     <MudSelectItem Value="Category.Healthcare">Healthcare</MudSelectItem>
@@ -24,6 +16,14 @@ For="(() => request.Category)">
     <MudSelectItem Value="Category.Child">Child</MudSelectItem>
     <MudSelectItem Value="Category.Other">Other</MudSelectItem>
 </MudSelect>
+
+@code {
+    [Parameter] public Category CategoryValue { get; set; }
+    
+    /*
+     
+     
+ 
      
      *
      */

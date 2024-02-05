@@ -30,6 +30,7 @@ public class SavingsPortfolioModule : BaseModule
         var queries = app.MapGroup("").AddFluentValidationAutoValidation();
 
         queries.MapGet("/{id}", SavingsPortfolioReadEndpoints.Get);
+        queries.MapGet("/", SavingsPortfolioReadEndpoints.GetAllDetails);
         
         queries.MapGet("/id/{name}", SavingsPortfolioReadEndpoints.GetIdByName);
 

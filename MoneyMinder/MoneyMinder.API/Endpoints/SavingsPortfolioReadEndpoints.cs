@@ -51,4 +51,17 @@ internal static class SavingsPortfolioReadEndpoints
         return Results.Ok(response);
     }
   
+    [Authorize]
+    public static async Task<IResult> GetAllDetails(
+        [FromServices]IUserService userService,
+        [FromServices]ISender sender)
+    {
+        var accountId = userService.GetAccountId();
+        
+        var query = new GetAllSavingsDetails(accountId);
+        
+        var response = await sender.Send(query);
+        
+        return Results.Ok(response);
+    }
 }

@@ -7,7 +7,6 @@ public class UserReadModel
     public string PhoneNumber { get; set; }
     public DateTime BirthDate { get; set; }
 
-    public Guid AccountId { get; set; }
     public AddressReadModel Address { get; set; }
 
     public UserReadModel()

@@ -4,8 +4,6 @@ namespace MoneyMinder.Infrastructure.EF.ReadModels.CurrencyAccount;
 
 public class BudgetReadModel
 {
-    public Guid CurrencyAccountId { get; set; }
-
     public Guid Id { get; set; }
     public string Name { get; set; }
     public Currency Currency { get; set; }

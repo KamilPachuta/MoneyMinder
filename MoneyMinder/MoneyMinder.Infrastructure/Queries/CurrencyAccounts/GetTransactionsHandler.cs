@@ -33,8 +33,17 @@ internal sealed class GetTransactionsHandler : IRequestHandler<GetTransactions, 
 
         var incomes = currencyAccount.Incomes.Adapt<IEnumerable<TransactionModel>>();
         var payments = currencyAccount.Payments.Adapt<IEnumerable<TransactionModel>>();
-        result.AddRange(incomes);
-        result.AddRange(payments);
+        
+        
+        if (incomes is not null)
+        {
+            result.AddRange(incomes);
+        }
+
+        if (payments is not null)
+        {
+            result.AddRange(payments);
+        }
 
         return result.OrderByDescending(t => t.Date).ToList();
     }

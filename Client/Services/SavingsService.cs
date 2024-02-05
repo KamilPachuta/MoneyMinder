@@ -99,6 +99,25 @@ public class SavingsService : ISavingsService
         return new (){ Succeeded = true };
     }
 
+    public async Task<Result<GetAllSavingsDetailsResponse>> GetAllSavingsDetails()
+    {
+        var responseMessage = await _httpClient.GetAsync($"api/Savings/");
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        var response = await responseMessage.Content.ReadFromJsonAsync<IEnumerable<SavingsPortfolioModel>>();
+        
+        if (response == null)
+        {
+            return new (){ Succeeded = false, ErrorList = new() {"Response is null.", $"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        return new (){ Succeeded = true, Response = new (response)};
+    }
+
     public async Task<Result<GetSavingsPortfolioIdByNameResponse>> GetIdByName(string name)
     {
         var responseMessage = await _httpClient.GetAsync($"api/Savings/id/{name}"); 
