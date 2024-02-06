@@ -28,11 +28,7 @@ public class AccountModule : BaseModule
         group.MapPut("/", AccountEndpoints.PutUser);
 
         group.MapPost("/", AccountEndpoints.PostLogin);
-        
-        group.MapGet("/", AccountEndpoints.Get);
-
-        group.MapGet("/all/", AccountEndpoints.GetAll);
-
+            
         group.MapPost("/password/", AccountEndpoints.PostPassword);
         
         group.MapPost("/name/", AccountEndpoints.PostName);
@@ -40,10 +36,14 @@ public class AccountModule : BaseModule
         group.MapPost("/phone/", AccountEndpoints.PostPhone);
 
         group.MapPost("/address", AccountEndpoints.PostAddress);
+        
+        
+        
+        app.MapGet("/", AccountReadEndpoints.Get);
 
-        // app.MapPut("/CurrencyAccount",AccountEndpoints);
-        // app.MapGet("/Savings",);
-
+        app.MapGet("/all/", AccountReadEndpoints.GetAll);
+        
+        app.MapGet("/info/", AccountReadEndpoints.GetPersonalInfo);
 
     }
 }

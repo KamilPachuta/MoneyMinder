@@ -526,6 +526,11 @@ public class CurrencyAccountService : ICurrencyAccountService
         {
             return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
         }
+
+        if (string.IsNullOrEmpty(await responseMessage.Content.ReadAsStringAsync()))
+        {
+            return new() { Succeeded = true, Response = new(null)};
+        }
         
         var response = await responseMessage.Content.ReadFromJsonAsync<BudgetModel>();
         

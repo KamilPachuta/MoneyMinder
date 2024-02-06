@@ -38,30 +38,6 @@ internal static class AccountEndpoints
     }
     
     [Authorize]
-    public static async Task<IResult> Get(
-        [FromServices]ISender sender,
-        [FromServices]IUserService userService)
-    {
-        var id = userService.GetAccountId();
-        
-        var command = new GetAccount(id);
-
-        var result = await sender.Send(command);
-
-        return Results.Ok(result);
-    }
-    
-    [Authorize]
-    public static async Task<IResult> GetAll([FromServices]ISender sender)
-    {
-        var command = new GetAccounts();
-
-        var result = await sender.Send(command);
-
-        return Results.Ok(result);
-    }
-    
-    [Authorize]
     public static async Task<IResult> PostPassword(
         [FromBody]ChangePasswordRequest request, 
         [FromServices] ISender sender,

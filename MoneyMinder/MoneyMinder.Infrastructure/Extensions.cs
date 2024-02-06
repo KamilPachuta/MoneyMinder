@@ -3,6 +3,7 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MoneyMinder.Application.Accounts.Models;
 using MoneyMinder.Application.Accounts.Services;
 using MoneyMinder.Application.CurrencyAccounts.Models;
 using MoneyMinder.Application.CurrencyAccounts.Services;
@@ -12,6 +13,7 @@ using MoneyMinder.Domain.Repository;
 using MoneyMinder.Domain.UnitOfWork;
 using MoneyMinder.Infrastructure.EF.Context;
 using MoneyMinder.Infrastructure.EF.Postgres;
+using MoneyMinder.Infrastructure.EF.ReadModels.Account;
 using MoneyMinder.Infrastructure.EF.ReadServices;
 using MoneyMinder.Infrastructure.EF.Repositories;
 using MoneyMinder.Infrastructure.EF.UnitOfWork;
@@ -55,6 +57,17 @@ public static class Extensions
         TypeAdapterConfig<MonthlyIncome, MonthlyTransactionModel>
             .NewConfig()
             .Map(dest => dest.Month, src => src.Month.Date);
+        
+        TypeAdapterConfig<AccountReadModel, PersonalInfoModel>
+            .NewConfig()
+            .Map(dest => dest.Name, src => src.User.Name)
+            .Map(dest => dest.Name, src => src.User.PhoneNumber.ToString())
+            .Map(dest => dest.Name, src => src.User.BirthDate)
+            .Map(dest => dest.Name, src => src.User.Gender)
+            .Map(dest => dest.Name, src => src.User.Address.Country.ToString())
+            .Map(dest => dest.Name, src => src.User.Address.City)
+            .Map(dest => dest.Name, src => src.User.Address.PostalCode)
+            .Map(dest => dest.Name, src => src.User.Address.Street);
     }
     // TypeAdapterConfig<IEnumerable<MonthlyIncome>, IEnumerable<MonthlyTransactionModel>>
         //     .NewConfig()

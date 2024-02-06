@@ -1,6 +1,7 @@
+using Client.Models.Requests.Account.Commands;
 using FluentValidation;
 
-namespace MoneyMinder.API.Requests.Accounts.Validators;
+namespace Client.Models.Requests.Account.Validators;
 
 public sealed class ChangeAddressValidator : AbstractValidator<ChangeAddressRequest>
 {
@@ -27,4 +28,12 @@ public sealed class ChangeAddressValidator : AbstractValidator<ChangeAddressRequ
             .MaximumLength(100);
             
     }
+    
+    public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+    {
+        var result = await ValidateAsync(ValidationContext<ChangeAddressRequest>.CreateWithOptions((ChangeAddressRequest)model, x => x.IncludeProperties(propertyName)));
+        if (result.IsValid)
+            return Array.Empty<string>();
+        return result.Errors.Select(e => e.ErrorMessage);
+    };
 }

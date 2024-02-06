@@ -5,8 +5,10 @@ using System.Security.Claims;
 using System.Text.Json;
 using Blazored.LocalStorage;
 using Client.Models.Enums;
+using Client.Models.ReadModels;
 using Client.Models.Requests.Account;
 using Client.Models.Requests.Account.Commands;
+using Client.Models.Responses.Accounts;
 using Client.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using MoneyMinder.API.Requests.Accounts;
@@ -130,6 +132,73 @@ namespace Client.Services;
         public Task<Guid> GetId()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<Result<GetPersonalInfoResponse>> GetPersonalInfo()
+        {
+            var responseMessage = await _httpClient.GetAsync($"api/Account/info"); 
+        
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+            }
+        
+            var response = await responseMessage.Content.ReadFromJsonAsync<PersonalInfoModel>();
+        
+            if (response == null)
+            {
+                return new (){ Succeeded = false, ErrorList = new() {"Response is null.", $"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+            }
+
+            return new (){ Succeeded = true, Response = new (response)};
+        }
+
+        public async Task<Result> ChangePassword(ChangePasswordRequest request)
+        {
+            var responseMessage = await _httpClient.PostAsJsonAsync("api/Account/password", request);
+        
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+            }
+        
+            return new (){ Succeeded = true };
+        }
+
+        public async Task<Result> ChangeName(ChangeNameRequest request)
+        {
+            var responseMessage = await _httpClient.PostAsJsonAsync("api/Account/name", request);
+        
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+            }
+        
+            return new (){ Succeeded = true };
+        }
+
+        public async Task<Result> ChangePhoneNumber(ChangePhoneNumberRequest request)
+        {
+            var responseMessage = await _httpClient.PostAsJsonAsync("api/Account/phone", request);
+        
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+            }
+        
+            return new (){ Succeeded = true };
+        }
+
+        public async Task<Result> ChangeAddress(ChangeAddressRequest request)
+        {
+            var responseMessage = await _httpClient.PostAsJsonAsync("api/Account/address", request);
+        
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+            }
+        
+            return new (){ Succeeded = true };
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()

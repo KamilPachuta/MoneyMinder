@@ -1,128 +1,44 @@
 ﻿@page "/Profile"
+@using Client.Models.ReadModels
+@using Client.Components.Dialogs
+@using MoneyMinderClient.Models
+@inject IAccountService AccountService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
-Info + guziki do edycji
 <PageTitle>Profile</PageTitle>
 
 <AuthorizeView>
     <Authorized>
-        <MudCard Elevation="5" Class="mx-auto pa-10" Style="width: 60%; min-width: 300px;">
-            <MudCardHeader >
-                <h1>Your personal info.</h1>
-            </MudCardHeader>
-            <MudCardContent>
-                <MudCard>
-                    <MudCardHeader >
-                        <h3>Uneditable</h3>
-                    </MudCardHeader>
-                    @* <MudCardContent> *@
-                    @*     <MudTextField @bind-Value="response.Name.FirstName" *@
-                    @*                   For="() => response.Name.FirstName" *@
-                    @*                   Label="First Name" *@
-                    @*                   Variant="Variant.Outlined" *@
-                    @*                   Disabled="true"/> *@
-                    @* *@
-                    @*     <MudTextField @bind-Value="response.Name.LastName" *@
-                    @*                   For="() => response.Name.LastName" *@
-                    @*                   Label="Last Name" *@
-                    @*                   Variant="Variant.Outlined" *@
-                    @*                   Disabled="true"/> *@
-                    @*     <MudTextField @bind-Value="response.BirthDate" *@
-                    @*                   For="() => response.BirthDate" *@
-                    @*                   Label="Birth Date" *@
-                    @*                   Variant="Variant.Outlined" *@
-                    @*                   Disabled="true"/> *@
-                    @*     $1$ DODAC GENDER #1# *@
-                    @* *@
-                    @* </MudCardContent> *@
-                </MudCard>
+        <MudPaper Elevation="3" Class="px-4 py-4">
+            <MudCard>
+                <MudCardHeader>
+                    <MudText Typo="Typo.h4">Personal Information's</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    @if (_succeded)
+                    {
+                        <MudText Typo="Typo.h6">Email: @_infoModel.Email</MudText>
+                        <MudText Typo="Typo.h6">Name: @_infoModel.Name</MudText>
+                        <MudText Typo="Typo.h6">Phone Number: @_infoModel.PhoneNumber</MudText>
+                        <MudText Typo="Typo.h6">Birth Date: @_infoModel.BirthDate</MudText>
+                        <MudText Typo="Typo.h6">Gender: @_infoModel.Gender</MudText>
+                        <MudText Typo="Typo.h6">Country: @_infoModel.Country</MudText>
+                        <MudText Typo="Typo.h6">City: @_infoModel.City</MudText>
+                        <MudText Typo="Typo.h6">Postal Code: @_infoModel.PostalCode</MudText>
+                        <MudText Typo="Typo.h6">Street: @_infoModel.Street</MudText>
+                    }
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="EditPassword">Change Password</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="EditName">Change Name</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="EditPhoneNumber">Change Phone Number</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="EditAddress">Change Address</MudButton>
+                </MudCardActions>
+            </MudCard>
 
-                <MudCard>
-                    <MudCardHeader >
-                        <h3>Email</h3>
-                    </MudCardHeader>
-                    @* <MudCardContent> *@
-                    @*     <MudTextField @bind-Value="response.Email" *@
-                    @*                   For="() => response.Email" *@
-                    @*                   InputType="InputType.Email" *@
-                    @*                   ReadOnly="true" *@
-                    @*                   Immediate="true" *@
-                    @*                   Label="Email" *@
-                    @*                   Variant="Variant.Outlined" *@
-                    @*                   Adornment="Adornment.End" *@
-                    @*                   AdornmentIcon="@Icons.Material.Filled.Edit" *@
-                    @*                   OnAdornmentClick="EditPhoneNumber" *@
-                    @*                   AdornmentAriaLabel="Edit PhoneNumber"/> *@
-                    @* *@
-                    @* </MudCardContent> *@
-                </MudCard>
-                <MudCard>
-                    <MudCardHeader >
-                        <h3>Phone Number</h3>
-                    </MudCardHeader>
-                    <MudCardContent>
+        </MudPaper>
 
-                        <MudTextField @bind-Value="tel"
-                                      Label="Phone Number"
-                                      InputType="InputType.Telephone"
-                                      ReadOnly="true"
-                                      Variant="Variant.Outlined"
-                                      Adornment="Adornment.End"
-                                      AdornmentIcon="@Icons.Material.Filled.Edit"
-                                      OnAdornmentClick="EditPhoneNumber"
-                                      AdornmentAriaLabel="Edit PhoneNumber"/>
-
-
-                    </MudCardContent>
-                </MudCard>
-
-                <MudCard>
-                    <MudCardHeader >
-                        <h3>Address</h3>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        @* <MudTextField @bind-Value="response.Address.Country" *@
-                        @*               For="() => response.Address.Country" *@
-                        @*               Label="Country" *@
-                        @*               Variant="Variant.Outlined" *@
-                        @*               Disabled="true"/> *@
-                        @* *@
-                        @* <MudTextField @bind-Value="response.Address.City" *@
-                        @*               For="() => response.Address.City" *@
-                        @*               Label="City" *@
-                        @*               Variant="Variant.Outlined" *@
-                        @*               Disabled="true"/> *@
-                        @* *@
-                        @* <MudTextField @bind-Value="response.Address.Street" *@
-                        @*               For="() => response.Address.Street" *@
-                        @*               Label="Street" *@
-                        @*               Variant="Variant.Outlined" *@
-                        @*               Disabled="true"/> *@
-                        @* *@
-                        @* <MudTextField @bind-Value="response.Address.PostalCode" *@
-                        @*               For="() => response.Address.PostalCode" *@
-                        @*               Label="Postal Code" *@
-                        @*               Variant="Variant.Outlined" *@
-                        @*               Disabled="true"/> *@
-                        @* *@
-                        @* <MudTextField @bind-Value="response.Address.HouseNumber" *@
-                        @*               For="() => response.Address.HouseNumber" *@
-                        @*               Label="House Number" *@
-                        @*               Variant="Variant.Outlined" *@
-                        @*               Disabled="true"/> *@
-                        @* *@
-                        @* <MudTextField @bind-Value="response.Address.ApartmentNumber" *@
-                        @*               For="() => response.Address.ApartmentNumber" *@
-                        @*               Label="Apartment Number" *@
-                        @*               Variant="Variant.Outlined" *@
-                        @*               Disabled="true"/> *@
-                    </MudCardContent>
-                     <MudCardActions>
-                         <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.Edit"Class="ml-auto" OnClick="@(async () => await EditAddress())">Edit Address</MudButton>
-                         </MudCardActions>
-                </MudCard>
-            </MudCardContent>
-
-        </MudCard>
 
     </Authorized>
 </AuthorizeView>
@@ -164,29 +80,139 @@ Info + guziki do edycji
 @* </AuthorizeView> *@
 
 @code {
-    private string tel;
-    //Wypełnić response requestem
-    // readonly UserDetailsResponse response = new()
-    // {
-    //     Email = "aaa@aaa.pl",
-    //     Name = new UserNameWriteModel("Kamil", "Nowak"),
-    //     PhoneNumber = new UserPhoneNumberWriteModel("+48", "123123123"),
-    //     BirthDate = new DateTime(2001, 11, 11),
-    //     Address = new UserAddressWriteModel("Polska", "Katowice", "Adolfa", "41-400", "20a", null)
-    // };
+    private bool _succeded = false;
+    private List<string> _errors;
 
-    // protected override Task OnInitializedAsync()
-    // {
-    //     tel = $@"{response.PhoneNumber.Code} {response.PhoneNumber.Number}";
-    //     return base.OnInitializedAsync();
-    // }
+    private PersonalInfoModel? _infoModel;
 
-    private Task EditPhoneNumber()
+    private async Task EditName()
     {
-        return Task.CompletedTask;
+        var dialog = await DialogService.ShowAsync<EditNameDialog>();
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Name edited!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
     }
-    private Task EditAddress()
+    private async Task EditPassword()
     {
-        return Task.CompletedTask;
+        var dialog = await DialogService.ShowAsync<EditPasswordDialog>();
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Password edited!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
     }
+    private async Task EditPhoneNumber()
+    {
+        var dialog = await DialogService.ShowAsync<EditPhoneNumberDialog>();
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Phone number edited!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
+    private async Task EditAddress()
+    {
+        var dialog = await DialogService.ShowAsync<EditAddressDialog>();
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Address edited!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
+    
+    
+    private async Task SetParams()
+    {
+        var firstResult = await AccountService.GetPersonalInfo();
+        if (!firstResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = firstResult.ErrorList;
+            return;
+        }
+
+        _infoModel = firstResult.Response.PersonalInfo;
+
+        _succeded = true;
+    }
+    
+    protected async override Task OnParametersSetAsync()
+    {
+        await SetParams();
+    }
+
 }

@@ -1,3 +1,5 @@
+using MoneyMinder.Domain.Accounts.Enum;
+
 namespace MoneyMinder.Infrastructure.EF.ReadModels.Account;
 
 public class UserReadModel
@@ -6,6 +8,7 @@ public class UserReadModel
     public string Name { get; set; }
     public string PhoneNumber { get; set; }
     public DateTime BirthDate { get; set; }
+    public Gender Gender { get; set; }
 
     public AddressReadModel Address { get; set; }
 

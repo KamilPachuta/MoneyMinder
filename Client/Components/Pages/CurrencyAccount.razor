@@ -19,12 +19,12 @@
 
 <MudGrid>
     <MudItem xs="12" sm="4">
-            <MudPaper Elevation="2" Class="mx-4 my-4">
-                <MudText >@name</MudText>
+            <MudPaper Elevation="2" Class="mx-4 my-4 px-4 py-4">
+                <MudText Typo="Typo.h4" Class="px-2 py-2">@name</MudText>
                  @if (_succeded)
                                             {
                                                 <MudPaper Elevation="2">
-                                                    <MudText>Available funds</MudText>
+                                                    <MudText Typo="Typo.h6" Class="px-2 py-2">Available funds</MudText>
                                                     <MudList>
                            
                                                         @foreach (var balance in _balances)
@@ -38,16 +38,48 @@
         </MudItem>
         
     <MudItem xs="12" sm="8">
-         <MudPaper Elevation="2" Class="mx-4 my-4">
-                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="NewTransactionDialog"></MudIconButton>
+        <MudPaper Elevation="2" Class="mx-4 my-4 px-4 py-4">
+            <MudTooltip Text="Add new transaction">
+                          <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="NewTransactionDialog"></MudIconButton>
+            </MudTooltip>  
+            <MudTooltip Text="Add new monthly transaction">
                 <MudIconButton Icon="@Icons.Material.Filled.AddAlarm" OnClick="NewMonthlyTransactionDialog"></MudIconButton>
+            </MudTooltip>  
+            <MudTooltip Text="Currency Exchange">
                 <MudIconButton Icon="@Icons.Material.Filled.CurrencyExchange" OnClick="NewConvertDialog"></MudIconButton>
+            </MudTooltip>  
+            <MudTooltip Text="Edit Currency Account Name">
                 <MudIconButton Icon="@Icons.Material.Filled.EditNote" OnClick="NewEditCurrencyNameDialog"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.History"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.Repeat"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.BarChart"></MudIconButton>
+            </MudTooltip>
+            <MudTooltip Text="Transaction History">
+            <MudIconButton Icon="@Icons.Material.Filled.History" OnClick="GoToHistory"></MudIconButton>
+            </MudTooltip>
+            <MudTooltip Text="Monthly Transactions">
+            <MudIconButton Icon="@Icons.Material.Filled.Repeat" OnClick="GoToMonthly"></MudIconButton>
+            </MudTooltip>
+            <MudTooltip Text="Budget">
+                <MudIconButton Icon="@Icons.Material.Filled.BarChart" OnClick="GoToBudget"></MudIconButton>
+            </MudTooltip>
+            <MudTooltip Text="Remove Currency Account">
                 <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" OnClick="NewDeleteDialog"></MudIconButton>
-            </MudPaper>
+            </MudTooltip>
+        </MudPaper>
+    </MudItem>
+    
+    <MudItem xs="12" sm="8">
+        
+        <MudPaper Elevation="2" Class="mx-4 my-4 px-4 py-4">
+            <MudStack>
+                        <MudFab Label="Add new transaction" Icon="@Icons.Material.Filled.Add" OnClick="NewTransactionDialog"></MudFab>
+                                    <MudFab Label="Add new monthly transaction" Icon="@Icons.Material.Filled.AddAlarm" OnClick="NewMonthlyTransactionDialog"/>
+                                    <MudFab Label="Currency Exchange" Icon="@Icons.Material.Filled.CurrencyExchange" OnClick="NewConvertDialog"/>
+                                    <MudFab Label="Edit Currency Account Name" Icon="@Icons.Material.Filled.EditNote" OnClick="NewEditCurrencyNameDialog"/>
+                                    <MudFab Label="Transaction History" Icon="@Icons.Material.Filled.History" OnClick="GoToHistory"/>
+                                    <MudFab Label="Monthly Transactions" Icon="@Icons.Material.Filled.Repeat" OnClick="GoToMonthly"/>
+                                    <MudFab Label="Budget" Icon="@Icons.Material.Filled.BarChart" OnClick="GoToBudget"/>
+                                    <MudFab Label="Remove Currency Account" Icon="@Icons.Material.Filled.DeleteForever" OnClick="NewDeleteDialog"/>
+                    </MudStack>
+        </MudPaper>
     </MudItem>
     
     
@@ -67,6 +99,7 @@
     private List<string> _errors;
     private GetCurrencyAccountNamesResponse _response;
     private List<BalanceModel> _balances;
+    private List<BalanceModel> _balancesToRemove = new();
 
     private async Task SetParams()
     {
@@ -91,6 +124,22 @@
 
         _balances = secondResult.Response.Balances.ToList();
 
+        if (_balances.Any(b => b.Amount == 0))
+        {
+            foreach (var balance in _balances)
+            {
+                if (balance.Amount == 0)
+                {
+                    _balancesToRemove.Add(balance);
+                }
+            }
+
+            foreach (var balance in _balancesToRemove)
+            {
+                _balances.Remove(balance);
+            }
+        }
+        
         _succeded = true;
     }
     
@@ -263,7 +312,7 @@
 
             if (isSucces.Succeeded)
             {
-                Snackbar.Add("Submitted removing transaction!");
+                Snackbar.Add("Submitted removing currency account!");
                 NavManager.NavigateTo("/", true);
             }
             else
@@ -277,23 +326,23 @@
         }
     }
 
-    // private async Task SendAsync()
-    // {
-    //     
-    //     CreateCurrencyAccountRequest request = new CreateCurrencyAccountRequest("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"); 
-    //     //var result = await currencyService.GetCurrencyAccountNames();
-    //     var result = await currencyService.GetCurrencyAccountBalances();
-    //
-    //     if (result.Succeeded)
-    //     {
-    //         _response = result.Response;
-    //     }
-    //     else
-    //     {
-    //         _errors = result.ErrorList;
-    //     }
-    //     _succeded = result.Succeeded;
-    // }
-    
+    private Task GoToHistory()
+    {
+        NavManager.NavigateTo($"/CurrencyAccount/{name}/TransactionHistory", true);
+        return Task.CompletedTask;
+    }
+
+    private Task GoToMonthly()
+    {
+        NavManager.NavigateTo($"/CurrencyAccount/{name}/MonthlyTransactions", true);
+        return Task.CompletedTask;
+    }
+
+    private Task GoToBudget()
+    {
+        NavManager.NavigateTo($"/CurrencyAccount/{name}/Budget", true);
+        return Task.CompletedTask;
+    }
+
 
 }

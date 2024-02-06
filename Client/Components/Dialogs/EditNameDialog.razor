@@ -1,0 +1,62 @@
+﻿@using Client.Models.Requests.CurrencyAccount.Commands
+@using Client.Models.Requests.CurrencyAccount.Validators
+@using Client.Models.Requests.Account.Validators
+@using Client.Models.Requests.Account.Commands
+@inject IAccountService AccountService
+
+
+<MudDialog DisableSidePadding="true">
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
+            <MudText Typo="Typo.h5">Change Name</MudText>
+
+            <MudForm Model="_request" @ref="@form" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
+                <MudTextField @bind-Value="_request.FirstName" 
+                              For="@(() => _request.FirstName)" 
+                              Immediate="true" 
+                              Label="First Name" 
+                              Variant="Variant.Outlined" /> 
+                
+                
+                <MudTextField @bind-Value="_request.LastName" 
+                              For="@(() => _request.LastName)" 
+                              Immediate="true" 
+                              Label="Last Name" 
+                              Variant="Variant.Outlined" />
+                
+                        
+            </MudForm>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
+        <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    MudDialogInstance MudDialog { get; set; }
+    
+    MudForm form = new();
+    
+    ChangeNameRequest _request = new();
+    ChangeNameValidator _validator = new();
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            var result = await AccountService.ChangeName(_request);
+
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+}

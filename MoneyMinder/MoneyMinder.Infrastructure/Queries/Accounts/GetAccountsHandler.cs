@@ -1,12 +1,10 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MoneyMinder.Application.Accounts.Queries;
-using MoneyMinder.Domain.Abstractions;
 using MoneyMinder.Domain.Accounts;
-using MoneyMinder.Domain.Repository;
 using MoneyMinder.Infrastructure.EF.Context;
 
-namespace MoneyMinder.Infrastructure.Queries;
+namespace MoneyMinder.Infrastructure.Queries.Accounts;
 
 
 internal sealed class GetAccountsHandler : IRequestHandler<GetAccounts, IEnumerable<Account>>

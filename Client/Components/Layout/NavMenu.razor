@@ -21,12 +21,12 @@
         <MudNavMenu>
             <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Home</MudNavLink> 
             <MudNavLink Href="/Profile" Icon="@Icons.Material.Filled.AccountCircle">Profile</MudNavLink> 
-            <MudNavGroup Title="CurrencyAccounts" Icon="@Icons.Material.Filled.AccountBalanceWallet" Expanded="true">
+            <MudNavGroup Title="CurrencyAccounts" Icon="@Icons.Material.Filled.AccountBalance" Expanded="true">
                 @foreach (var account in _currencyAccountNames)
                 {
                     <MudPaper Outlined="true" Class="px-3 py-1" Elevation="5">
-                        <MudNavGroup Title="@account.Name" Icon="@Icons.Material.Filled.ReadMore" Expanded="false" Class="">
-                            <MudNavLink Href="@CurrencyAccountPathBuilder.Path(account.Name)" Icon="@Icons.Material.Filled.AttachMoney">Account</MudNavLink>
+                        <MudNavGroup Title="@account.Name" Icon="@Icons.Material.Filled.AccountBalanceWallet" Expanded="false" Class="">
+                            <MudNavLink Href="@CurrencyAccountPathBuilder.Path(account.Name)" Icon="@Icons.Material.Filled.CreditCard">Account</MudNavLink>
                             <MudNavLink Href="@CurrencyAccountPathBuilder.TransactionHistoryPath(account.Name)" Icon="@Icons.Material.Filled.History">Transaction History</MudNavLink>
                             <MudNavLink Href="@CurrencyAccountPathBuilder.MonthlyTransactionsPath(account.Name)" Icon="@Icons.Material.Filled.EventRepeat">Monthly Transactions</MudNavLink>
                             <MudNavLink Href="@CurrencyAccountPathBuilder.BudgetPath(account.Name)" Icon="@Icons.Material.Filled.BarChart">Budget</MudNavLink>

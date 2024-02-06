@@ -56,11 +56,14 @@ internal sealed class AccountConfiguration :
             .HasConversion(n => n.ToString(), n => UserName.Create(n));
 
         builder
-            .Property(a => a.PhoneNumber)
+            .Property(u => u.PhoneNumber)
             .HasConversion(pn => pn.ToString(), pn => UserPhoneNumber.Create(pn));
 
         builder
-            .Property(a => a.BirthDate)
+            .Property(u => u.Gender);
+        
+        builder
+            .Property(u => u.BirthDate)
             .HasConversion(bd => bd.Date, bd => new UserBrithDate(bd));
 
         builder

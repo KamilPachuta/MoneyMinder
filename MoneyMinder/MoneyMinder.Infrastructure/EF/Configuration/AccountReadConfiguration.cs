@@ -48,10 +48,13 @@ public class AccountReadConfiguration :
             .Property(u => u.Name);
         
         builder
-            .Property(a => a.PhoneNumber);
+            .Property(u => u.PhoneNumber);
+
+        builder
+            .Property(u => u.Gender);
         
         builder
-            .Property(a => a.BirthDate);
+            .Property(u => u.BirthDate);
         
         builder
             .HasOne(u => u.Address)

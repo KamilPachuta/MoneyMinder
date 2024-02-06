@@ -1,7 +1,12 @@
 ﻿@page "/CurrencyAccount/{name}/Budget"
 @using Client.Models.ReadModels
 @using Client.Models.Enums
+@using Client.Components.Dialogs
+@using MoneyMinderClient.Models
 @inject ICurrencyAccountService CurrencyService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
 
 <h3>Budget</h3>
 @if (_budget is not null)
@@ -93,7 +98,7 @@ else
     public string name { get; set; }
 
     private Guid _id;
-    private BudgetModel _budget;
+    private BudgetModel? _budget;
     private IEnumerable<PaymentModel> _payments;
     private List<Expense> _expenses = new();
     private List<ChartSeries> _chartSeries = new();
@@ -123,7 +128,11 @@ else
             return;
         }
 
-        _budget = secondResult.Response.Budget;
+
+        if (secondResult.Response.Budget is not null)
+        {
+            _budget = secondResult.Response.Budget;
+        }
 
         var thirdResult = await CurrencyService.GetCurrentMonthPayments(_id);
         if (!thirdResult.Succeeded)
@@ -179,10 +188,6 @@ else
                         _chartSeries.Find(cs => cs.Name == category.ToString()).Data[0] += (double)actualAmount;
                     }
                 }
-                
-
-                
-                
             }
         }
         
@@ -193,7 +198,34 @@ else
 
     private async Task NewBudget()
     {
-        return;
+        var parameters = new DialogParameters
+        {
+            { "id", _id }
+        };
+        var dialog = await DialogService.ShowAsync<NewBudget>("Create Budget" ,parameters);
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Budget created!");
+            NavManager.Refresh();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
     }
 
 

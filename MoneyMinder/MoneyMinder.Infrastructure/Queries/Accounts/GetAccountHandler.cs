@@ -3,7 +3,7 @@ using MoneyMinder.Application.Accounts.Queries;
 using MoneyMinder.Domain.Accounts;
 using MoneyMinder.Domain.Repository;
 
-namespace MoneyMinder.Infrastructure.Queries;
+namespace MoneyMinder.Infrastructure.Queries.Accounts;
 
 internal sealed class GetAccountHandler : IRequestHandler<GetAccount, Account>
 {
