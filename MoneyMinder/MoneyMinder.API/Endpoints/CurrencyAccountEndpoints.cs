@@ -53,6 +53,22 @@ internal static  class CurrencyAccountEndpoints
         }
 
         [Authorize]
+        public static async Task<IResult> UploadCSV(
+                [FromRoute] Guid id,
+                [FromForm] IFormFile file,
+                [FromServices] ISender sender,
+                [FromServices] IUserService userService)
+        {
+                var accountId = userService.GetAccountId();
+
+                var command = new UploadCsvTransactionsCommand(accountId, id, file);
+
+                await sender.Send(command);
+                
+                return Results.Ok();
+        }
+        
+        [Authorize]
         public static async Task<IResult> IncomeAdd(
                 [FromBody] AddIncomeRequest request,
                 [FromServices] ISender sender,

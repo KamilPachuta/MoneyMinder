@@ -8,10 +8,10 @@
     <DialogContent>
         <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
             <MudText Typo="Typo.h5">Accept Monthly Income</MudText>
-
             <MudForm Model="_request" @ref="@form" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
                 <MudNumericField @bind-Value="_request.Amount" 
                                  Label="Outlined" 
+                                 For="(() => _request.Amount)"
                                  Variant="Variant.Outlined" 
                                  Step="10M" 
                                  DebounceInterval="500"/>
@@ -28,7 +28,6 @@
                     <MudSelectItem Value="Currency.GBP">GBP</MudSelectItem>
                     <MudSelectItem Value="Currency.AED">AED</MudSelectItem>
                 </MudSelect>
-                
             </MudForm>
         </MudContainer>
     </DialogContent>

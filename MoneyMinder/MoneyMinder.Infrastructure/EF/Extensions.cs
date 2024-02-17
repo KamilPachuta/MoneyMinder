@@ -21,6 +21,7 @@ public static class Extensions
         modelBuilder.ApplyConfiguration<Account>(accountConfiguration);
         modelBuilder.ApplyConfiguration<User>(accountConfiguration);
         modelBuilder.ApplyConfiguration<Address>(accountConfiguration);
+        modelBuilder.ApplyConfiguration<Notification>(accountConfiguration);
 
         var currencyAccountConfiguration = new CurrencyAccountConfiguration();
         modelBuilder.ApplyConfiguration<CurrencyAccount>(currencyAccountConfiguration);
@@ -46,6 +47,7 @@ public static class Extensions
         modelBuilder.ApplyConfiguration<AccountReadModel>(accountReadConfiguration);
         modelBuilder.ApplyConfiguration<UserReadModel>(accountReadConfiguration);
         modelBuilder.ApplyConfiguration<AddressReadModel>(accountReadConfiguration);
+        modelBuilder.ApplyConfiguration<NotificationReadModel>(accountReadConfiguration);
 
         var currencyAccountReadConfiguration = new CurrencyAccountReadConfiguration();
         modelBuilder.ApplyConfiguration<CurrencyAccountReadModel>(currencyAccountReadConfiguration);

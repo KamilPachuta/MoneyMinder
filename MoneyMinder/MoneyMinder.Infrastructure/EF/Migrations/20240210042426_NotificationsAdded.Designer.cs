@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyMinder.Domain.Accounts.Enum;
 using MoneyMinder.Infrastructure.EF.Context;
@@ -9,12 +10,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MoneyMinder.Infrastructure.Migrations
+namespace MoneyMinder.Infrastructure.EF.Migrations
 {
     [DbContext(typeof(MoneyMinderDbContext))]
-    partial class MoneyMinderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240210042426_NotificationsAdded")]
+    partial class NotificationsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

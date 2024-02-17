@@ -2,6 +2,7 @@
 @using Client.Models.ReadModels
 @using MoneyMinderClient.Models
 @using Client.Components.Dialogs
+@using Client.Models
 @using Client.Models.Requests.CurrencyAccount.Commands
 @inject ICurrencyAccountService CurrencyService
 @inject IDialogService DialogService
@@ -12,11 +13,11 @@
 <MudPaper Elevation="2" Class="px-4 py-4">
     <MudGrid>
      <MudItem xs="12" sm="12">
-            <MudPaper Elevation="2" Class="px-4 py-4">
-                <MudText Class="mx-4 my-5" Typo="Typo.h3">Monthly Transactions</MudText>
-                <MudText Class="mx-4 my-2" Typo="Typo.h4">@name</MudText>
-            </MudPaper>
-        </MudItem>
+         <MudPaper Elevation="2" Class="px-4 py-4">
+             <MudText Class="mx-4 my-5" Typo="Typo.h3">Monthly Transactions</MudText>
+             <MudText Class="mx-4 my-2" Typo="Typo.h4">@name</MudText>
+         </MudPaper>
+     </MudItem>
     <MudItem xs="12" sm="12">
     <MudPaper>
         <MudPaper Elevation="0" Class="align-start d-flex">
@@ -25,59 +26,74 @@
             </MudPaper>
             <MudSpacer/>
             <MudPaper Elevation="0">
-                   <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="NewEditDialog">Edit Monthly Transaction</MudIconButton>
-                   <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="NewRemoveDialog">Remove Monthly Transaction</MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="NewEditDialog">Edit Monthly Transaction</MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="NewRemoveDialog">Remove Monthly Transaction</MudIconButton>
             </MudPaper>
         </MudPaper>
-                <MudPaper Elevation="2" Class="align-start d-flex">
+        <MudDivider/>
+        <MudPaper Elevation="2">
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudContainer Style="max-height: 800px; overflow-y: scroll;">
+                                        <MudList>
+                                            <MudListItem>
+                                                <MudText>Transaction name: @selectedModel?.Name</MudText>
+                                            </MudListItem>
+                                            <MudListItem>
+                                                <MudText>Transaction date: @selectedModel?.Month.ToShortDateString()</MudText>
+                                            </MudListItem>
+                                            <MudListItem>
+                                                <MudText>Amount: @selectedModel?.Amount @selectedModel?.Currency</MudText>
+                                            </MudListItem>
+                                            @if (visibleCategory)
+                                            {
+                                                <MudListItem>
+                                                    <MudText>Category: @selectedModel.Category</MudText>
+                                                </MudListItem>
+                                            }
+                                        </MudList>
+                                        @if (visibleAccept)
+                                        {
+                                            <MudButton Color="Color.Default" OnClick="NewAcceptDialog">Accept</MudButton>
+                                        }
+                                    </MudContainer>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudContainer Style="max-height: 800px; overflow-y: scroll;" Class="px-0">
+                                        <MudTable T="MonthlyTransactionModel" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
+                                                  RowClass="cursor-pointer" OnRowClick="RowClickEvent" RowClassFunc="@SelectedRowClassFunc">
+                                            <HeaderContent>
+                                                <MudTh>Name</MudTh>
+                                                <MudTh>Date</MudTh>
+                                                <MudTh>Amount</MudTh>
+                                                <MudTh>Currency</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd DataLabel="Name">@context.Name</MudTd>
+                                                <MudTd DataLabel="Date">@context.Month.ToString("dd-MM-yyyy")</MudTd>
+                                                <MudTd DataLabel="Amount">@context.Amount</MudTd>
+                                                <MudTd DataLabel="Currency">@context.Currency</MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    </MudContainer>
+                </MudItem>
+                
+            </MudGrid>
+            
+        </MudPaper>
 
-                    <MudPaper Elevation="0" MinWidth="300px" Class="align-start d-flex">
-                        <MudContainer Style="max-height: 800px; overflow-y: scroll;">
-                            <MudList>
-                                <MudListItem>
-                                    <MudText>Transaction name: @selectedModel?.Name</MudText>
-                                </MudListItem>
-                                <MudListItem>
-                                    <MudText>Transaction date: @selectedModel?.Month.ToShortDateString()</MudText>
-                                </MudListItem>
-                                <MudListItem>
-                                    <MudText>Amount: @selectedModel?.Amount @selectedModel?.Currency</MudText>
-                                </MudListItem>
-                                @if (visibleCategory)
-                                {
-                                    <MudListItem>
-                                        <MudText>Category: @selectedModel.Category</MudText>
-                                    </MudListItem>
-                                }
-                            </MudList>
-                            @if (visibleAccept)
-                            {
-                                <MudButton Color="Color.Default" OnClick="NewAcceptDialog">Accept</MudButton>
-                            }
-                        </MudContainer>
-                    </MudPaper>
-                    <MudSpacer/>
-                    <MudPaper Elevation="0" MinWidth="300px" Width="50%">
-                                <MudContainer Style="max-height: 800px; overflow-y: scroll;"  Class="px-0">
-                                    <MudTable T="MonthlyTransactionModel" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
-                                              RowClass="cursor-pointer" OnRowClick="RowClickEvent" RowClassFunc="@SelectedRowClassFunc">
-                                        <HeaderContent>
-                                            <MudTh>Name</MudTh>
-                                            <MudTh>Date</MudTh>
-                                            <MudTh>Amount</MudTh>
-                                            <MudTh>Currency</MudTh>
-                                        </HeaderContent>
-                                        <RowTemplate>
-                                            <MudTd DataLabel="Name">@context.Name</MudTd>
-                                            <MudTd DataLabel="Date">@context.Month.ToString("dd-MM-yyyy")</MudTd>
-                                            <MudTd DataLabel="Amount">@context.Amount</MudTd>
-                                            <MudTd DataLabel="Currency">@context.Currency</MudTd>
-                                        </RowTemplate>
-                                    </MudTable>
-                                </MudContainer>
-                            </MudPaper>
-                </MudPaper>
-            </MudPaper>
+
+
+
+
+
+
+
+
+
+
+       
+    </MudPaper>
         </MudItem>
     </MudGrid>
 </MudPaper>
@@ -97,6 +113,8 @@
     private int selectedRowNumber = -1;
     private MonthlyTransactionModel? selectedModel = null;
     private List<MonthlyTransactionModel> _transactions = new();
+    
+    
     private bool _succeded = false;
     private List<string> _errors;
 

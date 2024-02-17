@@ -3,6 +3,7 @@
 @using MoneyMinder.API.Requests.CurrencyAccounts
 @using Client.Models.ReadModels
 @using Client.Components.Dialogs
+@using Client.Models
 @using Client.Models.Requests.CurrencyAccount.Commands
 @using MoneyMinderClient.Models
 @inject ICurrencyAccountService CurrencyService
@@ -55,7 +56,7 @@
             <MudIconButton Icon="@Icons.Material.Filled.History" OnClick="GoToHistory"></MudIconButton>
             </MudTooltip>
             <MudTooltip Text="Monthly Transactions">
-            <MudIconButton Icon="@Icons.Material.Filled.Repeat" OnClick="GoToMonthly"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.EventRepeat" OnClick="GoToMonthly"></MudIconButton>
             </MudTooltip>
             <MudTooltip Text="Budget">
                 <MudIconButton Icon="@Icons.Material.Filled.BarChart" OnClick="GoToBudget"></MudIconButton>
@@ -75,7 +76,7 @@
                                     <MudFab Label="Currency Exchange" Icon="@Icons.Material.Filled.CurrencyExchange" OnClick="NewConvertDialog"/>
                                     <MudFab Label="Edit Currency Account Name" Icon="@Icons.Material.Filled.EditNote" OnClick="NewEditCurrencyNameDialog"/>
                                     <MudFab Label="Transaction History" Icon="@Icons.Material.Filled.History" OnClick="GoToHistory"/>
-                                    <MudFab Label="Monthly Transactions" Icon="@Icons.Material.Filled.Repeat" OnClick="GoToMonthly"/>
+                                    <MudFab Label="Monthly Transactions" Icon="@Icons.Material.Filled.EventRepeat" OnClick="GoToMonthly"/>
                                     <MudFab Label="Budget" Icon="@Icons.Material.Filled.BarChart" OnClick="GoToBudget"/>
                                     <MudFab Label="Remove Currency Account" Icon="@Icons.Material.Filled.DeleteForever" OnClick="NewDeleteDialog"/>
                     </MudStack>

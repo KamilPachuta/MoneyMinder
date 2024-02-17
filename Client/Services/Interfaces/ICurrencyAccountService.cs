@@ -1,4 +1,5 @@
-﻿using Client.Models.ReadModels;
+﻿using Client.Models;
+using Client.Models.ReadModels;
 using Client.Models.Requests.CurrencyAccount.Commands;
 using Client.Models.Responses;
 using MoneyMinder.API.Requests.CurrencyAccounts;

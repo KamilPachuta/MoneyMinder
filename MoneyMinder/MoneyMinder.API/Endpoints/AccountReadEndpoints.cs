@@ -46,4 +46,18 @@ internal static class AccountReadEndpoints
 
         return Results.Ok(result);
     }
+    
+    [Authorize]
+    public static async Task<IResult> GetNotifications(
+        [FromServices] ISender sender,
+        [FromServices] IUserService userService)
+    {
+        var id = userService.GetAccountId();
+
+        var command = new GetNotifications(id);
+
+        var result = await sender.Send(command);
+
+        return Results.Ok(result);
+    }
 }

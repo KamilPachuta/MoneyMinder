@@ -11,13 +11,13 @@
 
             <MudForm Model="_request" @ref="@form" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
                 <MudNumericField @bind-Value="_request.NewAmount" 
-                                 Label="Outlined" 
+                                 Label="New amount" 
                                  Variant="Variant.Outlined" 
                                  Step="10M" 
                                  DebounceInterval="500"/>
                 
                 <MudSelect @bind-Value="_request.NewCurrency"
-                           Label="Currency"
+                           Label="New currency"
                            Variant="Variant.Outlined"
                            For="(() => _request.NewCurrency)">
                     <MudSelectItem Value="Currency.USD">USD</MudSelectItem>

@@ -1,6 +1,7 @@
 ﻿@using MoneyMinder.API.Requests.CurrencyAccounts.Validators
 @using Client.Models.Requests.CurrencyAccount.Commands
 @using Client.Components.Selectors
+@using Client.Models
 @using Client.Models.Enums
 @using Client.Models.Requests.CurrencyAccount.Validators
 @using MoneyMinderClient.Models
@@ -39,6 +40,7 @@
                             
                             <MudNumericField @bind-Value="requestIncome.Amount" 
                                              Label="Outlined" 
+                                             For="(() => requestIncome.Amount)"
                                              Variant="Variant.Outlined" 
                                              Step="10M" 
                                              DebounceInterval="500"/>
@@ -79,6 +81,7 @@
                                                     
                                                     <MudNumericField @bind-Value="requestPayment.Amount" 
                                                                      Label="Outlined" 
+                                                                     For="(() => requestPayment.Amount)"
                                                                      Variant="Variant.Outlined" 
                                                                      Step="10M" 
                                                                      DebounceInterval="500"/>

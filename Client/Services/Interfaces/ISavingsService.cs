@@ -1,4 +1,5 @@
-﻿using Client.Models.Requests.SavingsPortfolios.Commands;
+﻿using Client.Models;
+using Client.Models.Requests.SavingsPortfolios.Commands;
 using Client.Models.Responses.Savings;
 using MoneyMinderClient.Models;
 

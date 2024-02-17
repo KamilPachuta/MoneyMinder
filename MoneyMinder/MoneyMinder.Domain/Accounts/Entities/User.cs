@@ -10,10 +10,7 @@ public class User : Entity
     public UserPhoneNumber PhoneNumber { get; protected set; }
     public UserBrithDate BirthDate { get; }
     public Gender Gender { get; }
-
-
-    //private List<CurrencyAccount> _currencyAccounts;
-    //private List<SavingsPortfolio> _savings;
+    
 
     public Address Address{ get; private set; }
 

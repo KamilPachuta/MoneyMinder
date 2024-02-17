@@ -7,13 +7,13 @@
 <MudDialog DisableSidePadding="true">
     <DialogContent>
         <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
-            <MudText Typo="Typo.h5">Currency Account</MudText>
+            <MudText Typo="Typo.h5">Savings Portfolio</MudText>
 
                     <MudForm Model="_request" @ref="@form" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
                         <MudTextField @bind-Value="_request.Name" 
                                       For="@(() => _request.Name)" 
                                       Immediate="true" 
-                                      Label="Currency Account Name" 
+                                      Label="Savings Portfolio Name" 
                                       Variant="Variant.Outlined" />
                         
                         <MudSelect @bind-Value="_request.Currency"

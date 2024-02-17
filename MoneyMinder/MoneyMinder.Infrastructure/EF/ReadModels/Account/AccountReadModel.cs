@@ -15,6 +15,7 @@ public class AccountReadModel
     public UserReadModel? User { get; set; }
     public IEnumerable<CurrencyAccountReadModel> CurrencyAccounts { get; set; }
     public IEnumerable<SavingsPortfolioReadModel> SavingsPortfolios { get; set; }
+    public IEnumerable<NotificationReadModel> Notifications { get; set; }
 
     public AccountReadModel()
     {

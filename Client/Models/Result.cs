@@ -1,6 +1,6 @@
 ﻿using MoneyMinderClient.Models.Responses;
 
-namespace MoneyMinderClient.Models;
+namespace Client.Models;
 
 public class Result
 {

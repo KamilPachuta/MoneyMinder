@@ -97,5 +97,32 @@ internal static class AccountEndpoints
         return Results.Ok();
     }
     
+    [Authorize]
+    public static async Task<IResult> PostNotification(
+        [FromBody]AddNotificationRequest request, 
+        [FromServices] ISender sender,
+        [FromServices]IUserService userService)
+    {
+        var id = userService.GetAccountId();
+
+        var command = new AddNotificationCommand(id, request.Title, request.Description);
+        
+        await sender.Send(command);
+
+        return Results.Ok();
+    }
     
+    [Authorize]
+    public static async Task<IResult> ClearNotifications(
+        [FromServices] ISender sender,
+        [FromServices]IUserService userService)
+    {
+        var id = userService.GetAccountId();
+
+        var command = new ClearNotificationsCommand(id);
+        
+        await sender.Send(command);
+
+        return Results.Ok();
+    }
 }

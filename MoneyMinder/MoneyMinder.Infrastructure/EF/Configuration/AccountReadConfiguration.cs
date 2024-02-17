@@ -7,7 +7,8 @@ namespace MoneyMinder.Infrastructure.EF.Configuration;
 public class AccountReadConfiguration : 
     IEntityTypeConfiguration<AccountReadModel>,
     IEntityTypeConfiguration<UserReadModel>,
-    IEntityTypeConfiguration<AddressReadModel>
+    IEntityTypeConfiguration<AddressReadModel>,
+    IEntityTypeConfiguration<NotificationReadModel>
 {
     public void Configure(EntityTypeBuilder<AccountReadModel> builder)
     {
@@ -37,6 +38,11 @@ public class AccountReadConfiguration :
             .HasMany(a => a.SavingsPortfolios)
             .WithOne()
             .HasForeignKey(sp => sp.AccountId);
+        
+        builder
+            .HasMany(a => a.Notifications)
+            .WithOne()
+            .HasForeignKey(n => n.AccountId);
     }
 
     public void Configure(EntityTypeBuilder<UserReadModel> builder)
@@ -79,5 +85,20 @@ public class AccountReadConfiguration :
         builder
             .Property(a => a.Street);
         
+    }
+
+    public void Configure(EntityTypeBuilder<NotificationReadModel> builder)
+    {
+        builder.ToTable(TableNames.Notifications);
+        builder.HasKey(n => n.Id);
+
+        builder
+            .Property(n => n.Title);
+
+        builder
+            .Property(n => n.Description);
+
+        builder
+            .Property(n => n.Date);
     }
 }

@@ -18,6 +18,7 @@ public class Account : AggregateRoot
     public User? User { get; private set; }
     public List<CurrencyAccount> CurrencyAccounts { get; } = new();
     public List<SavingsPortfolio> SavingsPortfolios { get; } = new();
+    public List<Notification> Notifications { get; } = new();
 
 
     private Account()
@@ -103,5 +104,14 @@ public class Account : AggregateRoot
             throw new UserNullableReferenceException();
         }
     }
-    
+
+    public void AddNotification(Notification notification)
+    {
+        Notifications.Add(notification);
+    }
+
+    public void ClearNotifications()
+        => Notifications.Clear();
+
+
 }

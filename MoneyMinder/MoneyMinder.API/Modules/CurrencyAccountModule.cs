@@ -69,6 +69,8 @@ public class CurrencyAccountModule : BaseModule
 
         commands.MapDelete("/budget/expense/", CurrencyAccountEndpoints.ExpenseDelete);
 
+        app.MapPost("/upload/{id}", CurrencyAccountEndpoints.UploadCSV);
+
         var queries = app.MapGroup("").AddFluentValidationAutoValidation();
 
         queries.MapGet("/{id}", CurrencyAccountReadEndpoints.Get);

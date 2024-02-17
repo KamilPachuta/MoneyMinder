@@ -1,4 +1,5 @@
-﻿using Client.Models.Enums;
+﻿using Client.Models;
+using Client.Models.Enums;
 using Client.Models.Requests.Account.Commands;
 using Client.Models.Responses.Accounts;
 using MoneyMinderClient.Models;
@@ -17,6 +18,7 @@ public interface IAccountService
     public Task<Result> ChangeName(ChangeNameRequest request);
     public Task<Result> ChangePhoneNumber(ChangePhoneNumberRequest request);
     public Task<Result> ChangeAddress(ChangeAddressRequest request);
+    public Task<Result> ClearNotifications();
 
     public Task<string> GetToken();
     public Task<string> GetName();
@@ -24,6 +26,7 @@ public interface IAccountService
     public Task<Guid> GetId();
 
     public Task<Result<GetPersonalInfoResponse>> GetPersonalInfo();
+    public Task<Result<GetNotificationsResponse>> GetNotifications();
 
 
 }

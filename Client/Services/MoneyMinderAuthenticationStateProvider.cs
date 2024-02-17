@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json;
 using Blazored.LocalStorage;
+using Client.Models;
 using Client.Models.Enums;
 using Client.Models.ReadModels;
 using Client.Models.Requests.Account;
@@ -94,6 +95,18 @@ namespace Client.Services;
             return _authenticated;
         }
 
+        public async Task<Result> ClearNotifications()
+        {
+            var responseMessage = await _httpClient.PostAsync("api/Account/notifications/clear", null);
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+            }
+
+            return new (){ Succeeded = true};
+        }
+
         public async Task<string> GetToken()
             => await _localStorage.GetItemAsStringAsync("Token");
 
@@ -150,6 +163,30 @@ namespace Client.Services;
                 return new (){ Succeeded = false, ErrorList = new() {"Response is null.", $"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
             }
 
+            return new (){ Succeeded = true, Response = new (response)};
+        }
+
+        public async Task<Result<GetNotificationsResponse>> GetNotifications()
+        {
+            var responseMessage = await _httpClient.GetAsync($"api/Account/notifications"); 
+        
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+            }
+            
+            if (string.IsNullOrEmpty(await responseMessage.Content.ReadAsStringAsync()))
+            {
+                return new() { Succeeded = true, Response = new(null)};
+            }
+            
+            var response = await responseMessage.Content.ReadFromJsonAsync<IEnumerable<NotificationModel>>();
+        
+            if (response == null)
+            {
+                return new (){ Succeeded = false, ErrorList = new() {"Response is null.", $"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+            }
+            
             return new (){ Succeeded = true, Response = new (response)};
         }
 

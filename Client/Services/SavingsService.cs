@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Formatting;
 using System.Net.Http.Json;
+using Client.Models;
 using Client.Models.ReadModels;
 using Client.Models.Requests.SavingsPortfolios.Commands;
 using Client.Models.Responses.Savings;

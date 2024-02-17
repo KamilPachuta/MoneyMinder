@@ -1,5 +1,6 @@
-﻿@inherits LayoutComponentBase
-@inject IAccountService accService
+﻿@using Client.Models.ReadModels
+@inherits LayoutComponentBase
+@inject IAccountService AccountService
 @inject NavigationManager navManager
 
 <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
@@ -16,13 +17,14 @@
         </AuthorizeView>
         <MudText Typo="Typo.h5" Class="ml-3">MoneyMinder</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="@((e) => ToggleOpen())"/>
+        <MudIconButton Icon="@Icons.Material.Outlined.Notifications" Color="Color.Inherit" OnClick="@((e) => ToggleOpenNotifications())"/>
+        <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="@((e) => ToggleOpenInfo())"/>
         <AuthorizeView>
             <Authorized>
                 <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="@((e) => HandleLogout())"/> @*OnClick="@((e) => DrawerToggle())"*@
             </Authorized>
         </AuthorizeView>
-        <MudPopover Open="_isOpen" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.BottomLeft" Paper="false">
+        <MudPopover Open="_isOpenInfo" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.BottomLeft" Paper="false">
             <MudPaper Outlined="true" Class="px-4 py-2">
                 <MudStack>
                     <MudPaper Width="400px"  Elevation="0">
@@ -34,9 +36,27 @@
                     <MudPaper Class="pa-1">
                         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/KamilPachuta" Target="_blank" />
                         <MudIconButton Icon="@Icons.Custom.Brands.LinkedIn" Color="Color.Inherit" Link="https://pl.linkedin.com/in/kamil-pachuta" Target="_blank" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@ToggleOpen"></MudIconButton>   
+                        <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@ToggleOpenInfo"></MudIconButton>   
                     </MudPaper>
                 </MudStack>
+            </MudPaper>
+        </MudPopover>
+        <MudPopover Open="_isOpenNotifications" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.BottomLeft" Paper="false">
+            <MudPaper Outlined="true" Class="px-4 py-2">
+                <MudText Typo="Typo.h5">Notifications</MudText>
+                <MudDivider/>
+                <MudList>
+                    @foreach (var notification in _notifications)
+                    {
+                        <MudListItem>
+                            <MudText Typo="Typo.body1">@notification.Title</MudText>
+                            <MudText Typo="Typo.body2">@notification.Description</MudText>
+                            <MudText Typo="Typo.body2">@notification.Date.ToString("g")</MudText>
+                        </MudListItem>
+                    }
+                </MudList>
+                <MudButton StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="ClearNotifications">Clear</MudButton>                           
+                <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@ToggleOpenInfo"></MudIconButton>   
             </MudPaper>
         </MudPopover>
     </MudAppBar>
@@ -64,15 +84,27 @@
     private bool _isDarkMode = false;
     private MudTheme _theme = new();
     private bool _drawerOpen = true;
-    public bool _isOpen = false;
+    public bool _isOpenInfo = false;
+    public bool _isOpenNotifications = false;
 
-    public void ToggleOpen()
+    private List<NotificationModel> _notifications = new();
+
+    public void ToggleOpenInfo()
     {
-        if (_isOpen)
-            _isOpen = false;
+        if (_isOpenInfo)
+            _isOpenInfo = false;
         else
-            _isOpen = true;
+            _isOpenInfo = true;
     }
+    
+    public void ToggleOpenNotifications()
+    {
+        if (_isOpenNotifications)
+            _isOpenNotifications = false;
+        else
+            _isOpenNotifications = true;
+    }
+    
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
@@ -80,117 +112,36 @@
 
     private async Task HandleLogout()
     {
-        if (await accService.CheckAuthenticationAsync())
+        if (await AccountService.CheckAuthenticationAsync())
         {
-            await accService.LogoutAsync();
+            await AccountService.LogoutAsync();
             navManager.NavigateTo("/login/", true);
         }
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SetParams();
+    }
+
+    private async Task SetParams()
+    {
+        var result = await AccountService.GetNotifications();
+
+        if (result.Succeeded)
+        {
+            if (result.Response.Notifications is not null)
+            {
+                _notifications.AddRange(result.Response.Notifications);
+            }
+        }
+    }
+
+    private async Task ClearNotifications()
+    {
+        await AccountService.ClearNotifications();
+    }
+
 }
 
 
-@* *@
-@* @using Blazored.LocalStorage *@
-@* *@
-@* @using Microsoft.AspNetCore.SignalR.Client *@
-@* @using System.Net.Http.Headers *@
-@* @using MoneyMinderClient.Services.Interfaces *@
-@* @inherits LayoutComponentBase *@
-@* @inject IAccountService AccountService *@
-@* @inject ISnackbar Snackbar *@
-@* @inject ILocalStorageService Storage; *@
-@* <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" /> *@
-@* <MudDialogProvider /> *@
-@* <MudSnackbarProvider /> *@
-@* *@
-@* <MudLayout> *@
-@*     <MudAppBar Color=Color.Primary Elevation="10" Class="mb-4"> *@
-@* *@
-@*         <MudSpacer /> *@
-@*         <AuthorizeView> *@
-@* *@
-@*             <Authorized> *@
-@*                 <MudCard Class="ma-2" Elevation="4"> *@
-@*                     $1$ <MudText Class="ma-2" Color="Color.Primary"><b>@context.User.Identity?.Name.ToUpper()</b></MudText> #1# *@
-@*                 </MudCard> *@
-@*                 <MudButton Size="Size.Large" OnClick="Logout">LOGOUT</MudButton> *@
-@* *@
-@*             </Authorized> *@
-@* *@
-@*             <NotAuthorized> *@
-@*                 <MudButton Size="Size.Large" Href="register">REGISTER</MudButton> *@
-@*                 <MudButton Size="Size.Large" Href="login">LOGIN</MudButton> *@
-@*             </NotAuthorized> *@
-@* *@
-@*         </AuthorizeView> *@
-@*     </MudAppBar> *@
-@* *@
-@*     <MudMainContent> *@
-@*         <MudContainer Style="max-width: 1500px"> *@
-@*             <NavMenu></NavMenu> *@
-@*             @Body *@
-@*         </MudContainer> *@
-@*     </MudMainContent> *@
-@* </MudLayout> *@
-@* *@
-@* *@
-@* @code { *@
-@*      *@
-@* *@
-@*     private bool _isDarkMode = true; *@
-@*     private MudTheme _theme = new(); *@
-@* *@
-@*     *@
-@* *@
-@*     private async Task Logout() *@
-@*     { *@
-@*         if (await AccountService.CheckAuthenticationAsync()) *@
-@*         { *@
-@*             await AccountService.LogoutAsync(); *@
-@*         } *@
-@*     } *@
-@* } *@
-@* *@
-@* *@
-@* *@
-@* *@
-@* *@
-@* *@
-@* $1$ @inherits Microsoft.AspNetCore.Components.LayoutComponentBase #1# *@
-@* $1$ #1# *@
-@* $1$ <MyMudThemeProvider /> #1# *@
-@* $1$ #1# *@
-@* $1$ <div class="page mud-layout"> #1# *@
-@* $1$ #1# *@
-@* $1$     <div class="sidebar mud-elevation-1"> #1# *@
-@* $1$         <div class="top-row mud-drawer-head"> #1# *@
-@* $1$             <div> #1# *@
-@* $1$                 <a class="navbar-brand" href="https://mudblazor.com/" target="_blank">MudBlazor</a> #1# *@
-@* $1$             </div> #1# *@
-@* $1$         </div> #1# *@
-@* $1$ #1# *@
-@* $1$         <input type="checkbox" title="Navigation menu" class="navbar-toggler" /> #1# *@
-@* $1$         <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()"> #1# *@
-@* $1$             <NavMenu /> #1# *@
-@* $1$         </div> #1# *@
-@* $1$ #1# *@
-@* $1$     </div> #1# *@
-@* $1$ #1# *@
-@* $1$      <main> #1# *@
-@* $1$         <div class="top-row px-4"> #1# *@
-@* $1$             <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Style="color: white;" Link="https://mudblazor.com/" Target="_blank" /> #1# *@
-@* $1$             <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Style="color: white;" Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" /> #1# *@
-@* $1$         </div> #1# *@
-@* $1$ #1# *@
-@* $1$         <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-2 pt-2"> #1# *@
-@* $1$             @Body #1# *@
-@* $1$         </MudContainer> #1# *@
-@* $1$     </main> #1# *@
-@* $1$ </div> #1# *@
-@* $1$ #1# *@
-@* $1$ <div id="blazor-error-ui"> #1# *@
-@* $1$     An unhandled error has occurred. #1# *@
-@* $1$     <a href="" class="reload">Reload</a> #1# *@
-@* $1$     <a class="dismiss">🗙</a> #1# *@
-@* $1$ </div> #1# *@
-@* *@

@@ -10,7 +10,8 @@ namespace MoneyMinder.Infrastructure.EF.Configuration;
 internal sealed class AccountConfiguration : 
     IEntityTypeConfiguration<Account>,
     IEntityTypeConfiguration<User>,
-    IEntityTypeConfiguration<Address>
+    IEntityTypeConfiguration<Address>,
+    IEntityTypeConfiguration<Notification>
 {
     public void Configure(EntityTypeBuilder<Account> builder)
     {
@@ -35,6 +36,13 @@ internal sealed class AccountConfiguration :
             .HasOne(a => a.User)
             .WithOne()
             .HasForeignKey<User>();
+
+        builder
+            .HasMany(a => a.Notifications)
+            .WithOne()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        
 
         builder
             .HasMany(a => a.CurrencyAccounts)
@@ -92,5 +100,22 @@ internal sealed class AccountConfiguration :
         builder
             .Property(a => a.Street)
             .HasConversion(s => s.Value, s => new AddressStreet(s));
+    }
+
+    public void Configure(EntityTypeBuilder<Notification> builder)
+    {
+        builder.ToTable(TableNames.Notifications);
+        builder.HasKey(n => n.Id);
+
+        builder
+            .Property(n => n.Title)
+            .HasConversion(t => t.Title, t => new NotificationTitle(t));
+
+        builder
+            .Property(n => n.Description)
+            .HasConversion(d => d.Description, d => new NotificationDescription(d));
+
+        builder
+            .Property(n => n.Date);
     }
 }

@@ -8,15 +8,9 @@
 <MudDialog DisableSidePadding="true">
     <DialogContent>
         <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
-            <MudText Typo="Typo.h5">Change Name</MudText>
+            <MudText Typo="Typo.h5">Change Last Name</MudText>
 
             <MudForm Model="_request" @ref="@form" Validation="@(_validator.ValidateValue)" ValidationDelay="0">
-                <MudTextField @bind-Value="_request.FirstName" 
-                              For="@(() => _request.FirstName)" 
-                              Immediate="true" 
-                              Label="First Name" 
-                              Variant="Variant.Outlined" /> 
-                
                 
                 <MudTextField @bind-Value="_request.LastName" 
                               For="@(() => _request.LastName)" 
@@ -37,6 +31,9 @@
 @code {
     [CascadingParameter] 
     MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] 
+    public string firstName { get; set; }
     
     MudForm form = new();
     
@@ -50,6 +47,8 @@
     
     private async Task Submit()
     {
+        _request.FirstName = firstName;
+        
         await form.Validate();
 
         if (form.IsValid)
