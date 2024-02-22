@@ -15,5 +15,25 @@ internal sealed class UploadCsvTransactionsHandler : CurrencyCommandHandler<Uplo
     public override Task Handle(UploadCsvTransactionsCommand request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
+        
+        // if (file is not null && file.ContentType == "text/csv")
+        // {
+        //     // Obsługa przesłanego pliku CSV
+        //     
+        //     using var reader = new StreamReader(file.OpenReadStream());
+        //     while (!reader.EndOfStream)
+        //     {
+        //         var line = await reader.ReadLineAsync();
+        //         
+        //         Console.WriteLine(line);
+        //     }
+        //
+        //     await context.Response.WriteAsync("Plik CSV został przesłany i przetworzony poprawnie.");
+        // }
+        // else
+        // {
+        //     context.Response.StatusCode = StatusCodes.Status415UnsupportedMediaType;
+        //     await context.Response.WriteAsync("Nieprawidłowy typ pliku. Wysyłany plik musi być w formacie CSV.");
+        // }
     }
 }

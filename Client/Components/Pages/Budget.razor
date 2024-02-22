@@ -4,6 +4,12 @@
 @using Client.Components.Dialogs
 @using Client.Models
 @using MoneyMinderClient.Models
+@using Client.Components.Dialogs
+@using Client.Models
+@using Client.Models.Enums
+@using Client.Services.Interfaces
+@using Microsoft.AspNetCore.Components
+@using MudBlazor
 @inject ICurrencyAccountService CurrencyService
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -102,7 +108,9 @@ else
     private BudgetModel? _budget;
     private IEnumerable<PaymentModel> _payments;
     private List<Expense> _expenses = new();
-    private List<ChartSeries> _chartSeries = new();
+    private List<ChartSeries> _chartSeries;
+    private CustomChartSeries _customChartSeries = new();
+    private string[] XAxisLabels = { };
 
     private bool _currencySwitch = true; // If true Budget will read only payments with budget currency, if false it will read all payments and convert currencies to match budget currency 
     
@@ -152,8 +160,6 @@ else
 
     private Task SetExpenses()
     {
-        if (_currencySwitch)
-        {
             var groups = _payments
                 .Where(p => p.Currency == _budget.Currency)
                 .GroupBy(p => p.Category);
@@ -162,23 +168,13 @@ else
             {
                 var category = group.Key;
                 
-                var actualAmount = group.Sum(p => p.Amount);
+                var actualAmount = (-1) * (group.Sum(p => p.Amount));
 
                 if (_budget.Expenses.Any(e => e.Category == category))
                 {
                     var plannedAmount = _budget.Expenses.FirstOrDefault(e => e.Category == category).Amount;
 
                     _expenses.Add(new Expense(category, actualAmount, plannedAmount));
-                    _chartSeries.Add(new ChartSeries()
-                    {
-                        Name = category.ToString(),
-                        Data = new[]
-                        {
-                            (double)actualAmount,
-                            (double)plannedAmount
-                        }
-                    });
-
                 }
                 else
                 {
@@ -186,11 +182,32 @@ else
                     {
                         _expenses.FirstOrDefault(e => e.Category == Category.Other).ActualAmount += actualAmount;
                         
-                        _chartSeries.Find(cs => cs.Name == category.ToString()).Data[0] += (double)actualAmount;
+                    }
+                    else
+                    {
+                        _expenses.Add(new Expense(Category.Other, actualAmount, 0));
+                        
                     }
                 }
             }
-        }
+
+            if (_expenses.Any())
+            {
+                foreach (var expense in _expenses)
+                {
+                    _customChartSeries.Categories.Add(expense.Category.ToString());
+                    _customChartSeries.ActualAmounts.Add((double)expense.ActualAmount);
+                    _customChartSeries.PlannedAmounts.Add((double)expense.PlannedAmount);
+                }
+
+                _chartSeries = new List<ChartSeries>()
+                {
+                    new() { Name = "Actual Amount", Data = _customChartSeries.ActualAmounts.ToArray() },
+                    new() { Name = "Planned Amount", Data = _customChartSeries.PlannedAmounts.ToArray() }
+                };
+                XAxisLabels = _customChartSeries.Categories.ToArray();
+            }
+        
         
         
         return Task.CompletedTask;
@@ -229,7 +246,39 @@ else
         }
     }
 
-
+    private async Task AddExpense()
+    {
+        //ZROBIC CUSTOMOWE DODAWANIE WLACZNIE Z PLANNED AMOUNT OD RAZU
+        // var dialog = await DialogService.ShowAsync<CategotyPicker>();
+        //
+        // var result = await dialog.Result;
+        //
+        // if (result.Canceled)
+        // {
+        //     return;
+        // }
+        //
+        // var category  = await dialog.GetReturnValueAsync<Category>();
+        //
+        // if (expenses is null)
+        // {
+        //     expenses = new List<ExpenseWriteModel>();
+        // }
+        //
+        // expenses.Add(new ExpenseWriteModel(category, 0));
+    }
+    
+    // private Task RemoveExpense(Category category)
+    // {
+    //     var expense = expenses?.FirstOrDefault(e => e.Category == category);
+    //
+    //     if (expense is not null)
+    //     {
+    //         expenses.Remove(expense);
+    //     }
+    //     
+    //     return Task.CompletedTask; 
+    // }
 
 
     private class Expense
@@ -250,5 +299,12 @@ else
             PlannedAmount = plannedAmount;
         }
         
+    }
+
+    private class CustomChartSeries()
+    {
+        public List<string> Categories { get; set; } = new();
+        public List<double> ActualAmounts { get; set; } = new();
+        public List<double> PlannedAmounts { get; set; } = new();
     }
 }

@@ -1,6 +1,10 @@
 using Carter;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using MoneyMinder.API.Endpoints;
 using MoneyMinder.API.Modules.Abstractions;
+using MoneyMinder.API.Services;
+using MoneyMinder.Application.CurrencyAccounts.Commands;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace MoneyMinder.API.Modules;
@@ -69,8 +73,35 @@ public class CurrencyAccountModule : BaseModule
 
         commands.MapDelete("/budget/expense/", CurrencyAccountEndpoints.ExpenseDelete);
 
-        app.MapPost("/upload/{id}", CurrencyAccountEndpoints.UploadCSV);
+        commands.MapPost("/upload/{id}", async (HttpContext context, [FromServices]ISender sender, [FromServices]IUserService userService, [FromRoute]Guid id) =>
+        {
+            var accountId = userService.GetAccountId();
+    
+            var form = await context.Request.ReadFormAsync();
+            var file = form.Files.GetFile("file");
 
+            if (file is not null && file.ContentType == "text/csv")
+            {
+                
+                var command = new UploadCsvTransactionsCommand(accountId, id, file);
+
+                await sender.Send(command);
+                
+                return Results.Ok();
+
+            }
+            else
+            {
+            
+                return Results.BadRequest("Unsupported Media Type. Sending file must be in CSV format.");
+            }
+    
+    
+            
+        });
+        //commands.MapPost("/upload/{id}", CurrencyAccountEndpoints.UploadCSV);
+
+        
         var queries = app.MapGroup("").AddFluentValidationAutoValidation();
 
         queries.MapGet("/{id}", CurrencyAccountReadEndpoints.Get);

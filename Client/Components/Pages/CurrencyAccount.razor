@@ -46,6 +46,9 @@
             <MudTooltip Text="Add new monthly transaction">
                 <MudIconButton Icon="@Icons.Material.Filled.AddAlarm" OnClick="NewMonthlyTransactionDialog"></MudIconButton>
             </MudTooltip>  
+             <MudTooltip Text="Add multiple transactions using import CSV.">
+                 <MudIconButton Icon="@Icons.Material.Filled.UploadFile" OnClick="UploadFile"></MudIconButton>
+             </MudTooltip>  
             <MudTooltip Text="Currency Exchange">
                 <MudIconButton Icon="@Icons.Material.Filled.CurrencyExchange" OnClick="NewConvertDialog"></MudIconButton>
             </MudTooltip>  
@@ -327,6 +330,38 @@
         }
     }
 
+    private async Task UploadFile()
+    {
+        var parameters = new DialogParameters
+        {
+            { "id", id }
+        };
+        var dialog = await DialogService.ShowAsync<ImportTransactionsDialog>("Import transactions", parameters);
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted adding transaction!");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
+    
     private Task GoToHistory()
     {
         NavManager.NavigateTo($"/CurrencyAccount/{name}/TransactionHistory", true);

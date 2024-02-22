@@ -52,7 +52,7 @@ internal static  class CurrencyAccountEndpoints
                 return Results.Ok();
         }
 
-        [Authorize]
+        // [Authorize]
         public static async Task<IResult> UploadCSV(
                 [FromRoute] Guid id,
                 [FromForm] IFormFile file,

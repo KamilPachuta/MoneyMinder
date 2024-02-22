@@ -17,10 +17,10 @@
         </AuthorizeView>
         <MudText Typo="Typo.h5" Class="ml-3">MoneyMinder</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Outlined.Notifications" Color="Color.Inherit" OnClick="@((e) => ToggleOpenNotifications())"/>
         <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="@((e) => ToggleOpenInfo())"/>
         <AuthorizeView>
             <Authorized>
+        <MudIconButton Icon="@Icons.Material.Outlined.Notifications" Color="Color.Inherit" OnClick="@((e) => ToggleOpenNotifications())"/>
                 <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="@((e) => HandleLogout())"/> @*OnClick="@((e) => DrawerToggle())"*@
             </Authorized>
         </AuthorizeView>
@@ -87,6 +87,8 @@
     public bool _isOpenInfo = false;
     public bool _isOpenNotifications = false;
 
+    private bool _isAuthenticated = false;
+
     private List<NotificationModel> _notifications = new();
 
     public void ToggleOpenInfo()
@@ -112,7 +114,7 @@
 
     private async Task HandleLogout()
     {
-        if (await AccountService.CheckAuthenticationAsync())
+        if (_isAuthenticated)
         {
             await AccountService.LogoutAsync();
             navManager.NavigateTo("/login/", true);
@@ -126,15 +128,20 @@
 
     private async Task SetParams()
     {
-        var result = await AccountService.GetNotifications();
-
-        if (result.Succeeded)
+        _isAuthenticated = await AccountService.CheckAuthenticationAsync();
+        if (_isAuthenticated)
         {
-            if (result.Response.Notifications is not null)
+            var result = await AccountService.GetNotifications();
+
+            if (result.Succeeded)
             {
-                _notifications.AddRange(result.Response.Notifications);
+                if (result.Response.Notifications is not null)
+                {
+                    _notifications.AddRange(result.Response.Notifications);
+                }
             }
         }
+        
     }
 
     private async Task ClearNotifications()

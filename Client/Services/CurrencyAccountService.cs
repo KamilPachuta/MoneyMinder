@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Client.Models;
 using Client.Models.ReadModels;
@@ -365,6 +366,40 @@ public class CurrencyAccountService : ICurrencyAccountService
         return new (){ Succeeded = true };
     }
 
+    public async Task<Result> ImportCSV(UploadCsvTransactionsRequest request)
+    {
+
+        
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"api/CurrencyAccount/upload/{request.CurrencyAccountId}");
+        
+        using var content = new MultipartFormDataContent();
+
+        var fileContent = new StreamContent(request.File.OpenReadStream());
+
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(request.File.ContentType);
+        content.Add(fileContent, "file", request.File.Name);
+        
+        httpRequest.Content = content;
+        
+        Console.WriteLine(content.Headers);
+        Console.WriteLine(content);
+        Console.WriteLine(await content.ReadAsStringAsync());
+        
+        //Dodać przesyłanie dat
+        
+        var responseMessage = await _httpClient.SendAsync(httpRequest);
+        
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Status Code: {responseMessage.StatusCode}" + $"Content: {await responseMessage.Content.ReadAsStringAsync()}");
+            return new (){ Succeeded = false, ErrorList = new() {$"Status Code: {responseMessage.StatusCode}", $"Content: {await responseMessage.Content.ReadAsStringAsync()}"} };
+        }
+        
+        return new (){ Succeeded = true };
+        
+        
+    }
+    
 
     public async Task<Result<GetCurrencyAccountNamesResponse>> GetCurrencyAccountNames()
     {

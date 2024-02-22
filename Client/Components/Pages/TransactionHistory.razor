@@ -99,16 +99,6 @@
         if (selectedRowNumber == rowNumber)
         {
             selectedRowNumber = -1;
-         
-            Console.WriteLine($"RowNumber: {selectedRowNumber}\nID: {transaction.Id}\nName: {transaction.Name}\nAmount: {transaction.Amount} {transaction.Currency}");
-            if (transaction.Category is not null)
-            {
-                Console.WriteLine($"Category: {transaction.Category}");
-            }
-            else
-            {
-                Console.WriteLine("Ni ma categorii");
-            }
 
             show = false;
             
@@ -122,12 +112,10 @@
             if (transaction.Category is not null)
             {
                 show = true;
-                Console.WriteLine($"Category: {transaction.Category}");
             }
             else
             {
                 show = false;
-                Console.WriteLine("Ni ma categorii");
             }
             return "selected";
         }
@@ -207,6 +195,10 @@
 
     private async Task NewRemoveDialog()
     {
+        if(selectedModel is null)
+        {
+            return;
+        }
         
         var parameters = new DialogParameters<ConfirmationDialog>();
         parameters.Add(x => x.ContentText, "Do you really want to delete these records? This process cannot be undone.");

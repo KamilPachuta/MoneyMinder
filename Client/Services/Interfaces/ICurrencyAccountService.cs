@@ -38,6 +38,7 @@ public interface ICurrencyAccountService
     public Task<Result> PutExpense(AddExpenseRequest request);
     public Task<Result> PostExpense(EditExpenseRequest request);
     public Task<Result> DeleteExpense(RemoveExpenseRequest request);
+    public Task<Result> ImportCSV(UploadCsvTransactionsRequest request);
     
     public Task<Result<GetCurrencyAccountNamesResponse>> GetCurrencyAccountNames();
     public Task<Result<GetCurrencyAccountDetailsResponse>> GetCurrencyAccountDetails(Guid id);

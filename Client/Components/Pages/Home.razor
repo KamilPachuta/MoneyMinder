@@ -31,7 +31,7 @@
             <MudPaper Elevation="2" Class="px-4 py-4 align-start d-flex">
                 <MudStack>
                     <MudText Typo="Typo.h5">Savings</MudText>
-                                    <MudIconButton Icon="@Icons.Material.Filled.Add"></MudIconButton>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateSavings"></MudIconButton>
                 </MudStack>
                 
                 <MudTable Items="@_savings" Dense="true" Bordered="true" Elevation="0">
@@ -63,7 +63,7 @@
                                     </MudPaper>
                                     <MudSpacer/>
                                     <MudPaper Elevation="0" Class="align-end d-flex">
-                                        <MudIconButton Icon="@Icons.Material.Filled.Add"></MudIconButton>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateCurrencyAccount"></MudIconButton>
                                     </MudPaper>
                                     
                                 </MudPaper>
@@ -125,7 +125,7 @@
                                                             <MudText Typo="Typo.body2">Actual | Planned</MudText>
                                                             <MudText Typo="Typo.body2">000 / @_plannedExpense</MudText>
                                                         </MudPaper>
-                                                        <MudButton>View</MudButton>
+                                                        <MudButton OnClick="GoToBudget">View</MudButton>
                                                     </MudPaper>
                                                     @*Budget*@
                                                 </MudItem>
@@ -212,7 +212,6 @@
    
     </MudGrid>
     
-    @selectedValue
     
 }
 
@@ -331,7 +330,7 @@
         
         if (isSucces.Succeeded)
         {
-            Snackbar.Add("Submitted adding budget!");
+            Snackbar.Add("Submitted creating budget!");
             await SetParams();
         }
         else
@@ -344,84 +343,65 @@
         }
     }
     
+    private Task GoToBudget()
+    {
+        NavManager.NavigateTo($"/CurrencyAccount/{_currencyDetails.Name}/Budget", true);
+        return Task.CompletedTask;
+    }
+
+    private async Task CreateCurrencyAccount()
+    {
+        var dialog = await DialogService.ShowAsync<NewCurrencyAccount>();
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted adding currency account.");
+            await SetParams();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
     
-    
-    
-    // private async Task NewTransactionDialog()
-    // {
-    //     var parameters = new DialogParameters
-    //     {
-    //         { "id", id }
-    //     };
-    //     var dialog = await DialogService.ShowAsync<NewTransaction>("Add Transaction", parameters);
-    //     
-    //     var result = await dialog.Result;
-    //
-    //     var isSucces = new Result();
-    //     
-    //     if (!result.Canceled)
-    //     {
-    //         isSucces  = await dialog.GetReturnValueAsync<Result>();
-    //     }
-    //     
-    //     if (isSucces.Succeeded)
-    //     {
-    //         Snackbar.Add("Submitted adding transaction!");
-    //         await SetParams();
-    //     }
-    //     else
-    //     {
-    //         Snackbar.Add("Saving error!");
-    //         foreach (var error in isSucces.ErrorList)
-    //         {
-    //             Snackbar.Add(error);
-    //         }
-    //     }
-    // }
-    
-    
-    // private async Task NewDeleteDialog()
-    // {
-    //     var parameters = new DialogParameters<ConfirmationDialog>();
-    //     parameters.Add(x => x.ContentText, "Do you really want to delete this currency account? This process cannot be undone.");
-    //     parameters.Add(x => x.ButtonText, "Delete");
-    //     parameters.Add(x => x.Color, Color.Error);
-    //
-    //     var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
-    //
-    //     var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters, options);
-    //
-    //     var result = await dialog.Result;
-    //
-    //
-    //     if (result.Canceled)
-    //     {
-    //         return;
-    //     }
-    //
-    //     var agree = await dialog.GetReturnValueAsync<bool>();
-    //
-    //     if (agree)
-    //     {
-    //         var isSucces = new Result();
-    //
-    //         var delRequest = new DeleteCurrencyAccountRequest(id);
-    //
-    //         isSucces = await CurrencyService.DeleteCurrencyAccount(delRequest);
-    //
-    //         if (isSucces.Succeeded)
-    //         {
-    //             Snackbar.Add("Submitted removing transaction!");
-    //             NavManager.NavigateTo("/", true);
-    //         }
-    //         else
-    //         {
-    //             Snackbar.Add("Saving error!");
-    //             foreach (var error in isSucces.ErrorList)
-    //             {
-    //                 Snackbar.Add(error);
-    //             }
-    //         }
-    //     }
-    // }
+    private async Task CreateSavings()
+    {
+        var dialog = await DialogService.ShowAsync<NewSavingsPortfolio>();
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+            await SetParams();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted adding savings portfolio.");
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
 }

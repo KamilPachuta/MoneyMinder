@@ -1,0 +1,118 @@
+﻿@using MoneyMinder.API.Requests.CurrencyAccounts.Validators
+@using Client.Models.Requests.CurrencyAccount.Commands
+@using Client.Components.Selectors
+@using Client.Models
+@using Client.Models.Enums
+@using Client.Models.Requests.CurrencyAccount.Validators
+@using MoneyMinderClient.Models
+@inject ICurrencyAccountService CurrencyService
+
+
+<MudDialog DisableSidePadding="true" @key="id">
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
+            <MudCard Elevation="4">
+                <MudCardHeader>
+                        <MudText Typo="Typo.h5">Import transactions by CSV file.</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                   
+                    <MudPaper MaxWidth="true">
+                        
+                        <MudForm Model="request" @ref="@form" Validation="@(validator.ValidateValue)" ValidationDelay="0">
+
+                            <MudFileUpload T="IBrowserFile" For="@(() => request.File)" @bind-Files="request.File" Accept=".csv">
+                                <ButtonTemplate>
+                                    <MudButton HtmlTag="label"
+                                               Variant="Variant.Filled"
+                                               Color="Color.Primary"
+                                               StartIcon="@Icons.Material.Filled.CloudUpload"
+                                               for="@context.Id">
+                                        Upload .CSV
+                                    </MudButton>
+                                </ButtonTemplate>
+                            </MudFileUpload>
+                            <MudDatePicker @bind-Date="request.From"
+                                           For="@(() => request.From)"
+                                           Label="Date from" 
+                                           DisableToolbar="true" 
+                                           Editable="true"  
+                                           Mask="@(new DateMask("dd.MM.yyyy"))" 
+                                           DateFormat="dd.MM.yyyy" 
+                                           Placeholder="dd.MM.yyyy"/>
+                            <MudDatePicker @bind-Date="request.To"
+                                                                       For="@(() => request.To)"
+                                                                       Label="Date to" 
+                                                                       DisableToolbar="true" 
+                                                                       Editable="true"  
+                                                                       Mask="@(new DateMask("dd.MM.yyyy"))" 
+                                                                       DateFormat="dd.MM.yyyy" 
+                                                                       Placeholder="dd.MM.yyyy"/>
+                        </MudForm>
+
+
+
+
+
+                    </MudPaper>
+                    
+                </MudCardContent>
+                <MudCardActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
+                </MudCardActions>
+    
+            </MudCard>
+
+
+        </MudContainer>
+    </DialogContent>
+
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    MudDialogInstance MudDialog { get; set; }
+    
+    [Parameter]
+    public Guid id { get; set; }
+
+    IBrowserFile? _file = null;
+    // private void UploadFiles(IBrowserFile file)
+    // {
+    //     _file = file;
+    // }
+    
+    
+    
+    
+    
+    MudForm form = new();
+    
+
+    UploadCsvTransactionsRequest request = new();
+    UploadCsvTransactionsValidator validator = new();
+
+
+   
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            request.CurrencyAccountId = id;
+            
+            var result = await CurrencyService.ImportCSV(request);
+                
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+    
+}

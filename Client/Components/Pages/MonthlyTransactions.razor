@@ -143,7 +143,8 @@
             
             return string.Empty;
         }
-        else if (mudTable.SelectedItem != null && mudTable.SelectedItem.Equals(transaction))
+        
+        if (mudTable.SelectedItem != null && mudTable.SelectedItem.Equals(transaction))
         {
             selectedRowNumber = rowNumber;
             if (transaction.Category is not null)
@@ -167,10 +168,9 @@
             
             return "selected";
         }
-        else
-        {
-            return string.Empty;
-        }
+      
+        return string.Empty;
+        
     }
     
     private async Task SetParams()
@@ -351,6 +351,10 @@
 
     private async Task NewRemoveDialog()
     {
+        if (selectedModel is null)
+        {
+            return;
+        }
         
         var parameters = new DialogParameters<ConfirmationDialog>();
         parameters.Add(x => x.ContentText, "Do you really want to delete these records? This process cannot be undone.");
