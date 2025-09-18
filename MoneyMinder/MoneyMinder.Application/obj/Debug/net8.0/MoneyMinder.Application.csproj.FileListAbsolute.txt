@@ -1,0 +1,15 @@
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\bin\Debug\net8.0\MoneyMinder.Application.deps.json
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\bin\Debug\net8.0\MoneyMinder.Application.dll
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\bin\Debug\net8.0\MoneyMinder.Application.pdb
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\bin\Debug\net8.0\MoneyMinder.Domain.dll
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\bin\Debug\net8.0\MoneyMinder.Domain.pdb
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\MoneyMinder.Application.csproj.AssemblyReference.cache
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\MoneyMinder.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\MoneyMinder.Application.AssemblyInfoInputs.cache
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\MoneyMinder.Application.AssemblyInfo.cs
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\MoneyMinder.Application.csproj.CoreCompileInputs.cache
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\MoneyMinder.Application.csproj.CopyComplete
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\MoneyMinder.Application.dll
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\refint\MoneyMinder.Application.dll
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\MoneyMinder.Application.pdb
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\ref\MoneyMinder.Application.dll
