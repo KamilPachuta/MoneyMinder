@@ -12,8 +12,6 @@ public static class Extensions
     {
         services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 
-        services.AddSerilog();
-
         return services;
     }
     
