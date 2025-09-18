@@ -24,21 +24,46 @@ public class ExceptionHandlingMiddleware
         }
         catch (MoneyMinderException ex)
         {
-            _logger.LogError(
-                ex, $"Exception occurred: {ex.Message}");
+            _logger.LogError(ex, "Exception occurred: {@ExceptionName}, Message: '{Message}', {DateTimeUtc}",
+                ex.GetType().Name,
+                ex.Message,
+                DateTime.UtcNow);
 
             var problemDetails = new ProblemDetails();
             problemDetails.Status = StatusCodes.Status400BadRequest;
             problemDetails.Title = ex.GetType().Name;
+            problemDetails.Instance = context.Request.Path;
+            problemDetails.Extensions.Add("traceId", context.TraceIdentifier);
             problemDetails.Detail = string.Concat(
                 $"Exception occurred: '{ex.GetType().Name}'." +
                 $"Message: '{ex.Message}'");
-            //$"StackTrace: '{ex.StackTrace}'");
 
             context.Response.StatusCode =
                 StatusCodes.Status400BadRequest;
 
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception occurred: {@ExceptionName}, Message: '{Message}', {DateTimeUtc}",
+            ex.GetType().Name,
+            ex.Message,
+            DateTime.UtcNow);
+            
+            var problemDetails = new ProblemDetails();
+            problemDetails.Status = StatusCodes.Status500InternalServerError;
+            problemDetails.Title = ex.GetType().Name;
+            problemDetails.Instance = context.Request.Path;
+            problemDetails.Extensions.Add("traceId", context.TraceIdentifier);
+            problemDetails.Detail = string.Concat(
+                $"Exception occurred: '{ex.GetType().Name}'." +
+                $"Message: '{ex.Message}'");
+
+            context.Response.StatusCode =
+                StatusCodes.Status500InternalServerError;
+
+            await context.Response.WriteAsJsonAsync(problemDetails);
+        }
+        
     }
 }
