@@ -61,6 +61,8 @@ public static class Extensions
             cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
             cfg.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
+
+            cfg.AddOpenBehavior(typeof(LoggingPipelineBehavior<,>));
         });
         
         
