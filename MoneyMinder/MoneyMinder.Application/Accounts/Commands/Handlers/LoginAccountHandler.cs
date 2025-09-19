@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MoneyMinder.Application.Accounts.Exceptions;
 using MoneyMinder.Domain.Accounts;
-using MoneyMinder.Domain.Shared.Repositories;
+using MoneyMinder.Domain.Repositories;
 
 namespace MoneyMinder.Application.Accounts.Commands.Handlers;
 

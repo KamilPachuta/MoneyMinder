@@ -3,9 +3,9 @@ using MoneyMinder.Domain.Accounts;
 using MoneyMinder.Domain.Accounts.Entities;
 using MoneyMinder.Domain.Accounts.Enum;
 using MoneyMinder.Domain.Accounts.ValueObjects;
-using MoneyMinder.Domain.Shared.Factories.Interfaces;
+using MoneyMinder.Domain.Factories.Interfaces;
 
-namespace MoneyMinder.Domain.Shared.Factories;
+namespace MoneyMinder.Domain.Factories;
 
 internal sealed class AccountFactory : IAccountFactory
 {

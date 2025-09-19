@@ -1,4 +1,4 @@
-﻿namespace MoneyMinder.Domain.Shared.UnitOfWork;
+﻿namespace MoneyMinder.Domain.UnitOfWork;
 
 public interface IUnitOfWork
 {

@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Identity;
 using MoneyMinder.Application.Accounts.Exceptions;
 using MoneyMinder.Application.Accounts.Services;
-using MoneyMinder.Domain.Shared.Factories.Interfaces;
-using MoneyMinder.Domain.Shared.Repositories;
 using MoneyMinder.Domain.Accounts;
+using MoneyMinder.Domain.Factories.Interfaces;
+using MoneyMinder.Domain.Repositories;
 
 namespace MoneyMinder.Application.Accounts.Commands.Handlers;
 

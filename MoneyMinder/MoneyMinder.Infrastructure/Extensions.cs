@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyMinder.Application.Accounts.Services;
-using MoneyMinder.Domain.Shared.Repositories;
-using MoneyMinder.Domain.Shared.UnitOfWork;
+using MoneyMinder.Domain.Repositories;
+using MoneyMinder.Domain.UnitOfWork;
 using MoneyMinder.Infrastructure.EF.Context;
 using MoneyMinder.Infrastructure.EF.Postgres;
 using MoneyMinder.Infrastructure.EF.ReadServices;

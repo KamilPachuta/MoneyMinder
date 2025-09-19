@@ -2,7 +2,6 @@
 using MoneyMinder.Application.Accounts.Services;
 using MoneyMinder.Domain.Accounts;
 using MoneyMinder.Domain.Accounts.ValueObjects;
-using MoneyMinder.Domain.Shared.Repositories;
 using MoneyMinder.Infrastructure.EF.Context;
 using MoneyMinder.Infrastructure.EF.ReadModels.Accounts;
 

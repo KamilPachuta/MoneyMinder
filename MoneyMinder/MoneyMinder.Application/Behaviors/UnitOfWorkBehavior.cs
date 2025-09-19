@@ -1,7 +1,7 @@
 ﻿using System.Transactions;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using MoneyMinder.Domain.Shared.UnitOfWork;
+using MoneyMinder.Domain.UnitOfWork;
 
 namespace MoneyMinder.Application.Behaviors;
 

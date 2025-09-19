@@ -4,8 +4,8 @@ using MoneyMinder.Application.Accounts.Services;
 using MoneyMinder.Application.Accounts.Exceptions;
 using MoneyMinder.Domain.Accounts;
 using MoneyMinder.Domain.Accounts.ValueObjects;
-using MoneyMinder.Domain.Shared.Factories.Interfaces;
-using MoneyMinder.Domain.Shared.Repositories;
+using MoneyMinder.Domain.Factories.Interfaces;
+using MoneyMinder.Domain.Repositories;
 
 namespace MoneyMinder.Application.Accounts.Commands.Handlers;
 

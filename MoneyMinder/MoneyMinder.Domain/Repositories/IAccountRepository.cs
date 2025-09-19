@@ -1,7 +1,7 @@
 ﻿using MoneyMinder.Domain.Accounts;
 using MoneyMinder.Domain.Accounts.ValueObjects;
 
-namespace MoneyMinder.Domain.Shared.Repositories;
+namespace MoneyMinder.Domain.Repositories;
 
 public interface IAccountRepository
 {

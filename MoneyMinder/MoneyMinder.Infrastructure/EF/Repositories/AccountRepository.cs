@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoneyMinder.Domain.Accounts;
 using MoneyMinder.Domain.Accounts.ValueObjects;
-using MoneyMinder.Domain.Shared.Repositories;
+using MoneyMinder.Domain.Repositories;
 using MoneyMinder.Infrastructure.EF.Context;
 
 namespace MoneyMinder.Infrastructure.EF.Repositories;

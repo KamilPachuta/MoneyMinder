@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using MoneyMinder.Application.Accounts.Exceptions;
 using MoneyMinder.Domain.Accounts.Entities;
-using MoneyMinder.Domain.Shared.Repositories;
+using MoneyMinder.Domain.Repositories;
 
 namespace MoneyMinder.Application.Accounts.Commands.Handlers;
 

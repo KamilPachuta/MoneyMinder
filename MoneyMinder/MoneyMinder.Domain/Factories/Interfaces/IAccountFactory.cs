@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MoneyMinder.Domain.Accounts;
-using MoneyMinder.Domain.Accounts.Enum;
 using MoneyMinder.Domain.Accounts.ValueObjects;
 
-namespace MoneyMinder.Domain.Shared.Factories.Interfaces;
+namespace MoneyMinder.Domain.Factories.Interfaces;
 
 public interface IAccountFactory
 {

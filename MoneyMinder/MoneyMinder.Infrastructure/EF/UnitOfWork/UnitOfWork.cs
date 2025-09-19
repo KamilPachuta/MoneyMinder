@@ -1,4 +1,4 @@
-﻿using MoneyMinder.Domain.Shared.UnitOfWork;
+﻿using MoneyMinder.Domain.UnitOfWork;
 using MoneyMinder.Infrastructure.EF.Context;
 
 namespace MoneyMinder.Infrastructure.EF.UnitOfWork;
