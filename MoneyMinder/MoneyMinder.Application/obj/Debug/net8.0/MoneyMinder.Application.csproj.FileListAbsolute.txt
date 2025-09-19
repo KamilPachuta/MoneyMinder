@@ -13,3 +13,4 @@ D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.
 D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\refint\MoneyMinder.Application.dll
 D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\MoneyMinder.Application.pdb
 D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\ref\MoneyMinder.Application.dll
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Application\obj\Debug\net8.0\MoneyMinder.Application.sourcelink.json

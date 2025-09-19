@@ -3,6 +3,7 @@ using MoneyMinder.Domain.Accounts.DomainEvents;
 using MoneyMinder.Domain.Accounts.Entities;
 using MoneyMinder.Domain.Accounts.Exceptions;
 using MoneyMinder.Domain.Accounts.ValueObjects;
+using MoneyMinder.Domain.CurrencyAccounts;
 using MoneyMinder.Domain.Shared.Primitives;
 
 namespace MoneyMinder.Domain.Accounts;
@@ -17,9 +18,9 @@ public class Account : AggregateRoot
     
     
     public User? User { get; private set; }
-    /*public List<CurrencyAccount> CurrencyAccounts { get; } = new();
-    public List<SavingsPortfolio> SavingsPortfolios { get; } = new();
-    public List<Notification> Notifications { get; } = new();*/
+    public List<CurrencyAccount> CurrencyAccounts { get; } = new();
+    //public List<SavingsPortfolio> SavingsPortfolios { get; } = new();
+
     
     private Account()
     {

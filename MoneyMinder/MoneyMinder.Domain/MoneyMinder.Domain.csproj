@@ -11,4 +11,10 @@
       <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="CurrencyAccounts\DomainEvents\" />
+      <Folder Include="CurrencyAccounts\Entities\" />
+      <Folder Include="CurrencyAccounts\Enum\" />
+    </ItemGroup>
+
 </Project>

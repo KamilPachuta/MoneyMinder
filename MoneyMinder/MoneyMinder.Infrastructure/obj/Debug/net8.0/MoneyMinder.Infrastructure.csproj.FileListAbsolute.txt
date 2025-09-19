@@ -17,3 +17,4 @@ D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Infrastructure\obj\Debug\ne
 D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Infrastructure\obj\Debug\net8.0\MoneyMinder.Infrastructure.pdb
 D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Infrastructure\obj\Debug\net8.0\MoneyMinder.Infrastructure.genruntimeconfig.cache
 D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Infrastructure\obj\Debug\net8.0\ref\MoneyMinder.Infrastructure.dll
+D:\RiderProjects\MoneyMinder\MoneyMinder\MoneyMinder.Infrastructure\obj\Debug\net8.0\MoneyMinder.Infrastructure.sourcelink.json

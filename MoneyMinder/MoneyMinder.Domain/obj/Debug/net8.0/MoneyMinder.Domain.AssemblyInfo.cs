@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MoneyMinder.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+91eca46a959b325df0d342826fe1b1776425162f")]
 [assembly: System.Reflection.AssemblyProductAttribute("MoneyMinder.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MoneyMinder.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
