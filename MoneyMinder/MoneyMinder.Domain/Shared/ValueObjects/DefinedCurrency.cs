@@ -11,7 +11,7 @@ public record DefinedCurrency
     {
         if (!Enum.IsDefined(typeof(Currency), currency))
         {
-            throw new InvalidTransactionCurrencyException(currency);
+            throw new InvalidDefinedCurrencyException(currency);
         }
         
         Currency = currency;
@@ -42,7 +42,7 @@ public record DefinedCurrency
             Currency.CNY => "¥",
             Currency.SEK => "kr",
             Currency.PLN => "zł",
-            _ => throw new InvalidTransactionCurrencyException(currency.Currency)
+            _ => throw new InvalidDefinedCurrencyException(currency.Currency)
         };
 
         private static string GetName(DefinedCurrency currency) =>
@@ -58,6 +58,6 @@ public record DefinedCurrency
                 Currency.CNY => "Juan chiński",
                 Currency.SEK => "Korona szwedzka",
                 Currency.PLN => "Polski złoty",
-                _ => throw new InvalidTransactionCurrencyException(currency.Currency)
+                _ => throw new InvalidDefinedCurrencyException(currency.Currency)
             };
 }

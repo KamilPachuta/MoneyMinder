@@ -1,5 +1,7 @@
 ﻿using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
+using MoneyMinder.Domain.SavingsAccounts.Exceptions;
 using MoneyMinder.Domain.Shared.Enums;
+using MoneyMinder.Domain.Shared.Exceptions;
 
 namespace MoneyMinder.Domain.Shared.ValueObjects;
 
@@ -11,7 +13,7 @@ public record DefinedCategory
     {
         if (!Enum.IsDefined(typeof(Category), category))
         {
-            throw new InvalidPaymentCategoryException(category);
+            throw new InvalidDefinedCategoryException(category);
         }
 
         Category = category;
