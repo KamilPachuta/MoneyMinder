@@ -17,6 +17,8 @@ public class SavingsAccount : AggregateRoot
     {
         Account = account;
         Name = name;
+        
+        RaiseDomainEvent(new SavingsAccountCreatedDomainEvent(DateTime.UtcNow, this));
     }
     
     public void ChangeName(SavingsAccountName name)
