@@ -1,4 +1,4 @@
-﻿namespace MoneyMinder.Domain.Shared.Enum;
+﻿namespace MoneyMinder.Domain.Shared.Enums;
 
 public enum Currency : byte
 {

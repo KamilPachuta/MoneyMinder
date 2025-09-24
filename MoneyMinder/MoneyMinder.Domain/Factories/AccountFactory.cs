@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MoneyMinder.Domain.Accounts;
 using MoneyMinder.Domain.Accounts.Entities;
-using MoneyMinder.Domain.Accounts.Enum;
+using MoneyMinder.Domain.Accounts.Enums;
 using MoneyMinder.Domain.Accounts.ValueObjects;
 using MoneyMinder.Domain.Factories.Interfaces;
 

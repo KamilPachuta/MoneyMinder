@@ -1,5 +1,5 @@
 ﻿using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
-using MoneyMinder.Domain.Shared.Enum;
+using MoneyMinder.Domain.Shared.Enums;
 
 namespace MoneyMinder.Domain.Shared.ValueObjects;
 
@@ -9,7 +9,7 @@ public record DefinedCategory
 
     public DefinedCategory(Category category)
     {
-        if (!System.Enum.IsDefined(typeof(Category), category))
+        if (!Enum.IsDefined(typeof(Category), category))
         {
             throw new InvalidPaymentCategoryException(category);
         }
@@ -18,7 +18,7 @@ public record DefinedCategory
     }
     
     internal static int Count()
-        => System.Enum.GetNames(typeof(Category)).Length;
+        => Enum.GetNames(typeof(Category)).Length;
 
     public static implicit operator Category(DefinedCategory transactionCategory)
         => transactionCategory.Category;

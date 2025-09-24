@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using MoneyMinder.Domain.Accounts.Enum;
+using MoneyMinder.Domain.Accounts.Enums;
 
 namespace MoneyMinder.Application.Accounts.Commands;
 

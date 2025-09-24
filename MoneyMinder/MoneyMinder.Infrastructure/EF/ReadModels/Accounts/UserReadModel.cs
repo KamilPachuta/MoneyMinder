@@ -1,4 +1,4 @@
-﻿using MoneyMinder.Domain.Accounts.Enum;
+﻿using MoneyMinder.Domain.Accounts.Enums;
 
 namespace MoneyMinder.Infrastructure.EF.ReadModels.Accounts;
 

@@ -1,5 +1,5 @@
 ﻿using MoneyMinder.Domain.Shared.Abstractions;
-using MoneyMinder.Domain.Shared.Enum;
+using MoneyMinder.Domain.Shared.Enums;
 
 namespace MoneyMinder.Domain.Shared.Exceptions;
 

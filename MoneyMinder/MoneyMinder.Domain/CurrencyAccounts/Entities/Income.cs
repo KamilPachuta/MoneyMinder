@@ -1,5 +1,4 @@
 ﻿using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
-using MoneyMinder.Domain.Shared.Enum;
 using MoneyMinder.Domain.Shared.Primitives;
 using MoneyMinder.Domain.Shared.ValueObjects;
 

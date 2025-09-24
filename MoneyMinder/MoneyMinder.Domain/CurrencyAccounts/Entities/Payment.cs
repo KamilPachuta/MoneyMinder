@@ -1,6 +1,4 @@
 ﻿using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
-using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
-using MoneyMinder.Domain.Shared.Enum;
 using MoneyMinder.Domain.Shared.Primitives;
 using MoneyMinder.Domain.Shared.ValueObjects;
 
@@ -13,7 +11,7 @@ public class Payment : Transaction
     public Payment(TransactionName name, TransactionDate date, DefinedCurrency currency, Amount amount, DefinedCategory? category) 
         : base(name, date, currency,amount)
     {
-        Category = category ?? Shared.Enum.Category.Other;
+        Category = category ?? Shared.Enums.Category.Other;
         
         CheckAmount(amount);
     }

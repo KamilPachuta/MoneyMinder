@@ -1,5 +1,4 @@
-﻿using MoneyMinder.Domain.Accounts.Enum;
-using MoneyMinder.Domain.Accounts.ValueObjects;
+﻿using MoneyMinder.Domain.Accounts.ValueObjects;
 using MoneyMinder.Domain.Shared.Primitives;
 
 namespace MoneyMinder.Domain.Accounts.Entities;

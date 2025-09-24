@@ -3,7 +3,6 @@ using MoneyMinder.Domain.CurrencyAccounts.DomainEvents;
 using MoneyMinder.Domain.CurrencyAccounts.Entities;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
-using MoneyMinder.Domain.Shared.Enum;
 using MoneyMinder.Domain.Shared.Primitives;
 using MoneyMinder.Domain.Shared.ValueObjects;
 

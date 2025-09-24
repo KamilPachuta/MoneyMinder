@@ -1,4 +1,4 @@
-﻿namespace MoneyMinder.Domain.Accounts.Enum;
+﻿namespace MoneyMinder.Domain.Accounts.Enums;
 
 public enum Gender : byte
 {

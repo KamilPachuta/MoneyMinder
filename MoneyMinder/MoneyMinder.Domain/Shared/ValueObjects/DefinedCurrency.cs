@@ -1,4 +1,4 @@
-﻿using MoneyMinder.Domain.Shared.Enum;
+﻿using MoneyMinder.Domain.Shared.Enums;
 using MoneyMinder.Domain.Shared.Exceptions;
 
 namespace MoneyMinder.Domain.Shared.ValueObjects;
@@ -9,7 +9,7 @@ public record DefinedCurrency
 
     public DefinedCurrency(Currency currency)
     {
-        if (!System.Enum.IsDefined(typeof(Currency), currency))
+        if (!Enum.IsDefined(typeof(Currency), currency))
         {
             throw new InvalidTransactionCurrencyException(currency);
         }

@@ -1,4 +1,4 @@
-﻿using MoneyMinder.Domain.Accounts.Enum;
+﻿using MoneyMinder.Domain.Accounts.Enums;
 using MoneyMinder.Domain.Accounts.Exceptions;
 
 namespace MoneyMinder.Domain.Accounts.ValueObjects;
