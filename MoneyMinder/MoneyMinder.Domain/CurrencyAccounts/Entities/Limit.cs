@@ -1,5 +1,6 @@
 ﻿using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
+using MoneyMinder.Domain.Shared.Exceptions;
 using MoneyMinder.Domain.Shared.Primitives;
 using MoneyMinder.Domain.Shared.ValueObjects;
 
