@@ -3,11 +3,11 @@ using MoneyMinder.Domain.Shared.Exceptions;
 
 namespace MoneyMinder.Domain.Shared.ValueObjects;
 
-public record TransactionCurrency
+public record DefinedCurrency
 {
     public Currency Currency { get; }
 
-    public TransactionCurrency(Currency currency)
+    public DefinedCurrency(Currency currency)
     {
         if (!System.Enum.IsDefined(typeof(Currency), currency))
         {
@@ -23,7 +23,13 @@ public record TransactionCurrency
     public string GetName()
         => GetName(this);
     
-    private static string GetSymbol(TransactionCurrency currency) =>
+    public static implicit operator Currency(DefinedCurrency definedCurrency)
+        => definedCurrency.Currency;
+    
+    public static implicit operator DefinedCurrency(Currency currency)
+        => new(currency);
+    
+    private static string GetSymbol(DefinedCurrency currency) =>
         currency.Currency switch
         {
             Currency.USD => "$",
@@ -39,7 +45,7 @@ public record TransactionCurrency
             _ => throw new InvalidTransactionCurrencyException(currency.Currency)
         };
 
-        private static string GetName(TransactionCurrency currency) =>
+        private static string GetName(DefinedCurrency currency) =>
             currency.Currency switch
             {
                 Currency.USD => "Dolar amerykański",
