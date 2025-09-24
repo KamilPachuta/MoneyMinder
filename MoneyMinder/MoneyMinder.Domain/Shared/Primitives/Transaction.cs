@@ -6,15 +6,15 @@ public abstract class Transaction : Entity
 {
     public TransactionName Name { get; }
     public TransactionDate Date { get; }
-    public TransactionCurrency Currency { get; }
-    public TransactionAmount Amount { get; }
+    public DefinedCurrency Currency { get; }
+    public Amount Amount { get; }
     
     
-    private Transaction()
+    protected Transaction()
     {
     }
     
-    protected Transaction(TransactionName name, TransactionDate date, TransactionCurrency currency, TransactionAmount amount)
+    protected Transaction(TransactionName name, TransactionDate date, DefinedCurrency currency, Amount amount)
         : base(Guid.NewGuid())
     {
         Name = name;
