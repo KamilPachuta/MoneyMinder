@@ -19,7 +19,7 @@ public class SavingsTransaction : Transaction
         Type = type;
     }
 
-    protected void CheckAmount(TransactionType type, Amount amount)
+    private void CheckAmount(TransactionType type, Amount amount)
     {
         switch (type)
         {
