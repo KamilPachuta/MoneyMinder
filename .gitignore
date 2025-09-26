@@ -70,5 +70,5 @@ nunit-*.xml
 *.suo
 *.sln.docstates
 
-# VSCode (jeśli czasem otwierasz w VSCode)
+# VSCode
 .vscode/

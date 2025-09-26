@@ -21,7 +21,7 @@ public class SavingsAccount : AggregateRoot
     public List<SavingsTransaction> Transactions { get; } = new();
     
 
-    public SavingsAccount(Guid id, Account account, SavingsAccountName name, DefinedCurrency currency, Amount plannedAmount)
+    internal SavingsAccount(Guid id, SavingsAccountName name, DefinedCurrency currency, Amount plannedAmount, Account account)
         : base(id)
     {
         Account = account;
