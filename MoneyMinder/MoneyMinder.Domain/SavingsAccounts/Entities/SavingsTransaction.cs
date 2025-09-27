@@ -1,6 +1,7 @@
 ﻿using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.SavingsAccounts.Enums;
 using MoneyMinder.Domain.SavingsAccounts.Exceptions;
+using MoneyMinder.Domain.SavingsAccounts.ValueObjects;
 using MoneyMinder.Domain.Shared.Enums;
 using MoneyMinder.Domain.Shared.Exceptions;
 using MoneyMinder.Domain.Shared.Primitives;
@@ -10,9 +11,9 @@ namespace MoneyMinder.Domain.SavingsAccounts.Entities;
 
 public class SavingsTransaction : Transaction
 {
-    public TransactionType Type { get; }
+    public DefinedTransactionType Type { get; }
     
-    public SavingsTransaction(TransactionName name, DateTime date, Currency currency, Amount amount, TransactionType type) 
+    public SavingsTransaction(TransactionName name, TransactionDate date, DefinedCurrency currency, Amount amount, DefinedTransactionType type) 
         : base(name, date, currency, amount)
     {
         CheckAmount(type, amount);
