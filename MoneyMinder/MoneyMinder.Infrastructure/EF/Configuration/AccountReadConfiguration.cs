@@ -34,15 +34,10 @@ public class AccountReadConfiguration :
             .WithOne()
             .HasForeignKey(ca => ca.AccountId);*/
         
-        /*builder
-            .HasMany(a => a.SavingsPortfolios)
+        builder
+            .HasMany(a => a.SavingsAccounts)
             .WithOne()
-            .HasForeignKey(sp => sp.AccountId);*/
-        
-        /*builder
-            .HasMany(a => a.Notifications)
-            .WithOne()
-            .HasForeignKey(n => n.AccountId);*/
+            .HasForeignKey(sa => sa.AccountId);
     }
 
     public void Configure(EntityTypeBuilder<UserReadModel> builder)
@@ -86,19 +81,4 @@ public class AccountReadConfiguration :
             .Property(a => a.Street);
         
     }
-
-    /*public void Configure(EntityTypeBuilder<NotificationReadModel> builder)
-    {
-        builder.ToTable(TableNames.Notifications);
-        builder.HasKey(n => n.Id);
-
-        builder
-            .Property(n => n.Title);
-
-        builder
-            .Property(n => n.Description);
-
-        builder
-            .Property(n => n.Date);
-    }*/
 }
