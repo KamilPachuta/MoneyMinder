@@ -11,28 +11,44 @@ public class SavingsAccountReadConfiguration:
     public void Configure(EntityTypeBuilder<SavingsAccountReadModel> builder)
     {
         builder.ToTable(TableNames.SavingsAccounts);
-        builder.HasKey(sp => sp.Id);
+        builder.HasKey(sa => sa.Id);
 
         builder
-            .Property(sp => sp.Name);
+            .Property(sa => sa.Name);
 
         builder
-            .Property(sp => sp.Currency);
+            .Property(sa => sa.Currency);
 
         builder
-            .Property(sp => sp.PlannedAmount);
+            .Property(sa => sa.PlannedAmount);
 
         builder
-            .Property(sp => sp.CurrentAmount);
+            .Property(sa => sa.CurrentAmount);
 
         builder
-            .HasMany(sp => sp.Transactions)
+            .HasMany(sa => sa.Transactions)
             .WithOne()
             .HasForeignKey(st => st.SavingsAccountId);
     }
     
     public void Configure(EntityTypeBuilder<SavingsTransactionReadModel> builder)
     {
-        throw new NotImplementedException();
+        builder.ToTable(TableNames.SavingsTransactions);
+        builder.HasKey(st => st.Id);
+
+        builder
+            .Property(st => st.Name);
+
+        builder
+            .Property(st => st.Date);
+
+        builder
+            .Property(st => st.Currency);
+
+        builder
+            .Property(st => st.Amount);
+
+        builder
+            .Property(st => st.Type);
     }
 }
