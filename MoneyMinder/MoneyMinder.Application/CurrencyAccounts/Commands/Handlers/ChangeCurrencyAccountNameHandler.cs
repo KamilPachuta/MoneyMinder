@@ -5,21 +5,18 @@ using MoneyMinder.Domain.Repositories;
 
 namespace MoneyMinder.Application.CurrencyAccounts.Commands.Handlers;
 
-internal sealed class ChangeCurrencyAccountNameHandler(
-    ICurrencyAccountRepository repository,
-    ICurrencyAccountReadService readService)
-    : CurrencyHandler<ChangeCurrencyAccountNameCommand>(repository, readService)
+internal sealed class ChangeCurrencyAccountNameHandler : CurrencyHandler<ChangeCurrencyAccountNameCommand>
 {
-    // public ChangeCurrencyAccountNameHandler(ICurrencyAccountRepository repository, ICurrencyAccountReadService readService) 
-    //     : base(repository, readService)
-    // {
-    // }
+    public ChangeCurrencyAccountNameHandler(ICurrencyAccountRepository repository, ICurrencyAccountReadService readService) 
+        : base(repository, readService)
+    {
+    }
     
     public override async Task Handle(ChangeCurrencyAccountNameCommand request, CancellationToken cancellationToken)
     {
-        var currencyAccount = await GetCurrencyAccount(request.AccountId, request.CurrencyAccountId);
+        var currencyAccount = await GetCurrencyAccount(request);
         
-        if (await _readService.CheckUnique(request.AccountId,request.Name))
+        if (!await _readService.CheckUnique(request.AccountId,request.Name))
         {
             throw new CurrencyAccountAlreadyExistException(request.Name);
         }

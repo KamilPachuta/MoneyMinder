@@ -20,18 +20,18 @@ internal abstract class CurrencyHandler<TRequest> : IRequestHandler<TRequest>
     
     public abstract Task Handle(TRequest request, CancellationToken cancellationToken);
 
-    protected async Task<CurrencyAccount> GetCurrencyAccount(Guid accountId, Guid currencyAccountId)
+    protected async Task<CurrencyAccount> GetCurrencyAccount(CurrencyCommand command)
     {
-        var currencyAccount = await _repository.GetAsync(currencyAccountId);
+        var currencyAccount = await _repository.GetAsync(command.CurrencyAccountId);
 
         if (currencyAccount is null)
         {
-            throw new CurrencyAccountNotFoundException(currencyAccountId);
+            throw new CurrencyAccountNotFoundException(command.CurrencyAccountId);
         }
 
-        if (await _readService.CheckOwner(accountId, currencyAccountId))
+        if (!await _readService.CheckOwner(command.AccountId, command.CurrencyAccountId))
         {
-            throw new AccesDeniedException(accountId, currencyAccountId);
+            throw new AccesDeniedException(command.AccountId, command.CurrencyAccountId);
         }
         
         return currencyAccount;
