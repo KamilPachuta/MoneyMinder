@@ -1,4 +1,6 @@
-﻿namespace MoneyMinder.Domain.Shared.ValueObjects;
+﻿using MoneyMinder.Domain.Shared.Exceptions;
+
+namespace MoneyMinder.Domain.Shared.ValueObjects;
 
 public record TransactionDate
 {
@@ -9,6 +11,11 @@ public record TransactionDate
         if (date.Kind != DateTimeKind.Utc)
         {
             date = date.ToUniversalTime();
+        }
+
+        if (date.Date > DateTime.UtcNow.Date)
+        {
+            throw new TransactionDateInFutureException(date);
         }
         
         Date = date;
