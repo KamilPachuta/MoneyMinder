@@ -66,6 +66,19 @@ internal static class CurrencyAccountEndpoints
         return Results.Ok();
     }
         
-        
-    
+    [Authorize]
+    public static async Task<IResult> IncomeRemove(
+        [FromBody] RemoveIncomeRequest request,
+        [FromServices] ISender sender,
+        [FromServices] IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+
+        var command = new RemoveIncomeCommand(accountId, request.CurrencyAccountId, request.IncomeId);
+
+        await sender.Send(command);
+                
+        return Results.Ok();
+    }
+
 }

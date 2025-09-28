@@ -25,6 +25,7 @@ public class CurrencyAccountModule : BaseModule
         
         group.MapPost("/Income", CurrencyAccountEndpoints.IncomeAdd);
         
+        group.MapDelete("/Income", CurrencyAccountEndpoints.IncomeRemove);
         
     }
 }
