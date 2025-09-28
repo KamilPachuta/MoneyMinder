@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MoneyMinder.Domain.Accounts;
+using MoneyMinder.Domain.CurrencyAccounts;
+using MoneyMinder.Domain.SavingsAccounts;
 using MoneyMinder.Domain.Shared.Abstractions;
 using MoneyMinder.Domain.Shared.Primitives;
 
@@ -11,8 +13,8 @@ internal sealed class MoneyMinderDbContext : DbContext
     private readonly IPublisher _publisher;
     
     public DbSet<Account> Accounts { get; set; }
-    //public DbSet<CurrencyAccount> CurrencyAccounts { get; set; }
-    //public DbSet<SavingsPortfolio> SavingsPortfolios { get; set; }
+    public DbSet<CurrencyAccount> CurrencyAccounts { get; set; }
+    public DbSet<SavingsAccount> SavingsAccounts { get; set; }
 
     public MoneyMinderDbContext(DbContextOptions<MoneyMinderDbContext> options, IPublisher publisher) : base(options)
     {

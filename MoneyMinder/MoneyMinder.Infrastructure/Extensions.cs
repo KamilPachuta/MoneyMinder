@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyMinder.Application.Accounts.Services;
+using MoneyMinder.Application.CurrencyAccounts.Services;
 using MoneyMinder.Domain.Repositories;
 using MoneyMinder.Domain.UnitOfWork;
 using MoneyMinder.Infrastructure.EF.Context;
@@ -30,12 +31,12 @@ public static class Extensions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         services.AddScoped<IAccountRepository, AccountRepository>();
-        //services.AddScoped<ICurrencyAccountRepository, CurrencyAccountRepository>();
-        //services.AddScoped<ISavingsPortfolioRepository, SavingsPortfolioRepository>();
+        services.AddScoped<ICurrencyAccountRepository, CurrencyAccountRepository>();
+        services.AddScoped<ISavingsAccountRepository, SavingsAccountRepository>();
 
         services.AddScoped<IAccountReadService, AccountReadService>();
-        //services.AddScoped<ICurrencyAccountReadService, CurrencyAccountReadService>();
-        //services.AddScoped<ISavingsPortfolioReadService, SavingsPortfolioReadService>();
+        services.AddScoped<ICurrencyAccountReadService, CurrencyAccountReadService>();
+        //services.AddScoped<ISavingsAccountReadService, SavingsAccountReadService>();
         
         //AddAdapters();
         

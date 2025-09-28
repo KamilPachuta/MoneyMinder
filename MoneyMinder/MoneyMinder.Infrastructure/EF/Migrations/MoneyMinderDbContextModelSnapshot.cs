@@ -95,6 +95,214 @@ namespace MoneyMinder.Infrastructure.EF.Migrations
                     b.ToTable("Users", "MoneyMinder");
                 });
 
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("CurrencyAccounts", "MoneyMinder");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Balance", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<byte>("Currency")
+                        .HasColumnType("smallint");
+
+                    b.Property<Guid>("CurrencyAccountId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyAccountId");
+
+                    b.ToTable("Balances", "MoneyMinder");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Budget", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<byte>("Currency")
+                        .HasColumnType("smallint");
+
+                    b.Property<Guid>("CurrencyAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyAccountId");
+
+                    b.ToTable("Budgets", "MoneyMinder");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Income", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<byte>("Currency")
+                        .HasColumnType("smallint");
+
+                    b.Property<Guid>("CurrencyAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyAccountId");
+
+                    b.ToTable("Incomes", "MoneyMinder");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Limit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("BudgetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Category")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BudgetId");
+
+                    b.ToTable("Limits", "MoneyMinder");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("Category")
+                        .HasColumnType("integer");
+
+                    b.Property<byte>("Currency")
+                        .HasColumnType("smallint");
+
+                    b.Property<Guid>("CurrencyAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyAccountId");
+
+                    b.ToTable("Payments", "MoneyMinder");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.SavingsAccounts.Entities.SavingsTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<byte>("Currency")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("SavingsAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SavingsAccountId");
+
+                    b.ToTable("SavingsTransactions", "MoneyMinder");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.SavingsAccounts.SavingsAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<byte>("Currency")
+                        .HasColumnType("smallint");
+
+                    b.Property<decimal>("CurrentAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("PlannedAmount")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("SavingsAccounts", "MoneyMinder");
+                });
+
             modelBuilder.Entity("MoneyMinder.Domain.Accounts.Entities.Address", b =>
                 {
                     b.HasOne("MoneyMinder.Domain.Accounts.Entities.User", null)
@@ -113,8 +321,88 @@ namespace MoneyMinder.Infrastructure.EF.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", b =>
+                {
+                    b.HasOne("MoneyMinder.Domain.Accounts.Account", "Account")
+                        .WithMany("CurrencyAccounts")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Balance", b =>
+                {
+                    b.HasOne("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", null)
+                        .WithMany("Balances")
+                        .HasForeignKey("CurrencyAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Budget", b =>
+                {
+                    b.HasOne("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", null)
+                        .WithMany("Budgets")
+                        .HasForeignKey("CurrencyAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Income", b =>
+                {
+                    b.HasOne("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", null)
+                        .WithMany("Incomes")
+                        .HasForeignKey("CurrencyAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Limit", b =>
+                {
+                    b.HasOne("MoneyMinder.Domain.CurrencyAccounts.Entities.Budget", null)
+                        .WithMany("Limits")
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Payment", b =>
+                {
+                    b.HasOne("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", null)
+                        .WithMany("Payments")
+                        .HasForeignKey("CurrencyAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.SavingsAccounts.Entities.SavingsTransaction", b =>
+                {
+                    b.HasOne("MoneyMinder.Domain.SavingsAccounts.SavingsAccount", null)
+                        .WithMany("Transactions")
+                        .HasForeignKey("SavingsAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.SavingsAccounts.SavingsAccount", b =>
+                {
+                    b.HasOne("MoneyMinder.Domain.Accounts.Account", "Account")
+                        .WithMany("SavingsAccounts")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("MoneyMinder.Domain.Accounts.Account", b =>
                 {
+                    b.Navigation("CurrencyAccounts");
+
+                    b.Navigation("SavingsAccounts");
+
                     b.Navigation("User");
                 });
 
@@ -122,6 +410,27 @@ namespace MoneyMinder.Infrastructure.EF.Migrations
                 {
                     b.Navigation("Address")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.CurrencyAccount", b =>
+                {
+                    b.Navigation("Balances");
+
+                    b.Navigation("Budgets");
+
+                    b.Navigation("Incomes");
+
+                    b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.CurrencyAccounts.Entities.Budget", b =>
+                {
+                    b.Navigation("Limits");
+                });
+
+            modelBuilder.Entity("MoneyMinder.Domain.SavingsAccounts.SavingsAccount", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }
