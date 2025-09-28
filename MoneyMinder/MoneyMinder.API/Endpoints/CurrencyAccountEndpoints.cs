@@ -50,4 +50,22 @@ internal static class CurrencyAccountEndpoints
         await sender.Send(command);
         return Results.Ok();
     }
+    
+    [Authorize]
+    public static async Task<IResult> IncomeAdd(
+        [FromBody] AddIncomeRequest request,
+        [FromServices] ISender sender,
+        [FromServices] IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+
+        var command = new AddIncomeCommand(accountId, request.CurrencyAccountId, request.Name, request.Date, request.Currency, request.Amount);
+
+        await sender.Send(command);
+                
+        return Results.Ok();
+    }
+        
+        
+    
 }

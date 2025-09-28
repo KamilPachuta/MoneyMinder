@@ -17,8 +17,14 @@ public class CurrencyAccountModule : BaseModule
         var group = app.MapGroup("").AddFluentValidationAutoValidation();
         
         group.MapPut("/", CurrencyAccountEndpoints.Put);
+        
         group.MapPost("/", CurrencyAccountEndpoints.Post);
+        
         group.MapDelete("/", CurrencyAccountEndpoints.Delete);
+        
+        
+        group.MapPost("/Income", CurrencyAccountEndpoints.IncomeAdd);
+        
         
     }
 }
