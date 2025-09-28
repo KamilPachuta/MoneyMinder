@@ -16,7 +16,7 @@ internal sealed class CurrencyAccountReadService : ICurrencyAccountReadService
     {
         var account = await _repository.GetAsync(accountId);
 
-        return account.CurrencyAccounts.Exists(ca => ca.Name == name);
+        return !account.CurrencyAccounts.Exists(ca => ca.Name == name);
     }
 
     public async Task<bool> CheckOwner(Guid accountId, Guid currencyAccountId)
