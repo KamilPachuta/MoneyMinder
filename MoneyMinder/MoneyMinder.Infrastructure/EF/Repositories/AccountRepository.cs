@@ -20,8 +20,8 @@ internal sealed class AccountRepository : IAccountRepository
         => await _accounts
             .Include(a => a.User)
             .ThenInclude(u => u.Address)
-            //.Include(u => u.CurrencyAccounts)
-            //.Include(u => u.SavingfsPorfolia)
+            .Include(u => u.CurrencyAccounts)
+            .Include(u => u.SavingsAccounts)
             .FirstOrDefaultAsync(a => a.Id == id);
 
     public async Task<Account> GetAsync(AccountEmail email)
@@ -31,15 +31,15 @@ internal sealed class AccountRepository : IAccountRepository
     public async Task AddAsync(Account account)
         => await _accounts.AddAsync(account);
 
-    public async Task UpdateAsync(Account account)
+    public Task UpdateAsync(Account account)
     {
         _accounts.Update(account);
-        //return Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    public async Task DeleteAsync(Account account)
+    public Task DeleteAsync(Account account)
     {
         _accounts.Remove(account);
-        //return Task.CompletedTask;
+        return Task.CompletedTask;
     }
 }
