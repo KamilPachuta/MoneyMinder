@@ -32,19 +32,5 @@ public class AccountModule : BaseModule
 
         group.MapPost("/address", AccountEndpoints.PostAddress);
         
-        //group.MapPost("/notifications", AccountEndpoints.PostNotification);
-        
-        //group.MapPost("/notifications/clear", AccountEndpoints.ClearNotifications);
-        
-        
-        
-        /*app.MapGet("/", AccountReadEndpoints.Get);
-
-        app.MapGet("/all/", AccountReadEndpoints.GetAll);
-        
-        app.MapGet("/info/", AccountReadEndpoints.GetPersonalInfo);*/
-        
-        //app.MapGet("/notifications/", AccountReadEndpoints.GetNotifications);
-
     }
 }
