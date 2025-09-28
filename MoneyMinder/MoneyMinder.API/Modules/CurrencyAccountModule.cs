@@ -14,18 +14,22 @@ public class CurrencyAccountModule : BaseModule
     
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("").AddFluentValidationAutoValidation();
+        var commands = app.MapGroup("").AddFluentValidationAutoValidation();
         
-        group.MapPut("/", CurrencyAccountEndpoints.Put);
+        commands.MapPut("/", CurrencyAccountEndpoints.Put);
         
-        group.MapPost("/", CurrencyAccountEndpoints.Post);
+        commands.MapPost("/", CurrencyAccountEndpoints.Post);
         
-        group.MapDelete("/", CurrencyAccountEndpoints.Delete);
+        commands.MapDelete("/", CurrencyAccountEndpoints.Delete);
         
         
-        group.MapPost("/Income", CurrencyAccountEndpoints.IncomeAdd);
+        commands.MapPost("/Income", CurrencyAccountEndpoints.IncomeAdd);
         
-        group.MapDelete("/Income", CurrencyAccountEndpoints.IncomeRemove);
+        commands.MapDelete("/Income", CurrencyAccountEndpoints.IncomeRemove);
+        
+        
+        commands.MapPost("/Payment/", CurrencyAccountEndpoints.PaymentAdd);
+        
         
     }
 }

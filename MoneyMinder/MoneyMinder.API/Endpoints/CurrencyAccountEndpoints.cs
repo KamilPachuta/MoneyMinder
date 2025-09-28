@@ -81,4 +81,19 @@ internal static class CurrencyAccountEndpoints
         return Results.Ok();
     }
 
+    [Authorize]
+    public static async Task<IResult> PaymentAdd(
+        [FromBody] AddPaymentRequest request,
+        [FromServices] ISender sender,
+        [FromServices] IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+
+        var command = new AddPaymentCommand(accountId, request.CurrencyAccountId, request.Name, request.Date, request.Currency, request.Amount, request.Category);
+
+        await sender.Send(command);
+                
+        return Results.Ok();
+    }
+    
 }
