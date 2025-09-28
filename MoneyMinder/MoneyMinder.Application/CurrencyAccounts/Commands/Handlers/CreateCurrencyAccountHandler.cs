@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using MoneyMinder.Application.Accounts.Exceptions;
 using MoneyMinder.Application.CurrencyAccounts.Exceptions;
+using MoneyMinder.Application.CurrencyAccounts.Services;
 using MoneyMinder.Domain.Factories.Interfaces;
 using MoneyMinder.Domain.Repositories;
 
@@ -11,14 +12,16 @@ internal sealed class CreateCurrencyAccountHandler : IRequestHandler<CreateCurre
     private readonly ICurrencyAccountFactory _factory;
     private readonly ICurrencyAccountRepository _currencyAccountRepository;
     private readonly IAccountRepository _accountRepository;
+    private readonly ICurrencyAccountReadService _currencyAccountReadService;
 
 
     public CreateCurrencyAccountHandler(ICurrencyAccountFactory factory, ICurrencyAccountRepository currencyAccountRepository, 
-        IAccountRepository accountRepository)
+        IAccountRepository accountRepository, ICurrencyAccountReadService currencyAccountReadService)
     {
         _factory = factory;
         _currencyAccountRepository = currencyAccountRepository;
         _accountRepository = accountRepository;
+        _currencyAccountReadService = currencyAccountReadService;
     }
     
     public async Task Handle(CreateCurrencyAccountCommand request, CancellationToken cancellationToken)
@@ -30,7 +33,12 @@ internal sealed class CreateCurrencyAccountHandler : IRequestHandler<CreateCurre
             throw new AccountNotFoundException(request.AccountId);
         }
         
-        if (account.CurrencyAccounts.Exists(ca => ca.Name == request.Name))
+        // if (account.CurrencyAccounts.Exists(ca => ca.Name.Name == request.Name))
+        // {
+        //     throw new CurrencyAccountAlreadyExistException(request.Name);
+        // }
+        
+        if (!await _currencyAccountReadService.CheckUnique(request.AccountId, request.Name))
         {
             throw new CurrencyAccountAlreadyExistException(request.Name);
         }
