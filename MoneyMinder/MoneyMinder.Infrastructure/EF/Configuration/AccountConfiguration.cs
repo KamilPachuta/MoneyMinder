@@ -34,9 +34,9 @@ internal sealed class AccountConfiguration :
             .WithOne()
             .HasForeignKey<User>();
         
-        /*builder
+        builder
             .HasMany(a => a.CurrencyAccounts)
-            .WithOne(ca => ca.Account);*/
+            .WithOne(ca => ca.Account);
         
         builder
             .HasMany(a => a.SavingsAccounts)
@@ -92,21 +92,4 @@ internal sealed class AccountConfiguration :
             .Property(a => a.Street)
             .HasConversion(s => s.Street, s => new AddressStreet(s));
     }
-
-    /*public void Configure(EntityTypeBuilder<Notification> builder)
-    {
-        builder.ToTable(TableNames.Notifications);
-        builder.HasKey(n => n.Id);
-
-        builder
-            .Property(n => n.Title)
-            .HasConversion(t => t.Title, t => new NotificationTitle(t));
-
-        builder
-            .Property(n => n.Description)
-            .HasConversion(d => d.Description, d => new NotificationDescription(d));
-
-        builder
-            .Property(n => n.Date);
-    }*/
 }

@@ -7,8 +7,7 @@ namespace MoneyMinder.Infrastructure.EF.Configuration;
 public class AccountReadConfiguration : 
     IEntityTypeConfiguration<AccountReadModel>,
     IEntityTypeConfiguration<UserReadModel>,
-    IEntityTypeConfiguration<AddressReadModel>//,
-    //IEntityTypeConfiguration<NotificationReadModel>
+    IEntityTypeConfiguration<AddressReadModel>
 {
     public void Configure(EntityTypeBuilder<AccountReadModel> builder)
     {
