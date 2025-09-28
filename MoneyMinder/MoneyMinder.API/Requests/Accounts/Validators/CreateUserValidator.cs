@@ -39,10 +39,9 @@ public sealed class CreateUserValidator : AbstractValidator<CreateUserRequest>
         RuleFor(x => x.BirthDate)
             .Must(BeAdult)
             .WithMessage("You must be an adult to proceed.");
-     
-        RuleFor(x=> x.Gender)
-            .Must(value => Enum.IsDefined(typeof(Gender), value))
-            .WithMessage("Invalid value for the Gender field.");
+
+        RuleFor(x => x.Gender)
+            .IsInEnum();
 
         RuleFor(x => x.Country)
             .NotEmpty()
