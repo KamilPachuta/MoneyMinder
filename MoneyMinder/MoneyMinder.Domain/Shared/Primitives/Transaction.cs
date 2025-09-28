@@ -15,7 +15,6 @@ public abstract class Transaction : Entity
     }
     
     protected Transaction(TransactionName name, TransactionDate date, DefinedCurrency currency, Amount amount)
-        : base(Guid.NewGuid())
     {
         Name = name;
         Date = date;
