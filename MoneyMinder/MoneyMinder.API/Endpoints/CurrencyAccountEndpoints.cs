@@ -96,4 +96,18 @@ internal static class CurrencyAccountEndpoints
         return Results.Ok();
     }
     
+    [Authorize]
+    public static async Task<IResult> PaymentRemove(
+        [FromBody] RemovePaymentRequest request,
+        [FromServices] ISender sender,
+        [FromServices] IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+
+        var command = new RemovePaymentCommand(accountId, request.CurrencyAccountId, request.PaymentId);
+
+        await sender.Send(command);
+                
+        return Results.Ok();
+    }
 }

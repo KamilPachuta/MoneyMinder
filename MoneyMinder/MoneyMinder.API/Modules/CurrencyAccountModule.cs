@@ -30,6 +30,10 @@ public class CurrencyAccountModule : BaseModule
         
         commands.MapPost("/Payment/", CurrencyAccountEndpoints.PaymentAdd);
         
+        commands.MapDelete("/payment/", CurrencyAccountEndpoints.PaymentRemove);
+        
+        
+        
         
     }
 }
