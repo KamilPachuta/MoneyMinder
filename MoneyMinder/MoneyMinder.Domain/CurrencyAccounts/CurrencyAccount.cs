@@ -57,13 +57,13 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new IncomeAddedDomainEvent(income, this));
     }
     
-    public void RemoveIncome(Transaction transaction)
+    public void RemoveIncome(Guid id)
     {
-        var income = Incomes.FirstOrDefault(i => i == transaction);
+        var income = Incomes.FirstOrDefault(i => i.Id == id);
         
         if (income is null)
         {
-            throw new IncomeNotFoundException(transaction.Id);
+            throw new IncomeNotFoundException(id);
         }
         
         RollbackTransaction(income);

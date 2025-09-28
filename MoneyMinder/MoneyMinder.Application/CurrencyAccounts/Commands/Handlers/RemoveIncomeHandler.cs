@@ -15,15 +15,8 @@ internal sealed class RemoveIncomeHandler : CurrencyHandler<RemoveIncomeCommand>
     public async override Task Handle(RemoveIncomeCommand request, CancellationToken cancellationToken)
     {
         var currencyAccount = await GetCurrencyAccount(request);
-
-        var income = currencyAccount.Incomes.FirstOrDefault(i => i.Id == request.IncomeId);
-
-        if (income is null)
-        {
-            throw new IncomeNotFoundException(request.IncomeId);
-        }
         
-        currencyAccount.RemoveIncome(income);
+        currencyAccount.RemoveIncome(request.IncomeId);
 
         await _repository.UpdateAsync(currencyAccount);
 
