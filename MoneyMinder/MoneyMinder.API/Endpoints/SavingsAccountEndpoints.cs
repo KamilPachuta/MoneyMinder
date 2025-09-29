@@ -1,0 +1,26 @@
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MoneyMinder.API.Requests.SavingsAccounts;
+using MoneyMinder.API.Services;
+using MoneyMinder.Application.CurrencyAccounts.Commands;
+using MoneyMinder.Application.SavingsAccounts.Commands;
+
+namespace MoneyMinder.API.Endpoints;
+
+internal static class SavingsAccountEndpoints
+{
+    [Authorize]
+    public static async Task<IResult> PostSavingsAccount(
+        [FromBody]CreateSavingsAccountRequest request, 
+        [FromServices]ISender sender,
+        [FromServices]IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+                
+        var command = new CreateSavingsAccountCommand(accountId, request.Name, request.Currency, request.PlannedAmount);
+        
+        await sender.Send(command);
+        return Results.Ok();
+    }
+}
