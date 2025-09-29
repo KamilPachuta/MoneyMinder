@@ -18,19 +18,19 @@ public class AccountModule : BaseModule
         
         group.MapPost("/Admin/", AccountEndpoints.PostAdmin);
 
-        group.MapPost("/", AccountEndpoints.PostUser);
+        group.MapPost("/User/", AccountEndpoints.PostUser);
 
         group.MapPost("/", AccountEndpoints.PostLogin);
 
         group.MapDelete("/", AccountEndpoints.DeleteAccount);
             
-        group.MapPatch("/password/", AccountEndpoints.PatchPassword);
+        group.MapPatch("/Password/", AccountEndpoints.PatchPassword);
         
-        group.MapPatch("/name/", AccountEndpoints.PatchName);
+        group.MapPatch("/Name/", AccountEndpoints.PatchName);
 
-        group.MapPatch("/phone/", AccountEndpoints.PatchPhone);
+        group.MapPatch("/Phone/", AccountEndpoints.PatchPhone);
 
-        group.MapPut("/address", AccountEndpoints.PutAddress);
+        group.MapPut("/Address", AccountEndpoints.PutAddress);
         
     }
 }
