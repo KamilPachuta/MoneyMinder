@@ -10,7 +10,7 @@ namespace MoneyMinder.API.Endpoints;
 internal static class CurrencyAccountEndpoints
 {
     [Authorize]
-    public static async Task<IResult> Put(
+    public static async Task<IResult> PostCurrencyAccount(
         [FromBody]CreateCurrencyAccountRequest request, 
         [FromServices]ISender sender,
         [FromServices]IUserService userService)
@@ -24,7 +24,7 @@ internal static class CurrencyAccountEndpoints
     }
         
     [Authorize]
-    public static async Task<IResult> Post(
+    public static async Task<IResult> PatchCurrencyAccount(
         [FromBody]ChangeCurrencyAccountNameRequest request, 
         [FromServices]ISender sender,
         [FromServices]IUserService userService)
@@ -38,7 +38,7 @@ internal static class CurrencyAccountEndpoints
     }
         
     [Authorize]
-    public static async Task<IResult> Delete(
+    public static async Task<IResult> DeleteCurrencyAccount(
         [FromBody]DeleteCurrencyAccountRequest request, 
         [FromServices]ISender sender,
         [FromServices]IUserService userService)
@@ -124,4 +124,6 @@ internal static class CurrencyAccountEndpoints
                 
         return Results.Ok();
     }
+    
+    //Put dla edit limit
 }

@@ -16,11 +16,11 @@ public class CurrencyAccountModule : BaseModule
     {
         var commands = app.MapGroup("").AddFluentValidationAutoValidation();
         
-        commands.MapPut("/", CurrencyAccountEndpoints.Put);
+        commands.MapPost("/", CurrencyAccountEndpoints.PostCurrencyAccount);
         
-        commands.MapPost("/", CurrencyAccountEndpoints.Post);
+        commands.MapPatch("/", CurrencyAccountEndpoints.PatchCurrencyAccount);
         
-        commands.MapDelete("/", CurrencyAccountEndpoints.Delete);
+        commands.MapDelete("/", CurrencyAccountEndpoints.DeleteCurrencyAccount);
         
         
         commands.MapPost("/Income", CurrencyAccountEndpoints.IncomeAdd);
