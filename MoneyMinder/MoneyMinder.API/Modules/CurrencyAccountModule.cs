@@ -35,6 +35,8 @@ public class CurrencyAccountModule : BaseModule
 
         commands.MapPost("/Budget", CurrencyAccountEndpoints.BudgetCreate);
         
+        commands.MapPut("/Budget/Limit", CurrencyAccountEndpoints.LimitEdit);
+        
         commands.MapDelete("/Budget", CurrencyAccountEndpoints.BudgetDelete);
 
 
