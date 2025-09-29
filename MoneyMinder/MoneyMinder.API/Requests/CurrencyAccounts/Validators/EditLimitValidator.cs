@@ -13,7 +13,7 @@ public sealed class EditLimitValidator : AbstractValidator<EditLimitRequest>
             .IsInEnum();
         
         RuleFor(x => x.Limit.Amount)
-            .NotEmpty()
+            .NotNull()
             .GreaterThanOrEqualTo(0);
         
     }

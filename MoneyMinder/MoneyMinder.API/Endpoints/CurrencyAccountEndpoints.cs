@@ -111,6 +111,7 @@ internal static class CurrencyAccountEndpoints
         return Results.Ok();
     }
     
+    [Authorize]
     public static async Task<IResult> BudgetCreate(
         [FromBody] CreateBudgetRequest request,
         [FromServices] ISender sender,
@@ -125,20 +126,22 @@ internal static class CurrencyAccountEndpoints
         return Results.Ok();
     }
     
+    [Authorize]
     public static async Task<IResult> LimitEdit(
-        [FromBody] CreateBudgetRequest request,
+        [FromBody] EditLimitRequest request,
         [FromServices] ISender sender,
         [FromServices] IUserService userService)
     {
         var accountId = userService.GetAccountId();
 
-        var command = new CreateBudgetCommand(accountId, request.CurrencyAccountId, request.Date, request.Currency, request.Limits);
+        var command = new EditLimitCommand(accountId, request.CurrencyAccountId, request.Limit);
 
         await sender.Send(command);
                 
         return Results.Ok();
     }
     
+    [Authorize]
     public static async Task<IResult> BudgetDelete(
         [FromBody]DeleteBudgetRequest request,
         [FromServices] ISender sender,
