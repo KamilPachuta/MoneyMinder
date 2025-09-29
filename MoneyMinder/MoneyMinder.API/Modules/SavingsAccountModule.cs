@@ -23,6 +23,10 @@ public class SavingsAccountModule : BaseModule
         
         commands.MapPatch("/PlannedAmount/", SavingsAccountEndpoints.PatchSavingsAccountPlannedAmount);
         
+        
+        commands.MapPost("/Transaction/", SavingsAccountEndpoints.PostSavingsTransaction);;
+        
+        
     }
     
 }

@@ -65,4 +65,25 @@ internal static class SavingsAccountEndpoints
         await sender.Send(command);
         return Results.Ok();
     }
+    
+    [Authorize]
+    public static async Task<IResult> PostSavingsTransaction(
+        [FromBody]ProcessSavingsTransactionRequest request, 
+        [FromServices]ISender sender,
+        [FromServices]IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+                
+        var command = new ProcessSavingsTransactionCommand(
+            accountId, 
+            request.SavingsAccountId, 
+            request.Name, 
+            request.Date, 
+            request.Currency, 
+            request.Amount, 
+            request.TransactionType);
+        
+        await sender.Send(command);
+        return Results.Ok();
+    }
 }
