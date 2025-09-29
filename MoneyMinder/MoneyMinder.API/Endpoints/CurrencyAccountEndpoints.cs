@@ -110,4 +110,18 @@ internal static class CurrencyAccountEndpoints
                 
         return Results.Ok();
     }
+    
+    public static async Task<IResult> BudgetCreate(
+        [FromBody] CreateBudgetRequest request,
+        [FromServices] ISender sender,
+        [FromServices] IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+
+        var command = new CreateBudgetCommand(accountId, request.CurrencyAccountId, request.Date, request.Currency, request.Limits);
+
+        await sender.Send(command);
+                
+        return Results.Ok();
+    }
 }

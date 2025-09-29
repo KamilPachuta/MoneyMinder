@@ -28,12 +28,13 @@ public class CurrencyAccountModule : BaseModule
         commands.MapDelete("/Income", CurrencyAccountEndpoints.IncomeRemove);
         
         
-        commands.MapPost("/Payment/", CurrencyAccountEndpoints.PaymentAdd);
+        commands.MapPost("/Payment", CurrencyAccountEndpoints.PaymentAdd);
         
-        commands.MapDelete("/payment/", CurrencyAccountEndpoints.PaymentRemove);
-        
-        
-        
-        
+        commands.MapDelete("/Payment", CurrencyAccountEndpoints.PaymentRemove);
+
+
+        commands.MapPost("/Budget", CurrencyAccountEndpoints.BudgetCreate);
+
+
     }
 }
