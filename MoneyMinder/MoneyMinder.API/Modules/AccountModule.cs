@@ -16,21 +16,21 @@ public class AccountModule : BaseModule
     {
         var group = app.MapGroup("").AddFluentValidationAutoValidation();
         
-        group.MapPut("/Admin/", AccountEndpoints.PutAdmin);
+        group.MapPost("/Admin/", AccountEndpoints.PostAdmin);
 
-        group.MapPut("/", AccountEndpoints.PutUser);
+        group.MapPost("/", AccountEndpoints.PostUser);
 
         group.MapPost("/", AccountEndpoints.PostLogin);
 
         group.MapDelete("/", AccountEndpoints.DeleteAccount);
             
-        group.MapPost("/password/", AccountEndpoints.PostPassword);
+        group.MapPatch("/password/", AccountEndpoints.PatchPassword);
         
-        group.MapPost("/name/", AccountEndpoints.PostName);
+        group.MapPatch("/name/", AccountEndpoints.PatchName);
 
-        group.MapPost("/phone/", AccountEndpoints.PostPhone);
+        group.MapPatch("/phone/", AccountEndpoints.PatchPhone);
 
-        group.MapPost("/address", AccountEndpoints.PostAddress);
+        group.MapPut("/address", AccountEndpoints.PutAddress);
         
     }
 }

@@ -10,7 +10,7 @@ namespace MoneyMinder.API.Endpoints;
 internal static class AccountEndpoints
 {
     [Authorize(Roles = "Admin")]
-    public static async Task<IResult> PutAdmin([FromBody]CreateAdminRequest request, [FromServices]ISender sender)
+    public static async Task<IResult> PostAdmin([FromBody]CreateAdminRequest request, [FromServices]ISender sender)
     {
         var command = new CreateAdminCommand(request.Email, request.Password);
         
@@ -18,7 +18,7 @@ internal static class AccountEndpoints
         return Results.Ok();
     }
     
-    public static async Task<IResult> PutUser([FromBody]CreateUserRequest request, [FromServices]ISender sender)
+    public static async Task<IResult> PostUser([FromBody]CreateUserRequest request, [FromServices]ISender sender)
     {
         var command = new CreateUserCommand(request.Email, request.Password, request.FirstName, request.LastName, 
             request.PhoneCode, request.PhoneNumber, request.BirthDate, request.Gender, request.Country, request.City, request.PostalCode, request.Street);
@@ -36,7 +36,7 @@ internal static class AccountEndpoints
     }
     
     [Authorize]
-    public static async Task<IResult> PostPassword(
+    public static async Task<IResult> PatchPassword(
         [FromBody]ChangePasswordRequest request, 
         [FromServices] ISender sender,
         [FromServices]IUserService userService)
@@ -51,7 +51,7 @@ internal static class AccountEndpoints
     }
     
     [Authorize]
-    public static async Task<IResult> PostName(
+    public static async Task<IResult> PatchName(
         [FromBody]ChangeNameRequest request, 
         [FromServices]ISender sender,
         [FromServices]IUserService userService)
@@ -66,7 +66,7 @@ internal static class AccountEndpoints
     }
 
     [Authorize]
-    public static async Task<IResult> PostPhone(
+    public static async Task<IResult> PatchPhone(
         [FromBody]ChangePhoneNumberRequest request, 
         [FromServices] ISender sender,
         [FromServices]IUserService userService)
@@ -81,7 +81,7 @@ internal static class AccountEndpoints
     }
     
     [Authorize]
-    public static async Task<IResult> PostAddress(
+    public static async Task<IResult> PutAddress(
         [FromBody]ChangeAddressRequest request, 
         [FromServices] ISender sender,
         [FromServices]IUserService userService)
