@@ -37,4 +37,18 @@ internal static class SavingsAccountEndpoints
         await sender.Send(command);
         return Results.NoContent();
     }
+    
+    [Authorize]
+    public static async Task<IResult> PatchSavingsAccountName(
+        [FromBody]ChangeSavingsAccountNameRequest request, 
+        [FromServices]ISender sender,
+        [FromServices]IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+                
+        var command = new ChangeSavingsAccountNameCommand(accountId, request.SavingsAccountId, request.Name);
+        
+        await sender.Send(command);
+        return Results.Ok();
+    }
 }
