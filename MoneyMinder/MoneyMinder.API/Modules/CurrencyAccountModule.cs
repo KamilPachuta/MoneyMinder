@@ -34,6 +34,8 @@ public class CurrencyAccountModule : BaseModule
 
 
         commands.MapPost("/Budget", CurrencyAccountEndpoints.BudgetCreate);
+        
+        commands.MapDelete("/Budget", CurrencyAccountEndpoints.BudgetDelete);
 
 
     }
