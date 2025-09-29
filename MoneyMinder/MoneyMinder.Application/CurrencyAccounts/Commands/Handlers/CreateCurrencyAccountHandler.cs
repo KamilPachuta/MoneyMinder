@@ -33,11 +33,6 @@ internal sealed class CreateCurrencyAccountHandler : IRequestHandler<CreateCurre
             throw new AccountNotFoundException(request.AccountId);
         }
         
-        // if (account.CurrencyAccounts.Exists(ca => ca.Name.Name == request.Name))
-        // {
-        //     throw new CurrencyAccountAlreadyExistException(request.Name);
-        // }
-        
         if (!await _currencyAccountReadService.CheckUnique(request.AccountId, request.Name))
         {
             throw new CurrencyAccountAlreadyExistException(request.Name);
