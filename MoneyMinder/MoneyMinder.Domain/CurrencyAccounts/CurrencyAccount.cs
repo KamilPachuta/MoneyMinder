@@ -132,6 +132,8 @@ public class CurrencyAccount : AggregateRoot
         if (budget is null)
             throw new BudgetNotFoundException();
         
+        Budgets.Remove(budget);
+        
         RaiseDomainEvent(new BudgetDeletedDomainEvent(budget, this));
     }
     
