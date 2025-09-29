@@ -18,7 +18,10 @@ public class SavingsAccountModule : BaseModule
         commands.MapPost("/", SavingsAccountEndpoints.PostSavingsAccount);
         
         commands.MapDelete("/", SavingsAccountEndpoints.DeleteSavingsAccount);
+        
         commands.MapPatch("/Name/", SavingsAccountEndpoints.PatchSavingsAccountName);
+        
+        commands.MapPatch("/PlannedAmount/", SavingsAccountEndpoints.PatchSavingsAccountPlannedAmount);
         
     }
     

@@ -51,4 +51,18 @@ internal static class SavingsAccountEndpoints
         await sender.Send(command);
         return Results.Ok();
     }
+    
+    [Authorize]
+    public static async Task<IResult> PatchSavingsAccountPlannedAmount(
+        [FromBody]ChangeSavingsAccountPlannedAmountRequest request, 
+        [FromServices]ISender sender,
+        [FromServices]IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+                
+        var command = new ChangeSavingsAccountPlannedAmountCommand(accountId, request.SavingsAccountId, request.PlannedAmount);
+        
+        await sender.Send(command);
+        return Results.Ok();
+    }
 }
