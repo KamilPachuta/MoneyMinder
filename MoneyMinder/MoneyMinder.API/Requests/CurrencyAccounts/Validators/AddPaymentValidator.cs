@@ -15,7 +15,11 @@ public sealed class AddPaymentValidator : AbstractValidator<AddPaymentRequest>
             .MaximumLength(50);
 
         RuleFor(x => x.Date)
-            .NotEmpty();
+            .NotEmpty()
+            .LessThanOrEqualTo(DateTime.UtcNow)
+            .WithMessage("Date cannot be in the future.")
+            .Must(d => d.Year == DateTime.UtcNow.Year && d.Month == DateTime.UtcNow.Month)
+            .WithMessage("Date must be in the current month.");
 
         RuleFor(x => x.Currency)
             .IsInEnum();

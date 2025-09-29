@@ -31,7 +31,7 @@ internal abstract class CurrencyHandler<TRequest> : IRequestHandler<TRequest>
 
         if (!await _readService.CheckOwner(command.AccountId, command.CurrencyAccountId))
         {
-            throw new AccesDeniedException(command.AccountId, command.CurrencyAccountId);
+            throw new CurrencyAccountOwnershipException(command.AccountId, command.CurrencyAccountId);
         }
         
         return currencyAccount;
