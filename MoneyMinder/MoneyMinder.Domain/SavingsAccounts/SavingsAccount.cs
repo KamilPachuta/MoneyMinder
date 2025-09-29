@@ -2,6 +2,7 @@
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.SavingsAccounts.DomainEvents;
 using MoneyMinder.Domain.SavingsAccounts.Entities;
+using MoneyMinder.Domain.SavingsAccounts.Exceptions;
 using MoneyMinder.Domain.SavingsAccounts.ValueObjects;
 using MoneyMinder.Domain.Shared.Exceptions;
 using MoneyMinder.Domain.Shared.Primitives;
@@ -62,6 +63,9 @@ public class SavingsAccount : AggregateRoot
 
     public void ProcessTransaction(SavingsTransaction transaction)
     {
+        if(Currency != transaction.Currency)
+            throw new CurrencyMismatchException(Currency, transaction.Currency);
+        
         CurrentAmount = new Amount(CurrentAmount.Value + transaction.Amount.Value);
         
         Transactions.Add(transaction);
