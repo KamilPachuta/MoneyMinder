@@ -16,6 +16,8 @@ public class SavingsAccountModule : BaseModule
         var commands = app.MapGroup("").AddFluentValidationAutoValidation();
         
         commands.MapPost("/", SavingsAccountEndpoints.PostSavingsAccount);
+        
+        commands.MapDelete("/", SavingsAccountEndpoints.DeleteSavingsAccount);
     }
     
 }

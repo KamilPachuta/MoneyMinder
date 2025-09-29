@@ -23,4 +23,18 @@ internal static class SavingsAccountEndpoints
         await sender.Send(command);
         return Results.Ok();
     }
+    
+    [Authorize]
+    public static async Task<IResult> DeleteSavingsAccount(
+        [FromBody]DeleteSavingsAccountRequest request, 
+        [FromServices]ISender sender,
+        [FromServices]IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+                
+        var command = new DeleteSavingsAccountCommand(accountId, request.SavingsAccountId);
+        
+        await sender.Send(command);
+        return Results.NoContent();
+    }
 }
