@@ -13,7 +13,7 @@ internal sealed class CreateBudgetHandler : CurrencyHandler<CreateBudgetCommand>
     {
     }
 
-    public async override Task Handle(CreateBudgetCommand request, CancellationToken cancellationToken)
+    public override async Task Handle(CreateBudgetCommand request, CancellationToken cancellationToken)
     {
         var currencyAccount = await GetCurrencyAccount(request);
 

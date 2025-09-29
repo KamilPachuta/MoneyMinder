@@ -12,7 +12,7 @@ internal sealed class AddPaymentHandler : CurrencyHandler<AddPaymentCommand>
     {
     }
 
-    public async override Task Handle(AddPaymentCommand request, CancellationToken cancellationToken)
+    public override async Task Handle(AddPaymentCommand request, CancellationToken cancellationToken)
     {
         var currencyAccount = await GetCurrencyAccount(request);
 

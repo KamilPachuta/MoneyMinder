@@ -11,7 +11,7 @@ internal sealed class DeleteBudgetHandler : CurrencyHandler<DeleteBudgetCommand>
     {
     }
 
-    public async override Task Handle(DeleteBudgetCommand request, CancellationToken cancellationToken)
+    public override async Task Handle(DeleteBudgetCommand request, CancellationToken cancellationToken)
     {
         var currencyAccount = await GetCurrencyAccount(request);
         

@@ -11,7 +11,7 @@ internal sealed class RemovePaymentHandler : CurrencyHandler<RemovePaymentComman
     {
     }
 
-    public async override Task Handle(RemovePaymentCommand request, CancellationToken cancellationToken)
+    public override async Task Handle(RemovePaymentCommand request, CancellationToken cancellationToken)
     {
         var currencyAccount = await GetCurrencyAccount(request);
 

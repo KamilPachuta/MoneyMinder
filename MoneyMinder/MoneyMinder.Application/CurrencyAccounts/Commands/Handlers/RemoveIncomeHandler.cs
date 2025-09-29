@@ -12,7 +12,7 @@ internal sealed class RemoveIncomeHandler : CurrencyHandler<RemoveIncomeCommand>
     {
     }
 
-    public async override Task Handle(RemoveIncomeCommand request, CancellationToken cancellationToken)
+    public override async Task Handle(RemoveIncomeCommand request, CancellationToken cancellationToken)
     {
         var currencyAccount = await GetCurrencyAccount(request);
         
