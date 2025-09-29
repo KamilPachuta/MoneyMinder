@@ -21,7 +21,7 @@ public class Budget : Entity
         Date = date;
         Currency = currency;
 
-        if (limits.Count != DefinedCategory.Count())
+        if (limits.Select(l => l.Category).Distinct().Count() != DefinedCategory.Count())
             throw new IncorrectLimitsCount();
         
         Limits =  limits;

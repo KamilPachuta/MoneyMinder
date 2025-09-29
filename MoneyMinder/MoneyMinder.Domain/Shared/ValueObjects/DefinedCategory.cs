@@ -19,7 +19,7 @@ public record DefinedCategory
         Category = category;
     }
     
-    internal static int Count()
+    public static int Count()
         => Enum.GetNames(typeof(Category)).Length;
 
     public static implicit operator Category(DefinedCategory transactionCategory)
