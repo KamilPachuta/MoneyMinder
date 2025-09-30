@@ -1,9 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoneyMinder.API.Requests.CurrencyAccounts;
+using MoneyMinder.API.Mappings;
 using MoneyMinder.API.Services;
 using MoneyMinder.Application.CurrencyAccounts.Commands;
+using MoneyMinder.Domain.Shared.Enums;
+using MoneyMinderContracts.Requests.CurrencyAccounts;
 
 namespace MoneyMinder.API.Endpoints;
 
@@ -59,7 +61,7 @@ internal static class CurrencyAccountEndpoints
     {
         var accountId = userService.GetAccountId();
 
-        var command = new AddIncomeCommand(accountId, request.CurrencyAccountId, request.Name, request.Date, request.Currency, request.Amount);
+        var command = new AddIncomeCommand(accountId, request.CurrencyAccountId, request.Name, request.Date, (Currency)request.CurrencyDto, request.Amount);
 
         await sender.Send(command);
                 
@@ -89,7 +91,7 @@ internal static class CurrencyAccountEndpoints
     {
         var accountId = userService.GetAccountId();
 
-        var command = new AddPaymentCommand(accountId, request.CurrencyAccountId, request.Name, request.Date, request.Currency, request.Amount, request.Category);
+        var command = new AddPaymentCommand(accountId, request.CurrencyAccountId, request.Name, request.Date, (Currency)request.CurrencyDto, request.Amount, (Category)request.CategoryDto);
 
         await sender.Send(command);
                 
@@ -119,7 +121,7 @@ internal static class CurrencyAccountEndpoints
     {
         var accountId = userService.GetAccountId();
 
-        var command = new CreateBudgetCommand(accountId, request.CurrencyAccountId, request.Date, request.Currency, request.Limits);
+        var command = new CreateBudgetCommand(accountId, request.CurrencyAccountId, request.Date, (Currency)request.CurrencyDto, request.Limits.ToDomain());
 
         await sender.Send(command);
                 
@@ -134,7 +136,7 @@ internal static class CurrencyAccountEndpoints
     {
         var accountId = userService.GetAccountId();
 
-        var command = new EditLimitCommand(accountId, request.CurrencyAccountId, request.Limit);
+        var command = new EditLimitCommand(accountId, request.CurrencyAccountId, request.Limit.ToDomain());
 
         await sender.Send(command);
                 

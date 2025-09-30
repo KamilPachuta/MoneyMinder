@@ -1,10 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoneyMinder.API.Requests.SavingsAccounts;
 using MoneyMinder.API.Services;
-using MoneyMinder.Application.CurrencyAccounts.Commands;
 using MoneyMinder.Application.SavingsAccounts.Commands;
+using MoneyMinder.Domain.SavingsAccounts.Enums;
+using MoneyMinder.Domain.Shared.Enums;
+using MoneyMinderContracts.Requests.SavingsAccounts;
 
 namespace MoneyMinder.API.Endpoints;
 
@@ -18,7 +19,7 @@ internal static class SavingsAccountEndpoints
     {
         var accountId = userService.GetAccountId();
                 
-        var command = new CreateSavingsAccountCommand(accountId, request.Name, request.Currency, request.PlannedAmount);
+        var command = new CreateSavingsAccountCommand(accountId, request.Name, (Currency)request.CurrencyDto, request.PlannedAmount);
         
         await sender.Send(command);
         return Results.Ok();
@@ -79,9 +80,9 @@ internal static class SavingsAccountEndpoints
             request.SavingsAccountId, 
             request.Name, 
             request.Date, 
-            request.Currency, 
+            (Currency)request.CurrencyDto, 
             request.Amount, 
-            request.TransactionType);
+            (TransactionType)request.TransactionTypeDto);
         
         await sender.Send(command);
         return Results.Ok();

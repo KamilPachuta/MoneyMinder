@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoneyMinder.API.Requests.Accounts;
 using MoneyMinder.API.Services;
 using MoneyMinder.Application.Accounts.Commands;
+using MoneyMinder.Domain.Accounts.Enums;
+using MoneyMinderContracts.Requests.Accounts;
 
 namespace MoneyMinder.API.Endpoints;
 
@@ -21,7 +22,7 @@ internal static class AccountEndpoints
     public static async Task<IResult> PostUser([FromBody]CreateUserRequest request, [FromServices]ISender sender)
     {
         var command = new CreateUserCommand(request.Email, request.Password, request.FirstName, request.LastName, 
-            request.PhoneCode, request.PhoneNumber, request.BirthDate, request.Gender, request.Country, request.City, request.PostalCode, request.Street);
+            request.PhoneCode, request.PhoneNumber, request.BirthDate, (Gender)request.GenderDto, request.Country, request.City, request.PostalCode, request.Street);
         
         await sender.Send(command);
         return Results.Ok();
