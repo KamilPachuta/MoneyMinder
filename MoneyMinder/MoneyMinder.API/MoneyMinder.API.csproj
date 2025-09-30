@@ -24,4 +24,10 @@
       <ProjectReference Include="..\MoneyMinder.Infrastructure\MoneyMinder.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="MoneyMinderContracts">
+        <HintPath>..\..\MoneyMinderContracts\MoneyMinderContracts\bin\Debug\net8.0\MoneyMinderContracts.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
