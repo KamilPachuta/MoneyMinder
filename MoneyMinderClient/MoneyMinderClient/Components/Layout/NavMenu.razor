@@ -89,7 +89,30 @@
     
     private async Task CreateSavingsAccount()
     {
-        throw new NotImplementedException();
+        var dialog = await DialogService.ShowAsync<NewSavingsAccount>();
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted creating savings account.");
+            NavigationManager.Refresh();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
         
     }
     
