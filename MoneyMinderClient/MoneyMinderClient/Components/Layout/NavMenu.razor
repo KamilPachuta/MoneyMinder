@@ -4,9 +4,7 @@
 @inject IAccountService AccountService
 @inject ICurrencyAccountService CurrencyService
 @inject ISavingsAccountService SavingsService
-@inject IDialogService DialogService
-@inject ISnackbar Snackbar
-@inject NavigationManager NavigationManager
+@inherits BasePage
 
 
 
@@ -30,7 +28,6 @@
                         <MudNavGroup Title="@name" Icon="@Icons.Material.Filled.AccountBalanceWallet" Expanded="false" Class="">
                             <MudNavLink Href="@CurrencyAccountPathBuilder.Path(name)" Icon="@Icons.Material.Filled.CreditCard">Account</MudNavLink>
                             <MudNavLink Href="@CurrencyAccountPathBuilder.TransactionHistoryPath(name)" Icon="@Icons.Material.Filled.History">Transaction History</MudNavLink>
-                            <MudNavLink Href="@CurrencyAccountPathBuilder.MonthlyTransactionsPath(name)" Icon="@Icons.Material.Filled.EventRepeat">Monthly Transactions</MudNavLink>
                             <MudNavLink Href="@CurrencyAccountPathBuilder.BudgetPath(name)" Icon="@Icons.Material.Filled.BarChart">Budget</MudNavLink>
                         </MudNavGroup>
                     </MudPaper>
@@ -58,63 +55,14 @@
 
 
 
-  
+
     private async Task CreateCurrencyAccount()
-    {
-        var dialog = await DialogService.ShowAsync<NewCurrencyAccount>();
-        
-        var result = await dialog.Result;
+        => await ShowDialogAsync<CreateCurrencyAccountDialog>();
 
-        var isSuccess = new Result();
-        
-        if (!result.Canceled)
-        {
-            isSuccess  = await dialog.GetReturnValueAsync<Result>();
-        }
-        
-        if (isSuccess.Succeeded)
-        {
-            Snackbar.Add("Submitted creating currency account.");
-            NavigationManager.Refresh();
-        }
-        else
-        {
-            Snackbar.Add("Saving error!");
-            foreach (var error in isSuccess.ErrorList)
-            {
-                Snackbar.Add(error);
-            }
-        }
-    }
-    
     private async Task CreateSavingsAccount()
-    {
-        var dialog = await DialogService.ShowAsync<NewSavingsAccount>();
-        
-        var result = await dialog.Result;
+        => await ShowDialogAsync<CreateSavingsAccountDialog>();
 
-        var isSuccess = new Result();
-        
-        if (!result.Canceled)
-        {
-            isSuccess  = await dialog.GetReturnValueAsync<Result>();
-        }
-        
-        if (isSuccess.Succeeded)
-        {
-            Snackbar.Add("Submitted creating savings account.", Severity.Success);
-            NavigationManager.Refresh();
-        }
-        else
-        {
-            Snackbar.Add("Saving error!");
-            foreach (var error in isSuccess.ErrorList)
-            {
-                Snackbar.Add(error);
-            }
-        }
-        
-    }
+
     
     private async Task SetParams()
     {
@@ -154,8 +102,6 @@
         public static string Path(string name) => $"/CurrencyAccount/{name}";
 
         public static string TransactionHistoryPath(string name) => $"/CurrencyAccount/{name}/TransactionHistory";
-            
-        public static string MonthlyTransactionsPath(string name) => $"/CurrencyAccount/{name}/MonthlyTransactions";
             
         public static string BudgetPath(string name) => $"/CurrencyAccount/{name}/Budget";
             
