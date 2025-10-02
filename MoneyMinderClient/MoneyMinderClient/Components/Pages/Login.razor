@@ -7,9 +7,7 @@
 @using MoneyMinderContracts.Requests.Accounts.Validators
 @inject IAccountService AccountService
 @inject AppAuthenticationStateProvider AuthStateProvider
-@inject ISnackbar Snackbar
-@inject NavigationManager NavigationManager
-@inject IDialogService DialogService
+@inherits BasePage 
 
 
 <MudGrid>
@@ -89,17 +87,5 @@
     }
 
     private async Task RegisterDialog()
-    {
-        var dialog = await DialogService.ShowAsync<Register>();
-        var result = await dialog.Result;
-    
-        if (!result.Canceled)
-        {
-            var registerResult = await dialog.GetReturnValueAsync<Result>();
-            if (registerResult.Succeeded)
-                Snackbar.Add("Registration successful!", Severity.Success);
-            else
-                Snackbar.Add("Registration failed!", Severity.Error);
-        }
-    }
+        => await ShowDialogAsync<RegisterUserDialog>();
 }
