@@ -17,7 +17,8 @@ public abstract class BaseService
     protected async Task<Result> SendAsync<TRequest>(
         string url, 
         HttpMethod method, 
-        TRequest? request)
+        TRequest? request = null)
+        where TRequest : class
     {
         try
         {
@@ -26,7 +27,7 @@ public abstract class BaseService
                 "POST" => await _httpClient.PostAsJsonAsync(url, request),
                 "PUT" => await _httpClient.PutAsJsonAsync(url, request),
                 "PATCH" => await _httpClient.PatchAsJsonAsync(url, request),
-                "DELETE" => await _httpClient.DeleteAsync(url),
+                "DELETE" => await DeleteAsJsonAsync(url, request),
                 _ => throw new NotSupportedException($"HTTP method {method} is not supported.")
             };
 
@@ -48,6 +49,17 @@ public abstract class BaseService
         {
             return Result.Failure("Unexpected error", ex.Message);
         }
+    }
+    
+    private async Task<HttpResponseMessage> DeleteAsJsonAsync<TRequest>(string url, TRequest? request = null)
+        where TRequest : class
+    {
+        var httpRequest = new HttpRequestMessage(HttpMethod.Delete, url);
+
+        if (request != null)
+            httpRequest.Content = JsonContent.Create(request);
+
+        return await _httpClient.SendAsync(httpRequest);
     }
     
     protected async Task<Result<TResponse>> GetAsync<TResponse>(string url)
