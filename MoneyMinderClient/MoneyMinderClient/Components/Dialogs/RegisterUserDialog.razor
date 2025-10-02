@@ -9,10 +9,9 @@
 <MudDialog DisableSidePadding="true">
     <DialogContent>
         <MudContainer Style="max-height: 500px; overflow-y: scroll">
-            <MudText Class="mx-4 my-4">Register</MudText>
             <MudPaper Class="mx-4 my-4" Elevation="2">
             
-            <MudForm Model="request" @ref="@form" Validation="@ValidationAdapter.ValidateValue(validator)" ValidationDelay="0">
+            <MudForm Model="request" @ref="@_form" Validation="@ValidationAdapter.ValidateValue(validator)" ValidationDelay="0">
                 <MudCardContent>
                     <MudTextField @bind-Value="request.Email"
                                   For="@(() => request.Email)"
@@ -92,7 +91,7 @@
     [CascadingParameter] 
     IMudDialogInstance MudDialog { get; set; }
 
-    MudForm form = new();
+    MudForm _form = new();
     
     CreateUserRequest request = new()
     {
@@ -109,9 +108,9 @@
     
     private async Task RegisterAsync()
     {
-        await form.Validate();
+        await _form.Validate();
 
-        if (form.IsValid)
+        if (_form.IsValid)
         {
             var isSucces = await AccountService.RegisterAsync(request);
             
