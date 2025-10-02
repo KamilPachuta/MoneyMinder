@@ -10,7 +10,7 @@ public class CreateUserRequest
     public string LastName { get; set; } = string.Empty;
     public string PhoneCode { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
-    public DateTime BirthDate { get; set; }
+    public DateTime? BirthDate { get; set; }
     public GenderDto GenderDto { get; set; }
     public string Country { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
