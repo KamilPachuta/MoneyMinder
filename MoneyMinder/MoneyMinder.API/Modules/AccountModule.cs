@@ -1,4 +1,5 @@
 ﻿using MoneyMinder.API.Endpoints;
+using MoneyMinder.API.Endpoints.Account;
 using MoneyMinder.API.Modules.Abstractions;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 

@@ -5,9 +5,9 @@ using MoneyMinder.API.Services;
 using MoneyMinder.Application.Accounts.Commands;
 using MoneyMinder.Domain.Accounts.Enums;
 using MoneyMinderContracts.Requests.Accounts;
-using MoneyMinderContracts.Responses;
+using MoneyMinderContracts.Responses.Accounts;
 
-namespace MoneyMinder.API.Endpoints;
+namespace MoneyMinder.API.Endpoints.Account;
 
 internal static class AccountEndpoints
 {
@@ -23,7 +23,7 @@ internal static class AccountEndpoints
     public static async Task<IResult> PostUser([FromBody]CreateUserRequest request, [FromServices]ISender sender)
     {
         var command = new CreateUserCommand(request.Email, request.Password, request.FirstName, request.LastName, 
-            request.PhoneCode, request.PhoneNumber, request.BirthDate, (Gender)request.GenderDto, request.Country, request.City, request.PostalCode, request.Street);
+            request.PhoneCode, request.PhoneNumber, request.BirthDate!.Value, (Gender)request.GenderDto, request.Country, request.City, request.PostalCode, request.Street);
         
         await sender.Send(command);
         return Results.Ok();
