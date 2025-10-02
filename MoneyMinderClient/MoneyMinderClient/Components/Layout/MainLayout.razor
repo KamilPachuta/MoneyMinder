@@ -1,0 +1,96 @@
+﻿
+@using MoneyMinderClient.Services.Authentication
+@using MoneyMinderClient.Services.Interfaces
+@inherits LayoutComponentBase
+@inject IAccountService AccountService
+@inject NavigationManager navManager
+
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudPopoverProvider />
+
+<MudLayout>
+    <MudAppBar Color=Color.Primary Elevation="7" Fixed="true">
+        <AuthorizeView>
+            <Authorized>
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+            </Authorized>
+        </AuthorizeView>
+        <MudText Typo="Typo.h5" Class="ml-3">MoneyMinder</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="@((e) => ToggleOpenInfo())"/>
+        <AuthorizeView>
+            <Authorized>
+                <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="@((e) => HandleLogout())"/> @*OnClick="@((e) => DrawerToggle())"*@
+            </Authorized>
+        </AuthorizeView>
+        <MudPopover Open="_isOpenInfo" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.BottomLeft" Paper="false">
+            <MudPaper Outlined="true" Class="px-4 py-2">
+                <MudStack>
+                    <MudPaper Width="400px"  Elevation="0">
+                        <MudText Typo="Typo.h6">Information's</MudText>
+                        <MudText Typo="Typo.body2">
+                            Money Minder is a web application that was created as part of an engineering project. It is dedicated to efficient household financial management and assists in creating budget plans. The application allows users to control their expenses, accumulate savings, and track the flow of funds. With Money Minder, users can effectively plan their finances, save for life goals, and achieve financial objectives. It is a tool that facilitates home budget organization and enhances financial awareness.
+                        </MudText>
+                    </MudPaper>
+                    <MudPaper Class="pa-1">
+                        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/KamilPachuta" Target="_blank" />
+                        <MudIconButton Icon="@Icons.Custom.Brands.LinkedIn" Color="Color.Inherit" Link="https://pl.linkedin.com/in/kamil-pachuta" Target="_blank" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@ToggleOpenInfo"></MudIconButton>   
+                    </MudPaper>
+                </MudStack>
+            </MudPaper>
+        </MudPopover>
+    </MudAppBar>
+    <AuthorizeView>
+        <Authorized>
+            <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Variant="@DrawerVariant.Responsive">
+                <NavMenu />
+            </MudDrawer>
+        </Authorized>
+    </AuthorizeView>
+    
+    <MudMainContent>
+        
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+    
+</MudLayout>
+
+@*<MudPopover Open="@_isOpen" Fixed="true" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomCenter" TransformOrigin="@Origin.BottomCenter" Class="pa-4">
+        @* <MudPopover Open="@_isOpen" Fixed="true" Class="px-4 pt-4"> *@
+
+@code {
+    private bool _isDarkMode = false;
+    private MudTheme _theme = new();
+    private bool _drawerOpen = true;
+    public bool _isOpenInfo = false;
+
+    //private bool _isAuthenticated = false;
+
+    public void ToggleOpenInfo()
+    {
+        if (_isOpenInfo)
+            _isOpenInfo = false;
+        else
+            _isOpenInfo = true;
+    }
+    
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private async Task HandleLogout()
+    {
+
+            await AccountService.LogoutAsync();
+            navManager.NavigateTo("/login/", true);
+    }
+
+}
+
+

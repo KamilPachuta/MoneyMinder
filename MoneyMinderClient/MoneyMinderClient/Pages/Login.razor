@@ -1,0 +1,97 @@
+﻿@page "/login"
+@using MoneyMinderClient.Adapters
+@using MoneyMinderClient.Services.Authentication
+@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Requests.Accounts
+@using MoneyMinderContracts.Requests.Accounts.Validators
+@inject IAccountService AccountService
+@inject AppAuthenticationStateProvider AuthStateProvider
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+@inject IDialogService DialogService
+
+
+<MudGrid>
+    <MudItem xs="12" sm="8">
+        <MudText Typo="Typo.h4">Welcome to MoneyMinder Application</MudText>
+    </MudItem>
+
+    <MudItem xs="12" sm="4">
+        <MudPaper Elevation="3" Class="mx-4 my-4">
+            <MudPaper Elevation="2">
+                <MudText Class="px-4 py-4">Enter your email and password</MudText>
+                <MudForm Model="_loginUserRequest" @ref="_form" Validation="@LoginAccountValidationAdapter.ValidateValue" ValidationDelay="0">
+                    <MudCardContent>
+                        <MudTextField @bind-Value="_loginUserRequest.Email"
+                                      For="@(() => _loginUserRequest.Email)"
+                                     
+                                      Label="Email" />
+                        <MudTextField @bind-Value="_loginUserRequest.Password"
+                                      For="@(() => _loginUserRequest.Password)"
+                                      InputType="InputType.Password"
+                                     
+                                      Label="Password"
+                                      HelperText="ex. abc132Das" />
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mx-4 my-4"
+                                   OnClick="SubmitLogin">Login</MudButton>
+                    </MudCardActions>
+                </MudForm>
+            </MudPaper>
+
+            <MudDivider />
+
+            @*<MudPaper Elevation="2">
+                <MudPaper Class="pe-2 mx-4 my-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" FullWidth="true"
+                               OnClick="RegisterDialog">Register</MudButton>
+                </MudPaper>
+            </MudPaper>*@
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+
+@code {
+    private MudForm _form;
+    private LoginAccountValidator _validator = new();
+    private LoginAccountRequest _loginUserRequest = new();
+
+    private async Task SubmitLogin()
+    {
+        await _form.Validate();
+
+        if (!_form.IsValid) return;
+
+        var result = await AccountService.LoginAsync(_loginUserRequest);
+
+        if (result.Succeeded)
+        {
+            // Powiadom StateProvider o zalogowaniu
+            AuthStateProvider.NotifyUserAuthentication();
+
+            Snackbar.Add("Login successful!", Severity.Success);
+            NavManager.NavigateTo("/", true);
+        }
+        else
+        {
+            Snackbar.Add("Login failed: " + string.Join(", ", result.ErrorList ?? new List<string>()), Severity.Error);
+        }
+    }
+
+    // private async Task RegisterDialog()
+    // {
+    //     var dialog = await DialogService.ShowAsync<Register>();
+    //     var result = await dialog.Result;
+    //
+    //     if (!result.Canceled)
+    //     {
+    //         var registerResult = await dialog.GetReturnValueAsync<Result>();
+    //         if (registerResult.Succeeded)
+    //             Snackbar.Add("Registration successful!", Severity.Success);
+    //         else
+    //             Snackbar.Add("Registration failed!", Severity.Error);
+    //     }
+    // }
+}
