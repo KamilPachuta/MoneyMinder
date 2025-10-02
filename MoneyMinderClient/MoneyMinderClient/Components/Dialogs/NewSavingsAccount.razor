@@ -1,0 +1,83 @@
+﻿@using MoneyMinderClient.Core
+@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Enums
+@using MoneyMinderContracts.Requests.SavingsAccounts.Validators
+
+@using MoneyMinderContracts.Requests.SavingsAccounts
+@inject ISavingsAccountService SavingsService
+
+
+<MudDialog DisableSidePadding="true">
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
+            <MudText Typo="Typo.h5">Savings Portfolio</MudText>
+
+                    <MudForm Model="_request" @ref="@form" Validation="@ValidationAdapter.ValidateValue(_validator)" ValidationDelay="0">
+                        <MudTextField @bind-Value="_request.Name" 
+                                      For="@(() => _request.Name)" 
+                                      Immediate="true" 
+                                      Label="Savings Account Name" 
+                                      Variant="Variant.Outlined" />
+                        
+                        <MudSelect @bind-Value="_request.CurrencyDto"
+                                   Label="Currency"
+                                   Variant="Variant.Outlined"
+                                   For="(() => _request.CurrencyDto)">
+                            <MudSelectItem Value="CurrencyDto.USD">USD</MudSelectItem>
+                            <MudSelectItem Value="CurrencyDto.EUR">EUR</MudSelectItem>
+                            <MudSelectItem Value="CurrencyDto.GBP">GBP</MudSelectItem>
+                            <MudSelectItem Value="CurrencyDto.CHF">CHF</MudSelectItem>
+                            <MudSelectItem Value="CurrencyDto.JPY">JPY</MudSelectItem>
+                            <MudSelectItem Value="CurrencyDto.AUD">AUD</MudSelectItem>
+                            <MudSelectItem Value="CurrencyDto.CAD">CAD</MudSelectItem>
+                            <MudSelectItem Value="CurrencyDto.CNY">CNY</MudSelectItem>
+                            <MudSelectItem Value="CurrencyDto.SEK">SEK</MudSelectItem>
+                            <MudSelectItem Value="CurrencyDto.PLN">PLN</MudSelectItem>
+                        </MudSelect>
+                        
+                        <MudNumericField @bind-Value="_request.PlannedAmount" 
+                                         Label="Outlined" 
+                                         For="(() => _request.PlannedAmount)"
+                                         Variant="Variant.Outlined" 
+                                         Step="100M" 
+                                         DebounceInterval="500"/>
+                        
+                    </MudForm>
+                       
+
+                    
+
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
+        <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    IMudDialogInstance MudDialog { get; set; }
+
+    MudForm form = new();
+    
+    CreateSavingsAccountRequest _request = new();
+    CreateSavingsAccountValidator _validator = new();
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            var result = await SavingsService.PostSavingsAccountAsync(_request);
+
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+}
