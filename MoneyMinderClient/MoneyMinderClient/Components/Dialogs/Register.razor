@@ -1,0 +1,121 @@
+﻿@using MoneyMinderClient.Core
+@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Enums
+@using MoneyMinderContracts.Requests.Accounts
+@using MoneyMinderContracts.Requests.Accounts.Validators
+@inject IAccountService AccountService
+
+
+<MudDialog DisableSidePadding="true">
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll">
+            <MudText Class="mx-4 my-4">Register</MudText>
+            <MudPaper Class="mx-4 my-4" Elevation="2">
+            
+            <MudForm Model="request" @ref="@form" Validation="@ValidationAdapter.ValidateValue(validator)" ValidationDelay="0">
+                <MudCardContent>
+                    <MudTextField @bind-Value="request.Email"
+                                  For="@(() => request.Email)"
+                                  Immediate="true"
+                                  Label="Email"/>
+
+                    <MudTextField @bind-Value="request.Password"
+                                  For="@(() => request.Password)"
+                                  Immediate="true"
+                                  InputType="InputType.Password"
+                                  Label="Password"/>
+                    <MudTextField @bind-Value="request.FirstName"
+                                  For="@(() => request.FirstName)"
+                                  Immediate="true"
+                                  Label="First Name"/>
+
+                    <MudTextField @bind-Value="request.LastName"
+                                  For="@(() => request.LastName)"
+                                  Immediate="true"
+                                  Label="Last Name"/>
+
+                    <MudTextField @bind-Value="request.PhoneCode"
+                                  For="@(() => request.PhoneCode)"
+                                  Immediate="true"
+                                  Label="Phone Code"/>
+
+                    <MudTextField @bind-Value="request.PhoneNumber"
+                                  For="@(() => request.PhoneNumber)"
+                                  Immediate="true"
+                                  Label="Phone Number"/>
+
+                    <MudSelect @bind-Value="request.GenderDto"
+                               Label="Gender"
+                               For="@(() => request.GenderDto)">
+                        <MudSelectItem Value="GenderDto.Men">Men</MudSelectItem>
+                        <MudSelectItem Value="GenderDto.Women">Women</MudSelectItem>
+                    </MudSelect>
+
+                    <MudDatePicker @bind-Date="request.BirthDate"
+                                   Label="Birth Date"
+                                   For="@(() => request.BirthDate)"/>
+
+                    <MudTextField @bind-Value="request.Country"
+                                  For="@(() => request.Country)"
+                                  Immediate="true"
+                                  Label="Country"/>
+
+                    <MudTextField @bind-Value="request.City"
+                                  For="@(() => request.City)"
+                                  Immediate="true"
+                                  Label="City"/>
+                    
+                    <MudTextField @bind-Value="request.PostalCode"
+                                  For="@(() => request.PostalCode)"
+                                  Immediate="true"
+                                  Label="Postal Code"/>
+
+                    <MudTextField @bind-Value="request.Street"
+                                  For="@(() => request.Street)"
+                                  Immediate="true"
+                                  Label="Street"/>
+                    <MudCardActions>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="RegisterAsync">Register</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="CloseDialog">Cancel</MudButton>
+                    </MudCardActions>
+
+                </MudCardContent>
+
+            </MudForm>
+            </MudPaper>
+        </MudContainer>
+    </DialogContent>
+
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
+
+    MudForm form = new();
+    
+    CreateUserRequest request = new()
+    {
+        GenderDto = GenderDto.Men
+    };
+
+    CreateUserValidator validator = new();
+    
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task RegisterAsync()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            var isSucces = await AccountService.RegisterAsync(request);
+            
+            MudDialog.Close(DialogResult.Ok(isSucces));
+        }
+    }
+    
+}
