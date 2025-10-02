@@ -1,3 +1,15 @@
 namespace MoneyMinderContracts.Requests.SavingsAccounts;
 
-public record DeleteSavingsAccountRequest(Guid SavingsAccountId);
+public class DeleteSavingsAccountRequest
+{
+    public Guid SavingsAccountId { get; set; }
+
+    public DeleteSavingsAccountRequest()
+    {
+    }
+    
+    public DeleteSavingsAccountRequest(Guid savingsAccountId)
+    {
+        SavingsAccountId = savingsAccountId;
+    }
+}

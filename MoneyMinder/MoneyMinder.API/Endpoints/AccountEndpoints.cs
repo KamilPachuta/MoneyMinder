@@ -5,6 +5,7 @@ using MoneyMinder.API.Services;
 using MoneyMinder.Application.Accounts.Commands;
 using MoneyMinder.Domain.Accounts.Enums;
 using MoneyMinderContracts.Requests.Accounts;
+using MoneyMinderContracts.Responses;
 
 namespace MoneyMinder.API.Endpoints;
 
@@ -33,7 +34,9 @@ internal static class AccountEndpoints
         var command = new LoginAccountCommand(request.Email, request.Password);
         
         var result = await sender.Send(command);
-        return Results.Ok(result);
+
+        var response = new LoginResponse(result);
+        return Results.Ok(response);
     }
     
     [Authorize]

@@ -1,3 +1,15 @@
 namespace MoneyMinderContracts.Requests.CurrencyAccounts;
 
-public record DeleteBudgetRequest(Guid CurrencyAccountId);
+public class DeleteBudgetRequest
+{
+    public Guid CurrencyAccountId { get; set; }
+
+    public DeleteBudgetRequest()
+    {
+    }
+    
+    public DeleteBudgetRequest(Guid currencyAccountId)
+    {
+        CurrencyAccountId = currencyAccountId;
+    }
+}

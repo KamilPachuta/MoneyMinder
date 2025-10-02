@@ -33,7 +33,7 @@ internal static class CurrencyAccountEndpoints
     {
         var accountId = userService.GetAccountId();
                 
-        var command = new ChangeCurrencyAccountNameCommand(accountId, request.Id, request.Name);
+        var command = new ChangeCurrencyAccountNameCommand(accountId, request.CurrencyAccountId, request.Name);
         
         await sender.Send(command);
         return Results.Ok();
@@ -47,7 +47,7 @@ internal static class CurrencyAccountEndpoints
     {
         var accountId = userService.GetAccountId();
                 
-        var command = new DeleteCurrencyAccountCommand(accountId, request.Id);
+        var command = new DeleteCurrencyAccountCommand(accountId, request.CurrencyAccountId);
         
         await sender.Send(command);
         return Results.Ok();

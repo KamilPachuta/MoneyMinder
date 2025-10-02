@@ -6,7 +6,7 @@ public sealed class ChangeCurrencyAccountNameValidator : AbstractValidator<Chang
 {
     public ChangeCurrencyAccountNameValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.CurrencyAccountId)
             .NotEmpty();
 
         RuleFor(x => x.Name)

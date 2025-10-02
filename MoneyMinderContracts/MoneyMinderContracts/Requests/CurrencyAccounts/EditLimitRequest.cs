@@ -2,4 +2,18 @@ using MoneyMinderContracts.WriteModels;
 
 namespace MoneyMinderContracts.Requests.CurrencyAccounts;
 
-public record EditLimitRequest(Guid CurrencyAccountId, LimitWriteModelDto Limit);
+public class EditLimitRequest
+{
+    public Guid CurrencyAccountId { get; set; }
+    public LimitWriteModelDto Limit { get; set; }
+
+    public EditLimitRequest()
+    {
+    }
+    
+    public EditLimitRequest(Guid currencyAccountId, LimitWriteModelDto limit)
+    {
+        CurrencyAccountId = currencyAccountId;
+        Limit = limit;
+    }
+}

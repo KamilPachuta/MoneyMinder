@@ -6,7 +6,7 @@ public sealed class DeleteCurrencyAccountValidator : AbstractValidator<DeleteCur
 {
     public DeleteCurrencyAccountValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.CurrencyAccountId)
             .NotEmpty();
     }
 }

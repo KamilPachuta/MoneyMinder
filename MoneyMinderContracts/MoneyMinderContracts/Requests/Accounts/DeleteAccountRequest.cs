@@ -1,3 +1,15 @@
 ﻿namespace MoneyMinderContracts.Requests.Accounts;
 
-public record DeleteAccountRequest(string Password);
+public class DeleteAccountRequest
+{
+    public string Password { get; set; } = string.Empty;
+
+    public DeleteAccountRequest()
+    {
+    }
+    
+    public DeleteAccountRequest(string password)
+    {
+        Password = password;
+    }
+}
