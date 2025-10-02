@@ -65,14 +65,14 @@
         
         var result = await dialog.Result;
 
-        var isSucces = new Result();
+        var isSuccess = new Result();
         
         if (!result.Canceled)
         {
-            isSucces  = await dialog.GetReturnValueAsync<Result>();
+            isSuccess  = await dialog.GetReturnValueAsync<Result>();
         }
         
-        if (isSucces.Succeeded)
+        if (isSuccess.Succeeded)
         {
             Snackbar.Add("Submitted creating currency account.");
             NavigationManager.Refresh();
@@ -80,7 +80,7 @@
         else
         {
             Snackbar.Add("Saving error!");
-            foreach (var error in isSucces.ErrorList)
+            foreach (var error in isSuccess.ErrorList)
             {
                 Snackbar.Add(error);
             }
@@ -93,22 +93,22 @@
         
         var result = await dialog.Result;
 
-        var isSucces = new Result();
+        var isSuccess = new Result();
         
         if (!result.Canceled)
         {
-            isSucces  = await dialog.GetReturnValueAsync<Result>();
+            isSuccess  = await dialog.GetReturnValueAsync<Result>();
         }
         
-        if (isSucces.Succeeded)
+        if (isSuccess.Succeeded)
         {
-            Snackbar.Add("Submitted creating savings account.");
+            Snackbar.Add("Submitted creating savings account.", Severity.Success);
             NavigationManager.Refresh();
         }
         else
         {
             Snackbar.Add("Saving error!");
-            foreach (var error in isSucces.ErrorList)
+            foreach (var error in isSuccess.ErrorList)
             {
                 Snackbar.Add(error);
             }

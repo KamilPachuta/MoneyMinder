@@ -61,7 +61,10 @@
 
     MudForm form = new();
     
-    CreateSavingsAccountRequest _request = new();
+    CreateSavingsAccountRequest _request = new()
+    {
+        CurrencyDto = CurrencyDto.USD
+    };
     CreateSavingsAccountValidator _validator = new();
 
     private void CloseDialog()
