@@ -1,40 +1,114 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">MoneyMinderClient</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿@using MoneyMinderClient.Services
+@using MoneyMinderClient.Services.Interfaces
+@inject IAccountService AccountService
+@inject ICurrencyAccountService CurrencyService
+@inject ISavingsAccountService SavingsService
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+
+<AuthorizeView>
+    <Authorized>
+        @if (!string.IsNullOrWhiteSpace(_name))
+        {
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h6">@_name</MudText>
+            </MudDrawerHeader>
+        }
+        <MudNavMenu>
+            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Home</MudNavLink> 
+            <MudNavLink Href="/Profile" Icon="@Icons.Material.Filled.AccountCircle">Profile</MudNavLink> 
+            <MudNavGroup Title="CurrencyAccounts" Icon="@Icons.Material.Filled.AccountBalance" Expanded="false">
+                @foreach (var name in _currencyAccountNames)
+                {
+                    <MudPaper Outlined="true" Class="px-3 py-1" Elevation="5">
+                        <MudNavGroup Title="@name" Icon="@Icons.Material.Filled.AccountBalanceWallet" Expanded="false" Class="">
+                            <MudNavLink Href="@CurrencyAccountPathBuilder.Path(name)" Icon="@Icons.Material.Filled.CreditCard">Account</MudNavLink>
+                            <MudNavLink Href="@CurrencyAccountPathBuilder.TransactionHistoryPath(name)" Icon="@Icons.Material.Filled.History">Transaction History</MudNavLink>
+                            <MudNavLink Href="@CurrencyAccountPathBuilder.MonthlyTransactionsPath(name)" Icon="@Icons.Material.Filled.EventRepeat">Monthly Transactions</MudNavLink>
+                            <MudNavLink Href="@CurrencyAccountPathBuilder.BudgetPath(name)" Icon="@Icons.Material.Filled.BarChart">Budget</MudNavLink>
+                        </MudNavGroup>
+                    </MudPaper>
+                }
+                <MudNavLink Icon="@Icons.Material.Filled.AddCard" OnClick="CreateCurrencyAccount">Create</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Title="SavingsAccounts" Icon="@Icons.Material.Filled.Shield" Expanded="false">
+                @foreach (var name in _savingsAccountNames)
+                {
+                    <MudPaper Outlined="true" Class="px-3 py-1" Elevation="5">
+                        <MudNavLink Href="@SavingsAccountPathBuilder.Path(name)" Icon="@Icons.Material.Filled.Savings">@name</MudNavLink>
+                    </MudPaper>
+                }
+                <MudNavLink Icon="@Icons.Material.Filled.AddCard" OnClick="CreateSavingsAccount">Create</MudNavLink>
+            </MudNavGroup>  
+        </MudNavMenu>
+    </Authorized>
+</AuthorizeView>
 
 @code {
-    private bool collapseNavMenu = true;
+    private string _name = "";
+    private List<string> _errorList = new();
+    private List<string> _currencyAccountNames = new(); 
+    private List<string> _savingsAccountNames = new();
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    private void ToggleNavMenu()
+
+    private async Task CreateSavingsAccount()
     {
-        collapseNavMenu = !collapseNavMenu;
+        throw new NotImplementedException();
+    }
+    private async Task CreateCurrencyAccount()
+    {
+        throw new NotImplementedException();
+    }
+    
+    
+    private async Task SetParams()
+    {
+        var responseCurrencyAccounts = await CurrencyService.GetCurrencyAccountNamesAsync();
+        if (responseCurrencyAccounts.Succeeded)
+        {
+            _currencyAccountNames = responseCurrencyAccounts.Response.Names.ToList();
+        }
+        else
+        {
+            _errorList = responseCurrencyAccounts.ErrorList;
+        }
+
+
+        var responseSavings = await SavingsService.GetSavingsAccountNames();
+
+        if (responseSavings.Succeeded)
+        {
+            _savingsAccountNames = responseSavings.Response.Names.ToList();
+        }
+        else
+        {
+            _errorList = responseSavings.ErrorList;
+        }
+        
+        _name = await AccountService.GetNameAsync();
+        
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await SetParams();
+    }
+
+    private static class CurrencyAccountPathBuilder
+    {
+        public static string Path(string name) => $"/CurrencyAccount/{name}";
+
+        public static string TransactionHistoryPath(string name) => $"/CurrencyAccount/{name}/TransactionHistory";
+            
+        public static string MonthlyTransactionsPath(string name) => $"/CurrencyAccount/{name}/MonthlyTransactions";
+            
+        public static string BudgetPath(string name) => $"/CurrencyAccount/{name}/Budget";
+            
+    }    
+    
+    private static class SavingsAccountPathBuilder
+    {
+        public static string Path(string name) => $"/SavingsAccount/{name}";
     }
 
 }
