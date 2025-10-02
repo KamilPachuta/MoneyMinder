@@ -3,7 +3,7 @@
 @using MoneyMinderClient.Services.Interfaces
 @inherits LayoutComponentBase
 @inject IAccountService AccountService
-@inject NavigationManager navManager
+@inject NavigationManager NavigationManager
 
 <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
 <MudDialogProvider />
@@ -25,18 +25,19 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="@((e) => HandleLogout())"/> @*OnClick="@((e) => DrawerToggle())"*@
             </Authorized>
         </AuthorizeView>
-        <MudPopover Open="_isOpenInfo" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.BottomLeft" Paper="false">
+        <MudPopover Open="@_isOpenInfo" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Paper="false">
             <MudPaper Outlined="true" Class="px-4 py-2">
                 <MudStack>
                     <MudPaper Width="400px"  Elevation="0">
                         <MudText Typo="Typo.h6">Information's</MudText>
+                        <MudDivider/>
                         <MudText Typo="Typo.body2">
                             Money Minder is a web application that was created as part of an engineering project. It is dedicated to efficient household financial management and assists in creating budget plans. The application allows users to control their expenses, accumulate savings, and track the flow of funds. With Money Minder, users can effectively plan their finances, save for life goals, and achieve financial objectives. It is a tool that facilitates home budget organization and enhances financial awareness.
                         </MudText>
                     </MudPaper>
                     <MudPaper Class="pa-1">
-                        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/KamilPachuta" Target="_blank" />
-                        <MudIconButton Icon="@Icons.Custom.Brands.LinkedIn" Color="Color.Inherit" Link="https://pl.linkedin.com/in/kamil-pachuta" Target="_blank" />
+                        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/KamilPachuta" Target="_blank" />
+                        <MudIconButton Icon="@Icons.Custom.Brands.LinkedIn" Color="Color.Inherit" Href="https://pl.linkedin.com/in/kamil-pachuta" Target="_blank" />
                         <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@ToggleOpenInfo"></MudIconButton>   
                     </MudPaper>
                 </MudStack>
@@ -67,28 +68,20 @@
     private bool _isDarkMode = false;
     private MudTheme _theme = new();
     private bool _drawerOpen = true;
-    public bool _isOpenInfo = false;
+    private bool _isOpenInfo = false;
 
-    //private bool _isAuthenticated = false;
 
     public void ToggleOpenInfo()
-    {
-        if (_isOpenInfo)
-            _isOpenInfo = false;
-        else
-            _isOpenInfo = true;
-    }
+        => _isOpenInfo = !_isOpenInfo;
     
     void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
+        => _drawerOpen = !_drawerOpen;
 
     private async Task HandleLogout()
     {
 
             await AccountService.LogoutAsync();
-            navManager.NavigateTo("/login/", true);
+            NavigationManager.NavigateTo("/login/", true);
     }
 
 }
