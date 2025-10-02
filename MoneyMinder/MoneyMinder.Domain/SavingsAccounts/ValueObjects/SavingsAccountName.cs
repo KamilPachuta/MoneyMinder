@@ -13,7 +13,7 @@ public record SavingsAccountName
             throw new EmptySavingsAccountNameException();
         }
 
-        if (name.Length > 50)
+        if (name.Length > 50 || name.Length < 3)
         {
             throw new InvalidLengthSavingsAccountNameException(name);
         }

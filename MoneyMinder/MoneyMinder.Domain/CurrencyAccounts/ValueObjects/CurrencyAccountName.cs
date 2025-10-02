@@ -12,8 +12,8 @@ public record CurrencyAccountName
         {
             throw new EmptyCurrencyAccountNameException();
         }
-
-        if (name.Length > 50)
+        
+        if (name.Length > 50 || name.Length < 3)
         {
             throw new InvalidLengthCurrencyAccountNameException(name);
         }
