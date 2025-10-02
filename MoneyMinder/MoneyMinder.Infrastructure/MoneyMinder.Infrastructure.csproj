@@ -7,11 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Queries\" />
-      <Folder Include="Responses\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
         <PrivateAssets>all</PrivateAssets>
@@ -28,6 +23,12 @@
     <ItemGroup>
       <ProjectReference Include="..\MoneyMinder.Application\MoneyMinder.Application.csproj" />
       <ProjectReference Include="..\MoneyMinder.Domain\MoneyMinder.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="MoneyMinderContracts">
+        <HintPath>..\..\MoneyMinderContracts\MoneyMinderContracts\bin\Debug\net8.0\MoneyMinderContracts.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

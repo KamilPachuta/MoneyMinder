@@ -11,12 +11,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Accounts\Queries\" />
+      <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
-      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+      <Reference Include="MoneyMinderContracts">
+        <HintPath>..\..\MoneyMinderContracts\MoneyMinderContracts\bin\Debug\net8.0\MoneyMinderContracts.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
