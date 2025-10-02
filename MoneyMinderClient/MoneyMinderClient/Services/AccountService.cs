@@ -1,5 +1,7 @@
-﻿using System.Net.Http.Headers;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text.Json;
 using Blazored.LocalStorage;
 using MoneyMinderClient.Core;
@@ -7,6 +9,7 @@ using MoneyMinderClient.Services.Authentication;
 using MoneyMinderClient.Services.Interfaces;
 using MoneyMinderContracts.Requests.Accounts;
 using MoneyMinderContracts.Responses;
+using MoneyMinderContracts.Responses.Accounts;
 
 namespace MoneyMinderClient.Services;
 
@@ -17,14 +20,17 @@ public class AccountService : IAccountService
     private readonly AppAuthenticationStateProvider _authenticationStateProvider;
     private readonly JsonSerializerOptions _jsonOptions;
 
-    public AccountService(HttpClient httpClient, ILocalStorageService localStorage, AppAuthenticationStateProvider authenticationStateProvider)
+    public AccountService(IHttpClientFactory httpClientFactory, ILocalStorageService localStorage, AppAuthenticationStateProvider authenticationStateProvider)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient("Auth");
         _localStorage = localStorage;
         _authenticationStateProvider = authenticationStateProvider;
         _jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
     }
 
+    
+    #region Commands
+    
     public async Task<Result<LoginResponse>> LoginAsync(LoginAccountRequest request)
     {
         try
@@ -51,6 +57,22 @@ public class AccountService : IAccountService
         }
     }
 
+    public async Task<Result> RegisterAsync(CreateUserRequest request)
+    {
+        var responseMessage = await _httpClient.PostAsJsonAsync("api/Account/User", request);
+
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            return Result.Failure(
+                $"Status Code: {responseMessage.StatusCode}",
+                $"Content: {await responseMessage.Content.ReadAsStringAsync()}");
+        }
+
+        return Result.Success();
+    }
+
+    #endregion
+    
     public async Task LogoutAsync()
     {
         await _localStorage.RemoveItemAsync("Token");
@@ -58,7 +80,39 @@ public class AccountService : IAccountService
         _httpClient.DefaultRequestHeaders.Authorization = null;
     }
 
-    // public async Task<string> GetTokenAsync() 
-    //     => await _localStorage.GetItemAsStringAsync("Token");
+    public async Task<bool> CheckAuthenticationAsync()
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        return authState.User.Identity?.IsAuthenticated ?? false;
+    }
+    
+    #region Queries
+    
+    public async Task<string> GetNameAsync()
+    {
+        var token = await _localStorage.GetItemAsStringAsync("Token");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            var handler = new JwtSecurityTokenHandler();
+                
+            JwtSecurityToken? jsonToken = null;
+
+            if (handler.CanReadToken(token))
+            {
+                jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+            }
+
+            if (jsonToken != null)
+            {
+                return jsonToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "";
+            }
+        }
+
+        return "";
+
+    }
+    #endregion
+
 
 }
