@@ -9,10 +9,10 @@ public class BasePage : ComponentBase
     [Inject] protected ISnackbar Snackbar { get; set; }
     [Inject] protected NavigationManager NavigationManager { get; set; }
     
-    protected async Task ShowDialogAsync<TDialog>()
+    protected async Task ShowDialogAsync<TDialog>(string title ,DialogParameters? parameters = null)
         where TDialog : ComponentBase
     {
-        var dialog = await DialogService.ShowAsync<TDialog>();
+        var dialog = await DialogService.ShowAsync<TDialog>(title, parameters ?? new DialogParameters());
         var result = await dialog.Result;
 
         if (result.Canceled)
