@@ -1,0 +1,37 @@
+﻿using MoneyMinderClient.Core;
+using MoneyMinderContracts.Responses.CurrencyAccounts;
+
+namespace MoneyMinderClient.Services.Interfaces;
+
+public interface ICurrencyAccountService
+{
+    // public Task<Result> PutCurrencyAccountAsync(CreateCurrencyAccountRequest request);
+    // public Task<Result> PostCurrencyAccountAsync(ChangeCurrencyAccountNameRequest request);
+    // public Task<Result> DeleteCurrencyAccountAsync(DeleteCurrencyAccountRequest request);
+    
+    // public Task<Result> PostIncomeAsync(AddIncomeRequest request);
+    // public Task<Result> DeleteIncomeAsync(RemoveIncomeRequest request);
+    
+    // public Task<Result> PostPaymentAsync(AddPaymentRequest request);
+    // public Task<Result> DeletePaymentAsync(RemovePaymentRequest request);
+    
+    // public Task<Result> PostBudgetAsync(ChangeBudgetNameRequest request);
+    // public Task<Result> DeleteBudgetAsync(DeleteBudgetRequest request);
+    // public Task<Result> Limited(AddExpenseRequest request);
+    
+    // public Task<Result> ImportCSVAsync(UploadCsvTransactionsRequest request);
+    
+    // public Task<Result> ConvertToAsync(ConvertCurrencyToRequest request);
+    // public Task<Result> ConvertFromAsync(ConvertCurrencyFromRequest request);
+    
+    public Task<Result<GetCurrencyAccountNamesResponse>> GetCurrencyAccountNamesAsync();
+    // public Task<Result<GetCurrencyAccountDetailsResponse>> GetCurrencyAccountDetailsAsync(Guid id);
+    // public Task<Result<GetCurrencyAccountBalancesResponse>> GetCurrencyAccountBalancesAsync(Guid id);
+    // public Task<Result<GetCurrencyAccountTransactionsResponse>> GetCurrencyAccountTransactionsAsync(Guid id);
+    // public Task<Result<GetCurrencyAccountIdByNameResponse>> GetIdByNameAsync(string name);
+    
+    // public Task<Result<GetCurrencyIncomesResponse>> GetCurrencyIncomesAsync(Guid id);
+    // public Task<Result<GetCurrencyPaymentsResponse>> GetCurrencyPaymentsAsync(Guid id); 
+    // public Task<Result<GetBudgetDetailsResponse>> GetBudgetDetailsAsync(Guid id);
+    // public Task<Result<GetCurrentMonthPaymentsResponse>> GetCurrentMonthPaymentsAsync(Guid id);
+}
