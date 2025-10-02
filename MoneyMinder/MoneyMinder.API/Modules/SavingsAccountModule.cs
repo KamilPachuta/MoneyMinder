@@ -1,4 +1,5 @@
 using MoneyMinder.API.Endpoints;
+using MoneyMinder.API.Endpoints.SavingsAccount;
 using MoneyMinder.API.Modules.Abstractions;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
@@ -24,7 +25,12 @@ public class SavingsAccountModule : BaseModule
         commands.MapPatch("/PlannedAmount/", SavingsAccountEndpoints.PatchSavingsAccountPlannedAmount);
         
         
-        commands.MapPost("/Transaction/", SavingsAccountEndpoints.PostSavingsTransaction);;
+        commands.MapPost("/Transaction/", SavingsAccountEndpoints.PostSavingsTransaction);
+        
+        
+        var queries = app.MapGroup("").AddFluentValidationAutoValidation();
+        
+        queries.MapGet("/Names", SavingsAccountReadEndpoints.GetSavingsAccountNames);
         
         
     }

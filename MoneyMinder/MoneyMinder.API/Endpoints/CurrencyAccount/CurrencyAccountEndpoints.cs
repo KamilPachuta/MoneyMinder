@@ -7,7 +7,7 @@ using MoneyMinder.Application.CurrencyAccounts.Commands;
 using MoneyMinder.Domain.Shared.Enums;
 using MoneyMinderContracts.Requests.CurrencyAccounts;
 
-namespace MoneyMinder.API.Endpoints;
+namespace MoneyMinder.API.Endpoints.CurrencyAccount;
 
 internal static class CurrencyAccountEndpoints
 {

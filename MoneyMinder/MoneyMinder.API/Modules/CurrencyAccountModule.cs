@@ -1,4 +1,5 @@
 using MoneyMinder.API.Endpoints;
+using MoneyMinder.API.Endpoints.CurrencyAccount;
 using MoneyMinder.API.Modules.Abstractions;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
@@ -38,5 +39,12 @@ public class CurrencyAccountModule : BaseModule
         commands.MapPut("/Budget/Limit", CurrencyAccountEndpoints.LimitEdit);
         
         commands.MapDelete("/Budget", CurrencyAccountEndpoints.BudgetDelete);
+        
+        
+        
+        var queries = app.MapGroup("").AddFluentValidationAutoValidation();
+        
+        queries.MapGet("/Names", CurrencyAccountReadEndpoints.GetCurrencyAccountNames);
+        
     }
 }

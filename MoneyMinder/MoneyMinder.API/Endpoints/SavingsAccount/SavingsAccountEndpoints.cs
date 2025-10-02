@@ -7,7 +7,7 @@ using MoneyMinder.Domain.SavingsAccounts.Enums;
 using MoneyMinder.Domain.Shared.Enums;
 using MoneyMinderContracts.Requests.SavingsAccounts;
 
-namespace MoneyMinder.API.Endpoints;
+namespace MoneyMinder.API.Endpoints.SavingsAccount;
 
 internal static class SavingsAccountEndpoints
 {
