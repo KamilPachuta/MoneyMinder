@@ -1,12 +1,13 @@
 ﻿using MoneyMinderClient.Core;
+using MoneyMinderContracts.Requests.CurrencyAccounts;
 using MoneyMinderContracts.Responses.CurrencyAccounts;
 
 namespace MoneyMinderClient.Services.Interfaces;
 
 public interface ICurrencyAccountService
 {
-    // public Task<Result> PutCurrencyAccountAsync(CreateCurrencyAccountRequest request);
-    // public Task<Result> PostCurrencyAccountAsync(ChangeCurrencyAccountNameRequest request);
+    public Task<Result> PostCurrencyAccountAsync(CreateCurrencyAccountRequest request);
+    // public Task<Result> PatchCurrencyAccountAsync(ChangeCurrencyAccountNameRequest request);
     // public Task<Result> DeleteCurrencyAccountAsync(DeleteCurrencyAccountRequest request);
     
     // public Task<Result> PostIncomeAsync(AddIncomeRequest request);

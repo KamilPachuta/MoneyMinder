@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using Blazored.LocalStorage;
 using MoneyMinderClient.Core;
+using MoneyMinderClient.Services.Abstractions;
 using MoneyMinderClient.Services.Authentication;
 using MoneyMinderClient.Services.Interfaces;
 using MoneyMinderContracts.Requests.Accounts;
@@ -13,7 +14,7 @@ using MoneyMinderContracts.Responses.Accounts;
 
 namespace MoneyMinderClient.Services;
 
-public class AccountService : IAccountService
+public class AccountService : BaseService, IAccountService
 {
     private readonly HttpClient _httpClient;
     private readonly ILocalStorageService _localStorage;
@@ -21,6 +22,7 @@ public class AccountService : IAccountService
     private readonly JsonSerializerOptions _jsonOptions;
 
     public AccountService(IHttpClientFactory httpClientFactory, ILocalStorageService localStorage, AppAuthenticationStateProvider authenticationStateProvider)
+        : base(httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient("Auth");
         _localStorage = localStorage;
@@ -58,18 +60,8 @@ public class AccountService : IAccountService
     }
 
     public async Task<Result> RegisterAsync(CreateUserRequest request)
-    {
-        var responseMessage = await _httpClient.PostAsJsonAsync("api/Account/User", request);
-
-        if (!responseMessage.IsSuccessStatusCode)
-        {
-            return Result.Failure(
-                $"Status Code: {responseMessage.StatusCode}",
-                $"Content: {await responseMessage.Content.ReadAsStringAsync()}");
-        }
-
-        return Result.Success();
-    }
+        => await SendAsync("api/Account/User", HttpMethod.Post, request);
+    
 
     #endregion
     

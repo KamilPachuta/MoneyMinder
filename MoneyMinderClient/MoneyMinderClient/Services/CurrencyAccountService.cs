@@ -2,59 +2,40 @@
 using System.Text.Json;
 using Blazored.LocalStorage;
 using MoneyMinderClient.Core;
+using MoneyMinderClient.Services.Abstractions;
 using MoneyMinderClient.Services.Authentication;
 using MoneyMinderClient.Services.Interfaces;
+using MoneyMinderContracts.Requests.CurrencyAccounts;
 using MoneyMinderContracts.Responses.CurrencyAccounts;
 
 namespace MoneyMinderClient.Services;
 
-public class CurrencyAccountService : ICurrencyAccountService
+public class CurrencyAccountService : BaseService, ICurrencyAccountService
 {
     private readonly HttpClient _httpClient;
 
     public CurrencyAccountService(IHttpClientFactory httpClientFactory)
+        : base(httpClientFactory)
     {
-        _httpClient = httpClientFactory.CreateClient("Auth");
-
     }
     
     
     #region Commands
     
+    public async Task<Result> PostCurrencyAccountAsync(CreateCurrencyAccountRequest request)
+        => await SendAsync("api/CurrencyAccount", HttpMethod.Post, request);
+
+    
+    
     #endregion
     
     #region Queries
+
     
+
     public async Task<Result<GetCurrencyAccountNamesResponse>> GetCurrencyAccountNamesAsync()
-    {
-        var responseMessage = await _httpClient.GetAsync("api/CurrencyAccount/Names");
-        var content = await responseMessage.Content.ReadAsStringAsync();
-
-        if (!responseMessage.IsSuccessStatusCode)
-        {
-            return Result<GetCurrencyAccountNamesResponse>.Failure(
-                $"Status Code: {responseMessage.StatusCode}",
-                $"Content: {content}"
-            );
-        }
-
-        var response = JsonSerializer.Deserialize<GetCurrencyAccountNamesResponse>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-
-        if (response == null)
-        {
-            return Result<GetCurrencyAccountNamesResponse>.Failure(
-                "Response is null.",
-                $"Status Code: {responseMessage.StatusCode}",
-                $"Content: {content}"
-            );
-        }
-
-        return Result<GetCurrencyAccountNamesResponse>.Success(response);
-        
-    }
+        => await GetAsync<GetCurrencyAccountNamesResponse>("api/CurrencyAccount/Names");
+    
     
     #endregion
 }
