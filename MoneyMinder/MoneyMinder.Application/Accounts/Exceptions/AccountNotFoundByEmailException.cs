@@ -2,4 +2,4 @@
 
 namespace MoneyMinder.Application.Accounts.Exceptions;
 
-internal sealed class AccountNotFoundByEmailException(string email) : MoneyMinderException($"Account with email: '{email}' not found.");
+public sealed class AccountNotFoundByEmailException(string email) : MoneyMinderException($"Account with email: '{email}' not found.");
