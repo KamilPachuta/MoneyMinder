@@ -1,8 +1,15 @@
-﻿@using MoneyMinderClient.Services
+﻿@using MoneyMinderClient.Components.Dialogs
+@using MoneyMinderClient.Core
 @using MoneyMinderClient.Services.Interfaces
 @inject IAccountService AccountService
 @inject ICurrencyAccountService CurrencyService
 @inject ISavingsAccountService SavingsService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+
+
 
 
 <AuthorizeView>
@@ -51,15 +58,40 @@
 
 
 
+  
+    private async Task CreateCurrencyAccount()
+    {
+        var dialog = await DialogService.ShowAsync<NewCurrencyAccount>();
+        
+        var result = await dialog.Result;
+
+        var isSucces = new Result();
+        
+        if (!result.Canceled)
+        {
+            isSucces  = await dialog.GetReturnValueAsync<Result>();
+        }
+        
+        if (isSucces.Succeeded)
+        {
+            Snackbar.Add("Submitted creating currency account.");
+            NavigationManager.Refresh();
+        }
+        else
+        {
+            Snackbar.Add("Saving error!");
+            foreach (var error in isSucces.ErrorList)
+            {
+                Snackbar.Add(error);
+            }
+        }
+    }
+    
     private async Task CreateSavingsAccount()
     {
         throw new NotImplementedException();
+        
     }
-    private async Task CreateCurrencyAccount()
-    {
-        throw new NotImplementedException();
-    }
-    
     
     private async Task SetParams()
     {
