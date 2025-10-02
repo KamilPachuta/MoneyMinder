@@ -7,8 +7,8 @@ namespace MoneyMinderClient.Services.Interfaces;
 public interface ICurrencyAccountService
 {
     public Task<Result> PostCurrencyAccountAsync(CreateCurrencyAccountRequest request);
-    // public Task<Result> PatchCurrencyAccountAsync(ChangeCurrencyAccountNameRequest request);
-    // public Task<Result> DeleteCurrencyAccountAsync(DeleteCurrencyAccountRequest request);
+    public Task<Result> PatchCurrencyAccountAsync(ChangeCurrencyAccountNameRequest request);
+    public Task<Result> DeleteCurrencyAccountAsync(DeleteCurrencyAccountRequest request);
     
     // public Task<Result> PostIncomeAsync(AddIncomeRequest request);
     // public Task<Result> DeleteIncomeAsync(RemoveIncomeRequest request);

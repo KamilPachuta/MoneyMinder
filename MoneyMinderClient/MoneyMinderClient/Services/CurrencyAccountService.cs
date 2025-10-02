@@ -23,7 +23,13 @@ public class CurrencyAccountService : BaseService, ICurrencyAccountService
     #region Commands
     
     public async Task<Result> PostCurrencyAccountAsync(CreateCurrencyAccountRequest request)
-        => await SendAsync("api/CurrencyAccount", HttpMethod.Post, request);
+        => await SendAsync("api/CurrencyAccount", HttpMethod.Post, request);    
+    
+    public async Task<Result> PatchCurrencyAccountAsync(ChangeCurrencyAccountNameRequest request)
+        => await SendAsync("api/CurrencyAccount", HttpMethod.Patch, request);    
+    
+    public async Task<Result> DeleteCurrencyAccountAsync(DeleteCurrencyAccountRequest request)
+        => await SendAsync("api/CurrencyAccount", HttpMethod.Delete, request);
 
     
     
@@ -35,6 +41,8 @@ public class CurrencyAccountService : BaseService, ICurrencyAccountService
 
     public async Task<Result<GetCurrencyAccountNamesResponse>> GetCurrencyAccountNamesAsync()
         => await GetAsync<GetCurrencyAccountNamesResponse>("api/CurrencyAccount/Names");
+    
+    
     
     
     #endregion
