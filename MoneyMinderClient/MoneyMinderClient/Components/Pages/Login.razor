@@ -1,5 +1,6 @@
 ﻿@page "/login"
-@using MoneyMinderClient.Adapters
+@using MoneyMinderClient.Components.Dialogs
+@using MoneyMinderClient.Core
 @using MoneyMinderClient.Services.Authentication
 @using MoneyMinderClient.Services.Interfaces
 @using MoneyMinderContracts.Requests.Accounts
@@ -7,7 +8,7 @@
 @inject IAccountService AccountService
 @inject AppAuthenticationStateProvider AuthStateProvider
 @inject ISnackbar Snackbar
-@inject NavigationManager NavManager
+@inject NavigationManager NavigationManager
 @inject IDialogService DialogService
 
 
@@ -20,7 +21,7 @@
         <MudPaper Elevation="3" Class="mx-4 my-4">
             <MudPaper Elevation="2">
                 <MudText Class="px-4 py-4">Enter your email and password</MudText>
-                <MudForm Model="_loginUserRequest" @ref="_form" Validation="@LoginAccountValidationAdapter.ValidateValue" ValidationDelay="0">
+                <MudForm Model="_loginUserRequest" @ref="_form" Validation="@ValidationAdapter.ValidateValue(_loginValidator)" ValidationDelay="0">
                     <MudCardContent>
                         <MudTextField @bind-Value="_loginUserRequest.Email"
                                       For="@(() => _loginUserRequest.Email)"
@@ -42,12 +43,12 @@
 
             <MudDivider />
 
-            @*<MudPaper Elevation="2">
+            <MudPaper Elevation="2">
                 <MudPaper Class="pe-2 mx-4 my-4">
                     <MudButton Variant="Variant.Filled" Color="Color.Secondary" FullWidth="true"
                                OnClick="RegisterDialog">Register</MudButton>
                 </MudPaper>
-            </MudPaper>*@
+            </MudPaper>
         </MudPaper>
     </MudItem>
 </MudGrid>
@@ -55,9 +56,17 @@
 
 @code {
     private MudForm _form;
-    private LoginAccountValidator _validator = new();
+    private LoginAccountValidator _loginValidator = new();
     private LoginAccountRequest _loginUserRequest = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        if (await AccountService.CheckAuthenticationAsync())
+        NavigationManager.NavigateTo("/");
+
+    }
+    
+    
     private async Task SubmitLogin()
     {
         await _form.Validate();
@@ -68,11 +77,10 @@
 
         if (result.Succeeded)
         {
-            // Powiadom StateProvider o zalogowaniu
             AuthStateProvider.NotifyUserAuthentication();
 
             Snackbar.Add("Login successful!", Severity.Success);
-            NavManager.NavigateTo("/", true);
+            NavigationManager.NavigateTo("/", true);
         }
         else
         {
@@ -80,18 +88,18 @@
         }
     }
 
-    // private async Task RegisterDialog()
-    // {
-    //     var dialog = await DialogService.ShowAsync<Register>();
-    //     var result = await dialog.Result;
-    //
-    //     if (!result.Canceled)
-    //     {
-    //         var registerResult = await dialog.GetReturnValueAsync<Result>();
-    //         if (registerResult.Succeeded)
-    //             Snackbar.Add("Registration successful!", Severity.Success);
-    //         else
-    //             Snackbar.Add("Registration failed!", Severity.Error);
-    //     }
-    // }
+    private async Task RegisterDialog()
+    {
+        var dialog = await DialogService.ShowAsync<Register>();
+        var result = await dialog.Result;
+    
+        if (!result.Canceled)
+        {
+            var registerResult = await dialog.GetReturnValueAsync<Result>();
+            if (registerResult.Succeeded)
+                Snackbar.Add("Registration successful!", Severity.Success);
+            else
+                Snackbar.Add("Registration failed!", Severity.Error);
+        }
+    }
 }
