@@ -1,0 +1,123 @@
+﻿@page "/CurrencyAccount/{name}"
+@using MoneyMinderClient.Components.Dialogs
+@using MoneyMinderClient.Core
+@using MoneyMinderContracts.Responses.CurrencyAccounts
+@inherits BasePage
+
+<MudGrid>
+    <MudItem xs="12" sm="4">
+            <MudPaper Elevation="2" Class="mx-4 my-4 px-4 py-4">
+                <MudText Typo="Typo.h4" Class="px-2 py-2">@name</MudText>
+                 @if (_succeded)
+                {
+                    <MudPaper Elevation="2">
+                        <MudText Typo="Typo.h6" Class="px-2 py-2">Available funds</MudText>
+                        @*<MudList>
+                            @foreach (var balance in _balances)
+                            {
+                                <MudListItem>@balance.Amount @balance.Currency</MudListItem>
+                            }
+                        </MudList>*@
+                        </MudPaper>
+                }
+                </MudPaper>
+        </MudItem>
+        
+    <MudItem xs="12" sm="8">
+        <MudPaper Elevation="2" Class="mx-4 my-4 px-4 py-4">
+            <MudTooltip Text="Add new transaction">
+                          <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTransaction"></MudIconButton>
+            </MudTooltip>  
+             <MudTooltip Text="Add multiple transactions using import CSV.">
+                 <MudIconButton Icon="@Icons.Material.Filled.UploadFile" OnClick="UploadFile"></MudIconButton>
+             </MudTooltip>  
+            <MudTooltip Text="Currency Exchange">
+                <MudIconButton Icon="@Icons.Material.Filled.CurrencyExchange" OnClick="ConvertCurrency"></MudIconButton>
+            </MudTooltip>  
+            <MudTooltip Text="Edit Currency Account Name">
+                <MudIconButton Icon="@Icons.Material.Filled.EditNote" OnClick="EditCurrencyAccountName"></MudIconButton>
+            </MudTooltip>
+            <MudTooltip Text="Transaction History">
+            <MudIconButton Icon="@Icons.Material.Filled.History" OnClick="History"></MudIconButton>
+            </MudTooltip>
+            <MudTooltip Text="Budget">
+                <MudIconButton Icon="@Icons.Material.Filled.BarChart" OnClick="Budget"></MudIconButton>
+            </MudTooltip>
+            <MudTooltip Text="Remove Currency Account">
+                <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" OnClick="DeleteCurrencyAccount"></MudIconButton>
+            </MudTooltip>
+        </MudPaper>
+    </MudItem>
+    
+    <MudItem xs="12" sm="8">
+        
+        <MudPaper Elevation="2" Class="mx-4 my-4 px-4 py-4">
+            <MudStack>
+                        <MudFab Label="Add new transaction" Icon="@Icons.Material.Filled.Add" OnClick="AddTransaction"></MudFab>
+                                    <MudFab Label="Currency Exchange" Icon="@Icons.Material.Filled.CurrencyExchange" OnClick="ConvertCurrency"/>
+                                    <MudFab Label="Edit Currency Account Name" Icon="@Icons.Material.Filled.EditNote" OnClick="EditCurrencyAccountName"/>
+                                    <MudFab Label="Transaction History" Icon="@Icons.Material.Filled.History" OnClick="History"/>
+                                    <MudFab Label="Budget" Icon="@Icons.Material.Filled.BarChart" OnClick="Budget"/>
+                                    <MudFab Label="Remove Currency Account" Icon="@Icons.Material.Filled.DeleteForever" OnClick="DeleteCurrencyAccount"/>
+                    </MudStack>
+        </MudPaper>
+    </MudItem>
+    
+    
+   
+</MudGrid>
+
+
+
+
+@code {
+    [Parameter] 
+    public string name { get; set; }
+    [CascadingParameter]
+    public Guid CurrencyAccountId { get; set; }
+    
+    private bool _succeded = false;
+    private DialogParameters Parameters = new DialogParameters();
+
+    private List<string> _errors;
+    private GetCurrencyAccountNamesResponse _response;
+    //private List<BalanceModel> _balances;
+
+    protected override Task OnParametersSetAsync()
+    {
+        Parameters = new DialogParameters()
+        {
+            { "CurrencyAccountId", CurrencyAccountId }
+        };
+        return base.OnParametersSetAsync();
+    }
+
+    private async Task AddTransaction()
+    {
+        throw new NotImplementedException();
+    }
+    private async Task UploadFile()
+    {
+        throw new NotImplementedException();
+    }
+    private async Task ConvertCurrency()
+    {
+        throw new NotImplementedException();
+    }
+    private async Task EditCurrencyAccountName()
+        => await ShowDialogAsync<EditCurrencyAccountNameDialog>("Edit Currency Account", Parameters);
+
+    private async Task History()
+    {
+        throw new NotImplementedException();
+    }
+    private async Task Budget()
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task DeleteCurrencyAccount()
+        => await ShowDialogAsync<DeleteCurrencyAccountDialog>("Delete Currency Account", Parameters);
+    
+    
+}
