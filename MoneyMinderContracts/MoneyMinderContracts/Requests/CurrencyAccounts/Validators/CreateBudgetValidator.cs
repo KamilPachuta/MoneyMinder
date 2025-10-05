@@ -1,5 +1,5 @@
 using FluentValidation;
-using MoneyMinderContracts.Enums;
+using MoneyMinderContracts.Models.Enums;
 
 namespace MoneyMinderContracts.Requests.CurrencyAccounts.Validators;
 

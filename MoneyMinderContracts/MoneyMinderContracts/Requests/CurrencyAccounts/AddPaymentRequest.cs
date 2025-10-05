@@ -1,4 +1,4 @@
-using MoneyMinderContracts.Enums;
+using MoneyMinderContracts.Models.Enums;
 
 namespace MoneyMinderContracts.Requests.CurrencyAccounts;
 
@@ -6,7 +6,7 @@ public class AddPaymentRequest
 {
     public Guid CurrencyAccountId { get; set; }
     public string Name { get; set; } = string.Empty;
-    public DateTime Date { get; set; }
+    public DateTime? Date { get; set; }
     public CurrencyDto CurrencyDto { get; set; }
     public decimal Amount { get; set; }
     public CategoryDto CategoryDto { get; set; }
