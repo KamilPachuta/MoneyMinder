@@ -1,0 +1,295 @@
+﻿@page "/CurrencyAccount/{name}/TransactionHistory"
+@using MoneyMinderClient.Components.Dialogs
+@using MoneyMinderClient.Core
+@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Models.Dtos
+@using MoneyMinderContracts.Requests.CurrencyAccounts
+@inject ICurrencyAccountService CurrencyAccountService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inherits BasePage
+
+<style>
+    .selected {
+        background-color: #E0E0E0 !important;
+    }
+</style>
+
+
+<MudPaper Elevation="2" Class="px-4 py-4">
+    <MudGrid>
+     <MudItem xs="12" sm="12">
+            <MudPaper Elevation="2" Class="px-4 py-4">
+                <MudText Class="mx-4 my-5" Typo="Typo.h3">Transactions History</MudText>
+                <MudText Class="mx-4 my-2" Typo="Typo.h4">@name</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="12">
+            <MudPaper>
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTransaction"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="NewRemoveDialog"></MudIconButton>
+                <MudPaper Elevation="2" Class="align-start d-flex">
+                    <MudPaper Elevation="0" MinWidth="300px" Width="45%" Class="align-start d-flex">
+                        <MudContainer Style="max-height: 800px; overflow-y: scroll;">
+                            <MudList T="string">
+                                     <MudListItem>
+                                         <MudText>Transaction name: @selectedModel?.Name</MudText>
+                                                                                        </MudListItem>
+                                     <MudListItem>
+                                         <MudText>Transaction date: @selectedModel?.Date</MudText>
+                                                                    
+                                                                                        </MudListItem>
+                                     @if (show && selectedModel is not null && selectedModel.Category is not null)
+                                     {
+                                                                                        
+                                         <MudListItem>
+                                             <MudText>Category: @selectedModel?.Category</MudText>
+                                                                                            </MudListItem>
+                                     }
+                                     <MudListItem>
+                                         <MudText>Amount: @selectedModel?.Amount @selectedModel?.Currency</MudText>
+                                     </MudListItem>
+                                 </MudList>
+                             </MudContainer>                                               
+                    </MudPaper>
+                    <MudSpacer/>
+                    <MudPaper Elevation="0" MinWidth="300px" Width="50%" >
+                                              <MudContainer Style="max-height: 800px; overflow-y: scroll;">
+                                                              
+                                                                      <MudTable T="CurrencyTransactionDto" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
+                                                                                RowClass="cursor-pointer" OnRowClick="RowClickEvent" RowClassFunc="@SelectedRowClassFunc" Class="d-inline">
+                                                                          <HeaderContent>
+                                                                              <MudTh>Name</MudTh>
+                                                                              <MudTh>Date</MudTh>
+                                                                              <MudTh>Amount</MudTh>
+                                                                              <MudTh>Currency</MudTh>
+                                                                          </HeaderContent>
+                                                                          <RowTemplate>
+                                                                              <MudTd DataLabel="Name">@context.Name</MudTd>
+                                                                              <MudTd DataLabel="Date">@context.Date.ToString("dd-MM-yyyy")</MudTd>
+                                                                              <MudTd DataLabel="Amount">@context.Amount</MudTd>
+                                                                              <MudTd DataLabel="Currency">@context.Currency</MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        </MudContainer>                  
+                    </MudPaper>
+                </MudPaper>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+                
+      
+
+@code {
+    [Parameter] 
+    public string name { get; set; }
+    [CascadingParameter]
+    public Guid CurrencyAccountId { get; set; }
+    
+    
+    
+    private bool show = false;
+    private MudTable<CurrencyTransactionDto> mudTable;
+    private int selectedRowNumber = -1;
+    private CurrencyTransactionDto? selectedModel = null;
+    private List<CurrencyTransactionDto> _transactions = new();
+    private bool _succeded = false;
+    private List<string> _errors;
+
+    private RemoveIncomeRequest _incomeRequest;
+    private RemovePaymentRequest _paymentRequest;
+
+private DialogParameters Parameters = new DialogParameters();
+    
+private string SelectedRowClassFunc(CurrencyTransactionDto transaction, int rowNumber)
+{
+    if (selectedRowNumber == rowNumber)
+    {
+        selectedRowNumber = -1;
+        return string.Empty;
+    }
+    else if (mudTable.SelectedItem != null && mudTable.SelectedItem.Equals(transaction))
+    {
+        selectedRowNumber = rowNumber;
+        return "selected";
+    }
+    else
+    {
+        return string.Empty;
+    }
+}
+
+
+    // private string SelectedRowClassFunc(CurrencyTransactionDto transaction, int rowNumber)
+    // {
+    //     if (selectedRowNumber == rowNumber)
+    //     {
+    //         selectedRowNumber = -1;
+    //
+    //         show = false;
+    //         
+    //         return string.Empty;
+    //     }
+    //     else if (mudTable.SelectedItem != null && mudTable.SelectedItem.Equals(transaction))
+    //     {
+    //         selectedRowNumber = rowNumber;
+    //         selectedModel = transaction;
+    //         Console.WriteLine($"RowNumber: {selectedRowNumber}\nID: {transaction.Id}\nName: {transaction.Name}\nAmount: {transaction.Amount} {transaction.Currency}");
+    //         if (transaction.Category is not null)
+    //         {
+    //             show = true;
+    //         }
+    //         else
+    //         {
+    //             show = false;
+    //         }
+    //         return "selected";
+    //     }
+    //     else
+    //     {
+    //         return string.Empty;
+    //     }
+    // }
+    
+    private void RowClickEvent(TableRowClickEventArgs<CurrencyTransactionDto> args)
+    {
+        // Jeśli kliknięto ten sam wiersz -> odznacz
+        if (selectedModel == args.Item)
+        {
+            selectedModel = null;
+            show = false;
+            StateHasChanged();
+            return;
+        }
+
+        // W przeciwnym razie ustaw nowy model
+        selectedModel = args.Item;
+        show = selectedModel.Category is not null;
+        StateHasChanged();
+    }
+    
+    private async Task SetParams()
+    {
+        var firstResult = await CurrencyAccountService.GetIdByNameAsync(name);
+        if (!firstResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = firstResult.ErrorList;
+            return;
+        }
+        
+        CurrencyAccountId = firstResult.Response.Id;
+
+        var secondResult = await CurrencyAccountService.GetCurrencyAccountTransactionsAsync(CurrencyAccountId);
+        
+        if (!secondResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = secondResult.ErrorList;
+            return;
+        }
+
+        _transactions= secondResult.Response.Transactions.ToList();
+
+        _succeded = true;
+        
+        Parameters = new DialogParameters()
+        {
+            { "CurrencyAccountId", CurrencyAccountId }
+        };
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        await SetParams();
+    }
+
+    
+    
+    
+    
+
+    private async Task AddTransaction()
+        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", Parameters);
+
+
+
+    private async Task NewRemoveDialog()
+    {
+        throw new NotImplementedException();
+    }
+    /*{
+        if(selectedModel is null)
+        {
+            return;
+        }
+
+        var parameters = new DialogParameters<ConfirmationDialog>();
+        parameters.Add(x => x.ContentText, "Do you really want to delete these records? This process cannot be undone.");
+        parameters.Add(x => x.ButtonText, "Delete");
+        parameters.Add(x => x.Color, Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters, options);
+
+        var result = await dialog.Result;
+
+
+        if (result.Canceled)
+        {
+            return;
+        }
+
+        var agree  = await dialog.GetReturnValueAsync<bool>();
+
+        if (agree)
+        {
+            var isSucces = new Result();
+
+            if (selectedModel.Amount < 0)
+            {
+
+                _paymentRequest = new RemovePaymentRequest(_id, selectedModel.Id);
+
+                isSucces = await CurrencyService.DeletePayment(_paymentRequest);
+            }
+            else
+            {
+                _incomeRequest = new RemoveIncomeRequest(_id, selectedModel.Id);
+
+                isSucces = await CurrencyService.DeleteIncome(_incomeRequest);
+            }
+
+            if (isSucces.Succeeded)
+            {
+                Snackbar.Add("Submitted removing transaction!");
+                await SetParams();
+            }
+            else
+            {
+                Snackbar.Add("Saving error!");
+                foreach (var error in isSucces.ErrorList)
+                {
+                    Snackbar.Add(error);
+                }
+            }
+        }
+    }*/
+    
+   
+    
+}
+
+
+
+
+
+
+
+
+
+
+
