@@ -1,10 +1,7 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
-using MoneyMinderClient.Core;
+﻿using MoneyMinderClient.Core;
 using MoneyMinderClient.Services.Abstractions;
 using MoneyMinderClient.Services.Interfaces;
 using MoneyMinderContracts.Requests.SavingsAccounts;
-using MoneyMinderContracts.Responses.Interfaces;
 using MoneyMinderContracts.Responses.SavingsAccounts;
 
 namespace MoneyMinderClient.Services;

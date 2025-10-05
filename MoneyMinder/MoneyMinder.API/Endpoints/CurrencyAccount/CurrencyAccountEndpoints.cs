@@ -61,7 +61,7 @@ internal static class CurrencyAccountEndpoints
     {
         var accountId = userService.GetAccountId();
 
-        var command = new AddIncomeCommand(accountId, request.CurrencyAccountId, request.Name, request.Date, (Currency)request.CurrencyDto, request.Amount);
+        var command = new AddIncomeCommand(accountId, request.CurrencyAccountId, request.Name, request.Date.Value, (Currency)request.CurrencyDto, request.Amount);
 
         await sender.Send(command);
                 
@@ -91,7 +91,7 @@ internal static class CurrencyAccountEndpoints
     {
         var accountId = userService.GetAccountId();
 
-        var command = new AddPaymentCommand(accountId, request.CurrencyAccountId, request.Name, request.Date, (Currency)request.CurrencyDto, request.Amount, (Category)request.CategoryDto);
+        var command = new AddPaymentCommand(accountId, request.CurrencyAccountId, request.Name, request.Date.Value, (Currency)request.CurrencyDto, request.Amount, (Category)request.CategoryDto);
 
         await sender.Send(command);
                 

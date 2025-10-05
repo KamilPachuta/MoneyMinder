@@ -1,4 +1,4 @@
-﻿using MoneyMinderContracts.Enums;
+﻿using MoneyMinderContracts.Models.Enums;
 
 namespace MoneyMinderContracts.Requests.Accounts;
 

@@ -39,7 +39,7 @@ public static class Extensions
         services.AddScoped<ICurrencyAccountReadService, CurrencyAccountReadService>();
         services.AddScoped<ISavingsAccountReadService, SavingsAccountReadService>();
         
-        //AddAdapters();
+
         
         return services;
     }

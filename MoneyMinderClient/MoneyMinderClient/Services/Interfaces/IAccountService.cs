@@ -1,6 +1,5 @@
 ﻿using MoneyMinderClient.Core;
 using MoneyMinderContracts.Requests.Accounts;
-
 using MoneyMinderContracts.Responses.Accounts;
 
 namespace MoneyMinderClient.Services.Interfaces;

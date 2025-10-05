@@ -9,7 +9,6 @@ using MoneyMinderClient.Services.Abstractions;
 using MoneyMinderClient.Services.Authentication;
 using MoneyMinderClient.Services.Interfaces;
 using MoneyMinderContracts.Requests.Accounts;
-using MoneyMinderContracts.Responses;
 using MoneyMinderContracts.Responses.Accounts;
 
 namespace MoneyMinderClient.Services;

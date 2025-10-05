@@ -7,7 +7,7 @@ using MoneyMinderContracts.Responses.CurrencyAccounts;
 
 namespace MoneyMinder.Infrastructure.EF.QueryHandlers.CurrencyAccounts;
 
-internal class GetCurrencyAccountNamesHandler 
+internal sealed class GetCurrencyAccountNamesHandler 
     : IRequestHandler<GetCurrencyAccountNamesQuery, GetCurrencyAccountNamesResponse>
 {
     private readonly MoneyMinderReadDbContext _context;
