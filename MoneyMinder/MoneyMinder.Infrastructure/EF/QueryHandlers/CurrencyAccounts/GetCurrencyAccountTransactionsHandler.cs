@@ -24,6 +24,7 @@ internal sealed class GetCurrencyAccountTransactionsHandler : IRequestHandler<Ge
             .SelectMany(ca => 
                 ca.Incomes.Select(i => new CurrencyTransactionDto()
                     {
+                        Id = i.Id,
                         Name = i.Name,
                         Date = i.Date,
                         Currency = (CurrencyDto)i.Currency,
@@ -33,6 +34,7 @@ internal sealed class GetCurrencyAccountTransactionsHandler : IRequestHandler<Ge
                     .Concat(
                         ca.Payments.Select(p => new CurrencyTransactionDto
                         {
+                            Id = p.Id,
                             Name = p.Name,
                             Date = p.Date,
                             Currency = (CurrencyDto)p.Currency,
