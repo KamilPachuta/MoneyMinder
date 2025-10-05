@@ -2,7 +2,7 @@
 @using MoneyMinderClient.Services.Interfaces
 @using MoneyMinderContracts.Requests.CurrencyAccounts
 @using MoneyMinderContracts.Requests.CurrencyAccounts.Validators
-@inject ICurrencyAccountService CurrencyService
+@inject ICurrencyAccountService CurrencyAccountService
 
 
 <MudDialog DisableSidePadding="true">
@@ -48,7 +48,7 @@
 
         if (_form.IsValid)
         {
-            var result = await CurrencyService.PostCurrencyAccountAsync(_request);
+            var result = await CurrencyAccountService.PostCurrencyAccountAsync(_request);
 
             MudDialog.Close(DialogResult.Ok(result));
         }

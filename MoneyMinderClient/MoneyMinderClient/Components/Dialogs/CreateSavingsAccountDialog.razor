@@ -3,7 +3,7 @@
 @using MoneyMinderContracts.Models.Enums
 @using MoneyMinderContracts.Requests.SavingsAccounts
 @using MoneyMinderContracts.Requests.SavingsAccounts.Validators
-@inject ISavingsAccountService SavingsService
+@inject ISavingsAccountService SavingsAccountService
 
 
 <MudDialog DisableSidePadding="true">
@@ -75,7 +75,7 @@
 
         if (_form.IsValid)
         {
-            var result = await SavingsService.PostSavingsAccountAsync(_request);
+            var result = await SavingsAccountService.PostSavingsAccountAsync(_request);
 
             MudDialog.Close(DialogResult.Ok(result));
         }
