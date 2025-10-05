@@ -145,10 +145,16 @@
     bool type = true;
     MudForm form = new();
     
-    AddIncomeRequest _requestIncome = new();
+    AddIncomeRequest _requestIncome = new()
+    {
+        CurrencyDto = CurrencyDto.USD
+    };
     AddIncomeValidator _validatorIncome = new();
 
-    AddPaymentRequest _requestPayment = new();
+    AddPaymentRequest _requestPayment = new()
+    {
+        CurrencyDto = CurrencyDto.USD
+    };
     AddPaymentValidator _validatorPayment = new();
 
     Variant _firstVariant = Variant.Filled;
