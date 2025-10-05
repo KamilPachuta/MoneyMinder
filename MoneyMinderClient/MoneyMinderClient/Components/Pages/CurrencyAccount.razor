@@ -1,7 +1,10 @@
 ﻿@page "/CurrencyAccount/{name}"
 @using MoneyMinderClient.Components.Dialogs
 @using MoneyMinderClient.Core
+@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Models.Dtos
 @using MoneyMinderContracts.Responses.CurrencyAccounts
+@inject ICurrencyAccountService CurrencyService
 @inherits BasePage
 
 <MudGrid>
@@ -10,15 +13,16 @@
                 <MudText Typo="Typo.h4" Class="px-2 py-2">@name</MudText>
                  @if (_succeded)
                 {
-                    <MudPaper Elevation="2">
+                    <MudPaper Width="300px" Elevation="2">
                         <MudText Typo="Typo.h6" Class="px-2 py-2">Available funds</MudText>
-                        @*<MudList>
+                        <MudList T="string">
                             @foreach (var balance in _balances)
                             {
-                                <MudListItem>@balance.Amount @balance.Currency</MudListItem>
+                                <MudListItem Text="@($"{balance.Amount} {balance.Currency}")" Icon="@Icons.Material.Filled.AccountBalanceWallet" />
                             }
-                        </MudList>*@
-                        </MudPaper>
+                        </MudList>
+                    </MudPaper>
+
                 }
                 </MudPaper>
         </MudItem>
@@ -81,21 +85,13 @@
 
     private List<string> _errors;
     private GetCurrencyAccountNamesResponse _response;
-    //private List<BalanceModel> _balances;
+    private List<BalanceDto> _balances;
 
-    protected override Task OnParametersSetAsync()
-    {
-        Parameters = new DialogParameters()
-        {
-            { "CurrencyAccountId", CurrencyAccountId }
-        };
-        return base.OnParametersSetAsync();
-    }
+
 
     private async Task AddTransaction()
-    {
-        throw new NotImplementedException();
-    }
+        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", Parameters);
+    
     private async Task UploadFile()
     {
         throw new NotImplementedException();
@@ -118,6 +114,42 @@
 
     private async Task DeleteCurrencyAccount()
         => await ShowDialogAsync<DeleteCurrencyAccountDialog>("Delete Currency Account", Parameters);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await SetParams();
+    }
     
-    
+    private async Task SetParams()
+    {
+        var firstResult = await CurrencyService.GetIdByNameAsync(name);
+        if (!firstResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = firstResult.ErrorList;
+            return;
+        }
+
+        CurrencyAccountId = firstResult.Response.Id;
+
+        var secondResult = await CurrencyService.GetCurrencyAccountBalancesAsync(CurrencyAccountId);
+
+        if (!secondResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = secondResult.ErrorList;
+            return;
+        }
+
+        _balances = secondResult.Response.Balances.ToList();
+
+        Parameters = new DialogParameters()
+        {
+            { "CurrencyAccountId", CurrencyAccountId }
+        };
+        
+
+        _succeded = true;
+    }
+
 }
