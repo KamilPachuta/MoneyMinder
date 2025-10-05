@@ -1,6 +1,6 @@
 ﻿namespace MoneyMinder.Domain.Shared.Enums;
 
-public enum Category
+public enum Category : byte
 {
     Housing = 1,
     Transportation = 2,

@@ -1,6 +1,6 @@
-﻿namespace MoneyMinderContracts.Enums;
+﻿namespace MoneyMinderContracts.Models.Enums;
 
-public enum CategoryDto
+public enum CategoryDto : byte
 {
     Housing = 1,
     Transportation = 2,
