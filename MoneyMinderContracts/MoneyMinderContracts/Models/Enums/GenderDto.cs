@@ -1,4 +1,4 @@
-﻿namespace MoneyMinderContracts.Enums;
+﻿namespace MoneyMinderContracts.Models.Enums;
 
 public enum GenderDto : byte
 {
