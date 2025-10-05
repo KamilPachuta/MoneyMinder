@@ -1,4 +1,5 @@
 ﻿using MoneyMinder.Domain.Accounts.Enums;
+using MoneyMinder.Infrastructure.EF.ReadModels.CurrencyAccounts;
 using MoneyMinder.Infrastructure.EF.ReadModels.SavingsAccounts;
 
 namespace MoneyMinder.Infrastructure.EF.ReadModels.Accounts;
@@ -11,7 +12,7 @@ public class AccountReadModel
     public string PasswordHash { get; set; }
 
     public UserReadModel? User { get; set; }
-    //public IEnumerable<CurrencyAccountReadModel> CurrencyAccounts { get; set; }
+    public IEnumerable<CurrencyAccountReadModel> CurrencyAccounts { get; set; }
     public IEnumerable<SavingsAccountReadModel> SavingsAccounts { get; set; }
     
     public AccountReadModel()
