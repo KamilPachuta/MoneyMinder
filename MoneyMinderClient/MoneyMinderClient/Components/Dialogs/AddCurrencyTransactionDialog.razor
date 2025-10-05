@@ -1,0 +1,211 @@
+﻿
+@using MoneyMinderClient.Core
+@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Models.Enums
+@using MoneyMinderContracts.Requests.CurrencyAccounts.Validators
+
+@using MoneyMinderContracts.Requests.CurrencyAccounts
+@inject ICurrencyAccountService CurrencyAccountService
+
+
+<MudDialog DisableSidePadding="true">
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
+            <MudCard Elevation="4">
+                <MudCardHeader>
+                        <MudText Typo="Typo.h5">@(type ? "New Income" : "New Payment")</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudPaper MaxWidth="true">
+                        <MudButton Variant="@_firstVariant" Color="Color.Primary" OnClick="IncomeChangeVariant">Income</MudButton>
+                        <MudButton Variant="@_secondVariant" Color="Color.Primary" OnClick="PaymentChangeVariant">Payment</MudButton>
+                    </MudPaper>
+                    @if (type)
+                    {
+                        <MudForm Model="_requestIncome" @ref="@form" Validation="@ValidationAdapter.ValidateValue(_validatorIncome)" ValidationDelay="0">
+                            <MudTextField @bind-Value="_requestIncome.Name"
+                                          For="@(() => _requestIncome.Name)"
+                                          Immediate="true"
+                                          Label=" Transaction Name" 
+                                          Variant="Variant.Outlined"/>
+                            
+                            <MudDatePicker @bind-Date="_requestIncome.Date"
+                                           For="@(() => _requestIncome.Date)"
+                                           Label="Transaction Date" 
+                                           DisableToolbar="true" 
+                                           Editable="true"  
+                                           Mask="@(new DateMask("dd.MM.yyyy"))" 
+                                           DateFormat="dd.MM.yyyy" 
+                                           Placeholder="dd.MM.yyyy"/>
+                            
+                            <MudNumericField @bind-Value="_requestIncome.Amount" 
+                                             Label="Outlined" 
+                                             For="(() => _requestIncome.Amount)"
+                                             Variant="Variant.Outlined" 
+                                             Step="10M" 
+                                             DebounceInterval="500"/>
+                            <MudSelect @bind-Value="_requestIncome.CurrencyDto"
+                                       Label="Currency"
+                                       Variant="Variant.Outlined"
+                                       For="(() => _requestIncome.CurrencyDto)">
+                                <MudSelectItem Value="CurrencyDto.USD">USD</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.EUR">EUR</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.GBP">GBP</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.CHF">CHF</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.JPY">JPY</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.AUD">AUD</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.CAD">CAD</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.CNY">CNY</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.SEK">SEK</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.PLN">PLN</MudSelectItem>
+                            </MudSelect>
+
+                            
+                        </MudForm>
+                                   
+                    }
+                    else
+                    {
+                        <MudForm Model="_requestPayment" @ref="@form" Validation="@ValidationAdapter.ValidateValue(_validatorPayment)" ValidationDelay="0">
+                                                    <MudTextField @bind-Value="_requestPayment.Name"
+                                                                  For="@(() => _requestPayment.Name)"
+                                                                  Immediate="true"
+                                                                  Label=" Transaction Name" 
+                                                                  Variant="Variant.Outlined"/>
+                                                    
+                                                    <MudDatePicker @bind-Date="_requestPayment.Date"
+                                                                   For="@(() => _requestPayment.Date)"
+                                                                   Label="Transaction Date" 
+                                                                   DisableToolbar="true" 
+                                                                   Editable="true"  
+                                                                   Mask="@(new DateMask("dd.MM.yyyy"))" 
+                                                                   DateFormat="dd.MM.yyyy" 
+                                                                   Placeholder="dd.MM.yyyy"/>
+                                                    
+                                                    <MudNumericField @bind-Value="_requestPayment.Amount" 
+                                                                     Label="Outlined" 
+                                                                     For="(() => _requestPayment.Amount)"
+                                                                     Variant="Variant.Outlined" 
+                                                                     Step="10M" 
+                                                                     DebounceInterval="500"/>
+                                                    
+                                                    <MudSelect @bind-Value="_requestPayment.CurrencyDto"
+                                                               Label="Currency"
+                                                               Variant="Variant.Outlined"
+                                                               For="(() => _requestPayment.CurrencyDto)">
+                                                        <MudSelectItem Value="CurrencyDto.USD">USD</MudSelectItem>
+                                                        <MudSelectItem Value="CurrencyDto.EUR">EUR</MudSelectItem>
+                                                        <MudSelectItem Value="CurrencyDto.GBP">GBP</MudSelectItem>
+                                                        <MudSelectItem Value="CurrencyDto.CHF">CHF</MudSelectItem>
+                                                        <MudSelectItem Value="CurrencyDto.JPY">JPY</MudSelectItem>
+                                                        <MudSelectItem Value="CurrencyDto.AUD">AUD</MudSelectItem>
+                                                        <MudSelectItem Value="CurrencyDto.CAD">CAD</MudSelectItem>
+                                                        <MudSelectItem Value="CurrencyDto.CNY">CNY</MudSelectItem>
+                                                        <MudSelectItem Value="CurrencyDto.SEK">SEK</MudSelectItem>
+                                                        <MudSelectItem Value="CurrencyDto.PLN">PLN</MudSelectItem>
+                                                    </MudSelect>
+                                                    
+                                                    <MudSelect @bind-Value="_requestPayment.CategoryDto"
+                                                               Label="Category"
+                                                               Variant="Variant.Outlined"
+                                                               For="(() => _requestPayment.CategoryDto)">
+                                                        <MudSelectItem Value="CategoryDto.Housing">Housing</MudSelectItem>
+                                                        <MudSelectItem Value="CategoryDto.Transportation">Transportation</MudSelectItem>
+                                                        <MudSelectItem Value="CategoryDto.Groceries">Groceries</MudSelectItem>
+                                                        <MudSelectItem Value="CategoryDto.Healthcare">Healthcare</MudSelectItem>
+                                                        <MudSelectItem Value="CategoryDto.Entertainment">Entertainment</MudSelectItem>
+                                                        <MudSelectItem Value="CategoryDto.Shopping">Shopping</MudSelectItem>
+                                                        <MudSelectItem Value="CategoryDto.Education">Education</MudSelectItem>
+                                                        <MudSelectItem Value="CategoryDto.Other">Other</MudSelectItem>
+                                                    </MudSelect>
+                                                    
+                                                </MudForm>
+                    }
+                </MudCardContent>
+                <MudCardActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
+                </MudCardActions>
+    
+            </MudCard>
+
+
+        </MudContainer>
+    </DialogContent>
+
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    IMudDialogInstance MudDialog { get; set; }
+    
+    [Parameter]
+    public Guid CurrencyAccountId { get; set; }
+
+    bool type = true;
+    MudForm form = new();
+    
+    AddIncomeRequest _requestIncome = new();
+    AddIncomeValidator _validatorIncome = new();
+
+    AddPaymentRequest _requestPayment = new();
+    AddPaymentValidator _validatorPayment = new();
+
+    Variant _firstVariant = Variant.Filled;
+    Variant _secondVariant = Variant.Outlined;
+
+    private Task IncomeChangeVariant()
+    {
+        if (!type)
+        {
+            _firstVariant = Variant.Filled;
+            _secondVariant = Variant.Outlined;
+            type = true;
+        }
+        
+        return Task.CompletedTask;
+    }
+    
+    private Task PaymentChangeVariant()
+    {
+        if (type)
+        {
+            _firstVariant = Variant.Outlined;
+            _secondVariant = Variant.Filled;
+            type = false;
+        }
+        
+        return Task.CompletedTask;
+    }
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            var result = new Result();
+            if (type)
+            {
+                _requestIncome.CurrencyAccountId = CurrencyAccountId;
+
+                result = await CurrencyAccountService.PostIncomeAsync(_requestIncome);
+
+            }
+            else
+            {
+                _requestPayment.CurrencyAccountId = CurrencyAccountId;
+            
+                result = await CurrencyAccountService.PostPaymentAsync(_requestPayment);
+            }
+            
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+    
+}
