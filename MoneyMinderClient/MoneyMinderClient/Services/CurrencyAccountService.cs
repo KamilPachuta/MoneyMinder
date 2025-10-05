@@ -33,8 +33,15 @@ public class CurrencyAccountService : BaseService, ICurrencyAccountService
     public async Task<Result> PostIncomeAsync(AddIncomeRequest request)
         => await SendAsync("api/CurrencyAccount/Income", HttpMethod.Post, request);
 
+    public async Task<Result> RemoveIncomeAsync(RemoveIncomeRequest request)
+        => await SendAsync("api/CurrencyAccount/Income", HttpMethod.Delete, request);
+
     public async Task<Result> PostPaymentAsync(AddPaymentRequest request)
         => await SendAsync("api/CurrencyAccount/Payment", HttpMethod.Post, request);
+
+    public async Task<Result> RemovePaymentAsync(RemovePaymentRequest request)
+        => await SendAsync("api/CurrencyAccount/Payment", HttpMethod.Delete, request);
+
 
     #endregion
     

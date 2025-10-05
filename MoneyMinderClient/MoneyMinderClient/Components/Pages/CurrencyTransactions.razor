@@ -5,8 +5,6 @@
 @using MoneyMinderContracts.Models.Dtos
 @using MoneyMinderContracts.Requests.CurrencyAccounts
 @inject ICurrencyAccountService CurrencyAccountService
-@inject IDialogService DialogService
-@inject ISnackbar Snackbar
 @inherits BasePage
 
 <style>
@@ -69,7 +67,7 @@
                                                                               <MudTd DataLabel="Date">@context.Date.ToString("dd-MM-yyyy")</MudTd>
                                                                               <MudTd DataLabel="Amount">@context.Amount</MudTd>
                                                                               <MudTd DataLabel="Currency">@context.Currency</MudTd>
-                                </RowTemplate>
+                                                                          </RowTemplate>
                             </MudTable>
                         </MudContainer>                  
                     </MudPaper>
@@ -79,8 +77,6 @@
     </MudGrid>
 </MudPaper>
 
-                
-      
 
 @code {
     [Parameter] 
@@ -101,61 +97,30 @@
     private RemoveIncomeRequest _incomeRequest;
     private RemovePaymentRequest _paymentRequest;
 
-private DialogParameters Parameters = new DialogParameters();
-    
-private string SelectedRowClassFunc(CurrencyTransactionDto transaction, int rowNumber)
-{
-    if (selectedRowNumber == rowNumber)
+    private DialogParameters Parameters = new DialogParameters();
+        
+    private string SelectedRowClassFunc(CurrencyTransactionDto transaction, int rowNumber)
     {
-        selectedRowNumber = -1;
-        return string.Empty;
+        if (selectedRowNumber == rowNumber)
+        {
+            selectedRowNumber = -1;
+            return string.Empty;
+        }
+        else if (mudTable.SelectedItem != null && mudTable.SelectedItem.Equals(transaction))
+        {
+            selectedRowNumber = rowNumber;
+            return "selected";
+        }
+        else
+        {
+            return string.Empty;
+        }
     }
-    else if (mudTable.SelectedItem != null && mudTable.SelectedItem.Equals(transaction))
-    {
-        selectedRowNumber = rowNumber;
-        return "selected";
-    }
-    else
-    {
-        return string.Empty;
-    }
-}
 
 
-    // private string SelectedRowClassFunc(CurrencyTransactionDto transaction, int rowNumber)
-    // {
-    //     if (selectedRowNumber == rowNumber)
-    //     {
-    //         selectedRowNumber = -1;
-    //
-    //         show = false;
-    //         
-    //         return string.Empty;
-    //     }
-    //     else if (mudTable.SelectedItem != null && mudTable.SelectedItem.Equals(transaction))
-    //     {
-    //         selectedRowNumber = rowNumber;
-    //         selectedModel = transaction;
-    //         Console.WriteLine($"RowNumber: {selectedRowNumber}\nID: {transaction.Id}\nName: {transaction.Name}\nAmount: {transaction.Amount} {transaction.Currency}");
-    //         if (transaction.Category is not null)
-    //         {
-    //             show = true;
-    //         }
-    //         else
-    //         {
-    //             show = false;
-    //         }
-    //         return "selected";
-    //     }
-    //     else
-    //     {
-    //         return string.Empty;
-    //     }
-    // }
     
     private void RowClickEvent(TableRowClickEventArgs<CurrencyTransactionDto> args)
     {
-        // Jeśli kliknięto ten sam wiersz -> odznacz
         if (selectedModel == args.Item)
         {
             selectedModel = null;
@@ -164,7 +129,6 @@ private string SelectedRowClassFunc(CurrencyTransactionDto transaction, int rowN
             return;
         }
 
-        // W przeciwnym razie ustaw nowy model
         selectedModel = args.Item;
         show = selectedModel.Category is not null;
         StateHasChanged();
@@ -206,81 +170,20 @@ private string SelectedRowClassFunc(CurrencyTransactionDto transaction, int rowN
         await SetParams();
     }
 
-    
-    
-    
-    
-
     private async Task AddTransaction()
         => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", Parameters);
 
-
-
     private async Task NewRemoveDialog()
     {
-        throw new NotImplementedException();
+       
+        
+        if(selectedModel is not null)
+        {
+            Parameters.Add("TransactionDto", selectedModel);
+            
+            await ShowDialogAsync<RemoveCurrencyTransactionDialog>("Remove Transaction", Parameters);
+        }
     }
-    /*{
-        if(selectedModel is null)
-        {
-            return;
-        }
-
-        var parameters = new DialogParameters<ConfirmationDialog>();
-        parameters.Add(x => x.ContentText, "Do you really want to delete these records? This process cannot be undone.");
-        parameters.Add(x => x.ButtonText, "Delete");
-        parameters.Add(x => x.Color, Color.Error);
-
-        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
-
-        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Delete", parameters, options);
-
-        var result = await dialog.Result;
-
-
-        if (result.Canceled)
-        {
-            return;
-        }
-
-        var agree  = await dialog.GetReturnValueAsync<bool>();
-
-        if (agree)
-        {
-            var isSucces = new Result();
-
-            if (selectedModel.Amount < 0)
-            {
-
-                _paymentRequest = new RemovePaymentRequest(_id, selectedModel.Id);
-
-                isSucces = await CurrencyService.DeletePayment(_paymentRequest);
-            }
-            else
-            {
-                _incomeRequest = new RemoveIncomeRequest(_id, selectedModel.Id);
-
-                isSucces = await CurrencyService.DeleteIncome(_incomeRequest);
-            }
-
-            if (isSucces.Succeeded)
-            {
-                Snackbar.Add("Submitted removing transaction!");
-                await SetParams();
-            }
-            else
-            {
-                Snackbar.Add("Saving error!");
-                foreach (var error in isSucces.ErrorList)
-                {
-                    Snackbar.Add(error);
-                }
-            }
-        }
-    }*/
-    
-   
-    
 }
 
 

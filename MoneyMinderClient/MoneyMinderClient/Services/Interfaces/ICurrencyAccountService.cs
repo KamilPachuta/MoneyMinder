@@ -11,10 +11,10 @@ public interface ICurrencyAccountService
     public Task<Result> DeleteCurrencyAccountAsync(DeleteCurrencyAccountRequest request);
     
     public Task<Result> PostIncomeAsync(AddIncomeRequest request);
-    // public Task<Result> DeleteIncomeAsync(RemoveIncomeRequest request);
+    public Task<Result> RemoveIncomeAsync(RemoveIncomeRequest request);
     
     public Task<Result> PostPaymentAsync(AddPaymentRequest request);
-    // public Task<Result> DeletePaymentAsync(RemovePaymentRequest request);
+    public Task<Result> RemovePaymentAsync(RemovePaymentRequest request);
     
     // public Task<Result> PostBudgetAsync(ChangeBudgetNameRequest request);
     // public Task<Result> DeleteBudgetAsync(DeleteBudgetRequest request);
