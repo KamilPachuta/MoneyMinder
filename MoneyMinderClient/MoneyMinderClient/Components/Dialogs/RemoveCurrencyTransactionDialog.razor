@@ -1,0 +1,55 @@
+﻿@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Models.Dtos
+@using MoneyMinderContracts.Requests.CurrencyAccounts
+@inject ICurrencyAccountService CurrencyAccountService
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6">Do you really want to delete this transaction?</MudText>
+        <MudText Typo="Typo.body2" Class="mt-2">This process cannot be undone.</MudText>
+        <MudText Typo="Typo.body2" Class="mt-2">Transaction name: @TransactionDto.Name</MudText>
+        <MudText Typo="Typo.body2" Class="mt-2">Transaction date: @TransactionDto.Date</MudText>
+        <MudText Typo="Typo.body2" Class="mt-2">Transaction amount: @TransactionDto.Amount @TransactionDto.Currency</MudText>
+        @if (TransactionDto.Category is not null)
+        {
+            <MudText Typo="Typo.body2" Class="mt-2">Transaction category: @TransactionDto.Category</MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Secondary" OnClick="() => MudDialog.Close(DialogResult.Cancel())">Cancel</MudButton>
+        <MudButton Color="Color.Error" OnClick="Submit">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public Guid CurrencyAccountId { get; set; }
+    [Parameter]
+    public CurrencyTransactionDto TransactionDto { get; set; }
+
+    private async Task Submit()
+    {
+        if (TransactionDto.Category is null)
+        {
+            var request = new RemoveIncomeRequest(CurrencyAccountId, TransactionDto.Id);
+
+            var result = await CurrencyAccountService.RemoveIncomeAsync(request);
+
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+        
+        if (TransactionDto.Category is not null)
+        {
+            var request = new RemovePaymentRequest(CurrencyAccountId, TransactionDto.Id);
+
+            var result = await CurrencyAccountService.RemovePaymentAsync(request);
+
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+        
+        MudDialog.Close(DialogResult.Cancel());
+    }
+}
