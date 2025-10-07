@@ -33,5 +33,10 @@ public class AccountModule : BaseModule
 
         group.MapPut("/Address", AccountEndpoints.PutAddress);
         
+        
+        var queries = app.MapGroup("").AddFluentValidationAutoValidation();
+        
+        queries.MapGet("/Details", AccountReadEndpoints.GetUserDetails);
+
     }
 }
