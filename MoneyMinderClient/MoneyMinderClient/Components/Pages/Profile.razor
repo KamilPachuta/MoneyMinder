@@ -1,0 +1,125 @@
+﻿@page "/Profile"
+@inject IAccountService AccountService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@using MoneyMinderClient.Components.Dialogs
+@using MoneyMinderClient.Core
+@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Responses.Accounts
+@inherits MoneyMinderClient.Core.BasePage
+
+<PageTitle>Profile</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        <MudPaper Elevation="3" Class="px-4 py-4">
+            <MudCard>
+                <MudCardHeader>
+                    <MudText Typo="Typo.h4">Personal Information's</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    @if (_succeded)
+                    {
+                        <MudText Typo="Typo.h6">Email: @_userDetails.Email</MudText>
+                        <MudText Typo="Typo.h6">Name: @_userDetails.Name</MudText>
+                        <MudText Typo="Typo.h6">Phone Number: @_userDetails.PhoneNumber</MudText>
+                        <MudText Typo="Typo.h6">Birth Date: @_userDetails.BirthDate</MudText>
+                        <MudText Typo="Typo.h6">Gender: @_userDetails.Gender</MudText>
+                        <MudText Typo="Typo.h6">Country: @_userDetails.Country</MudText>
+                        <MudText Typo="Typo.h6">City: @_userDetails.City</MudText>
+                        <MudText Typo="Typo.h6">Postal Code: @_userDetails.PostalCode</MudText>
+                        <MudText Typo="Typo.h6">Street: @_userDetails.Street</MudText>
+                    }
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="EditPassword">Change Password</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="EditName">Change Name</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="EditPhoneNumber">Change Phone Number</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="EditAddress">Change Address</MudButton>
+                </MudCardActions>
+            </MudCard>
+
+        </MudPaper>
+
+
+    </Authorized>
+</AuthorizeView>
+
+
+@* *@
+@* <AuthorizeView> *@
+@*     <NotAuthorized> *@
+@*         <MudCard Elevation="5" Class="mx-auto pa-10 mt-10 rounded-xl" Style="width: 40%; min-width: 300px;"> *@
+@*             <MudCardHeader ><h1>Your personal info.</h1></MudCardHeader> *@
+@*             <MudForm Model="request" @ref="@form" Validation="@(validator.ValidateValue)" ValidationDelay="0"> *@
+@*                 <MudCardContent> *@
+@*                      *@
+@*                     <MudTextField @bind-Value="request.Login" *@
+@*                                   For="@(() => request.Login)" *@
+@*                                   Immediate="true" *@
+@*                                   Label="Login"/> *@
+@*                     <MudTextField @bind-Value="request.Password" *@
+@*                                   For="@(() => request.Password)" *@
+@*                                   InputType="InputType.Password" *@
+@*                                   Immediate="true" *@
+@*                                   Label="Password" *@
+@*                                   HelperText="ex. abc132Das" *@
+@*                                   Variant="Variant.Filled"/> *@
+@*                     <MudTextField @bind-Value="request.ConfirmPassword" *@
+@*                                   For="@(() => request.ConfirmPassword)" *@
+@*                                   InputType="InputType.Password" *@
+@*                                   Immediate="true" *@
+@*                                   Label="Password" *@
+@*                                   HelperText="ex. abc132Das" *@
+@*                                   Variant="Variant.Filled"/> *@
+@*                      *@
+@*                      *@
+@*                      *@
+@*                 </MudCardContent> *@
+@*             </MudForm> *@
+@*         </MudCard> *@
+@*     </NotAuthorized> *@
+@* </AuthorizeView> *@
+
+@code {
+    private bool _succeded = false;
+    private List<string> _errors;
+
+    private GetUserDetailsResponse _userDetails;
+
+    private async Task EditName()
+        => await ShowDialogAsync<EditUserNameDialog>("Edit User Name"); 
+    
+
+
+    private async Task EditPassword()
+        => await ShowDialogAsync<EditPasswordDialog>("Edit Password");
+    
+    private async Task EditPhoneNumber()
+        => await ShowDialogAsync<EditPhoneNumberDialog>("Edit Phone Number");
+    
+    private async Task EditAddress()
+        => await ShowDialogAsync<EditAddressDialog>("Edit Address");
+    
+    
+    private async Task SetParams()
+    {
+        var firstResult = await AccountService.GetUserDetailsAsync();
+        if (!firstResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = firstResult.ErrorList;
+            return;
+        }
+
+        _userDetails = firstResult.Response;
+
+        _succeded = true;
+    }
+    
+    protected async override Task OnParametersSetAsync()
+    {
+        await SetParams();
+    }
+
+}
