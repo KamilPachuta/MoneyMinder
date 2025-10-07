@@ -76,7 +76,19 @@ public class AccountService : BaseService, IAccountService
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         return authState.User.Identity?.IsAuthenticated ?? false;
     }
-    
+
+    public async Task<Result> ChangePassword(ChangePasswordRequest request)
+        => await SendAsync("api/Account/Password", HttpMethod.Patch, request);
+
+    public async Task<Result> ChangeName(ChangeNameRequest request)
+        => await SendAsync("api/Account/Name", HttpMethod.Patch, request);
+
+    public async Task<Result> ChangePhoneNumber(ChangePhoneNumberRequest request)
+        => await SendAsync("api/Account/Phone", HttpMethod.Patch, request);
+
+    public async Task<Result> ChangeAddress(ChangeAddressRequest request)
+        => await SendAsync("api/Account/Address", HttpMethod.Put, request);
+
     #region Queries
     
     public async Task<string> GetNameAsync()
@@ -103,6 +115,10 @@ public class AccountService : BaseService, IAccountService
         return "";
 
     }
+
+    public async Task<Result<GetUserDetailsResponse>> GetUserDetailsAsync()
+        => await GetAsync<GetUserDetailsResponse>("api/Account/Details");
+
     #endregion
 
 
