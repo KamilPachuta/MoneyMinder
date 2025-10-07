@@ -13,6 +13,7 @@ internal sealed class MoneyMinderReadDbContext : DbContext
 
     public MoneyMinderReadDbContext(DbContextOptions<MoneyMinderReadDbContext> options) : base(options)
     {
+        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,4 +22,10 @@ internal sealed class MoneyMinderReadDbContext : DbContext
 
         modelBuilder.AddEFReadConfig();
     }
+    
+    public override int SaveChanges()
+        => throw new InvalidOperationException("MoneyMinderReadDbContext is read-only.");
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        => throw new InvalidOperationException("MoneyMinderReadDbContext is read-only.");
 }
