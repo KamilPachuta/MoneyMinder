@@ -26,9 +26,9 @@
                 {
                     <MudPaper Outlined="true" Class="px-3 py-1" Elevation="5">
                         <MudNavGroup Title="@name" Icon="@Icons.Material.Filled.AccountBalanceWallet" Expanded="false" Class="">
-                            <MudNavLink Href="@CurrencyAccountPathBuilder.Path(name)" Icon="@Icons.Material.Filled.CreditCard">Account</MudNavLink>
-                            <MudNavLink Href="@CurrencyAccountPathBuilder.TransactionHistoryPath(name)" Icon="@Icons.Material.Filled.History">Transaction History</MudNavLink>
-                            <MudNavLink Href="@CurrencyAccountPathBuilder.BudgetPath(name)" Icon="@Icons.Material.Filled.BarChart">Budget</MudNavLink>
+                            <MudNavLink Href="@PathBuilder.CurrencyAcountPath(name)" Icon="@Icons.Material.Filled.CreditCard">Account</MudNavLink>
+                            <MudNavLink Href="@PathBuilder.CurrencyTransactionHistoryPath(name)" Icon="@Icons.Material.Filled.History">Transaction History</MudNavLink>
+                            <MudNavLink Href="@PathBuilder.BudgetPath(name)" Icon="@Icons.Material.Filled.BarChart">Budget</MudNavLink>
                         </MudNavGroup>
                     </MudPaper>
                 }
@@ -38,7 +38,7 @@
                 @foreach (var name in _savingsAccountNames)
                 {
                     <MudPaper Outlined="true" Class="px-3 py-1" Elevation="5">
-                        <MudNavLink Href="@SavingsAccountPathBuilder.Path(name)" Icon="@Icons.Material.Filled.Savings">@name</MudNavLink>
+                        <MudNavLink Href="@PathBuilder.SavingsAccountPath(name)" Icon="@Icons.Material.Filled.Savings">@name</MudNavLink>
                     </MudPaper>
                 }
                 <MudNavLink Icon="@Icons.Material.Filled.AddCard" OnClick="CreateSavingsAccount">Create</MudNavLink>
@@ -97,19 +97,6 @@
         await SetParams();
     }
 
-    private static class CurrencyAccountPathBuilder
-    {
-        public static string Path(string name) => $"/CurrencyAccount/{name}";
 
-        public static string TransactionHistoryPath(string name) => $"/CurrencyAccount/{name}/TransactionHistory";
-            
-        public static string BudgetPath(string name) => $"/CurrencyAccount/{name}/Budget";
-            
-    }    
-    
-    private static class SavingsAccountPathBuilder
-    {
-        public static string Path(string name) => $"/SavingsAccount/{name}";
-    }
 
 }
