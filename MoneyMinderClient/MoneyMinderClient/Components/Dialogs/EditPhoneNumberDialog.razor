@@ -1,0 +1,63 @@
+﻿
+@using MoneyMinderClient.Core
+@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Requests.Accounts.Validators
+@using MoneyMinderContracts.Requests.Accounts
+@inject IAccountService AccountService
+
+
+<MudDialog DisableSidePadding="true">
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
+            <MudText Typo="Typo.h5">Change Phone Number</MudText>
+
+            <MudForm Model="_request" @ref="@form" Validation="@ValidationAdapter.ValidateValue(_validator)" ValidationDelay="0">
+                <MudTextField @bind-Value="_request.Code" 
+                              For="@(() => _request.Code)" 
+                              Immediate="true" 
+                              Label="Phone Code" 
+                              Variant="Variant.Outlined" /> 
+                
+                
+                <MudTextField @bind-Value="_request.Number" 
+                              For="@(() => _request.Number)" 
+                              Immediate="true" 
+                              Label="Phone Number" 
+                              Variant="Variant.Outlined" />
+                
+                        
+            </MudForm>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
+        <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    IMudDialogInstance MudDialog { get; set; }
+    
+    MudForm form = new();
+    
+    ChangePhoneNumberRequest _request = new();
+    ChangePhoneNumberValidator _validator = new();
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            var result = await AccountService.ChangePhoneNumber(_request);
+
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+}
