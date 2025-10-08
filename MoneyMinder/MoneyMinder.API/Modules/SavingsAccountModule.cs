@@ -32,6 +32,8 @@ public class SavingsAccountModule : BaseModule
         
         queries.MapGet("/Names", SavingsAccountReadEndpoints.GetSavingsAccountNames);
         
+        queries.MapGet("/Details", SavingsAccountReadEndpoints.GetSavingsAccountsDetails);
+        
         
     }
     
