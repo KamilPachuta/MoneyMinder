@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using MoneyMinder.Application.CurrencyAccounts.Exceptions;
 using MoneyMinder.Application.CurrencyAccounts.Queries;
 using MoneyMinder.Infrastructure.EF.Context;
 using MoneyMinderContracts.Responses.CurrencyAccounts;
@@ -21,6 +22,9 @@ internal sealed class GetCurrencyAccountIdByNameHandler : IRequestHandler<GetCur
             .Where(ca => ca.AccountId == request.AccountId && ca.Name == request.Name)
             .Select(ca => ca.Id)
             .FirstOrDefaultAsync(cancellationToken);
+        
+        if (id == Guid.Empty)
+            throw new CurrencyAccountNotFoundException(request.Name);
         
         return new GetCurrencyAccountIdByNameResponse(id);
     }
