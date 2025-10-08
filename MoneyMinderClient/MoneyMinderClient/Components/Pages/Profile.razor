@@ -1,9 +1,6 @@
 ﻿@page "/Profile"
 @inject IAccountService AccountService
-@inject IDialogService DialogService
-@inject ISnackbar Snackbar
 @using MoneyMinderClient.Components.Dialogs
-@using MoneyMinderClient.Core
 @using MoneyMinderClient.Services.Interfaces
 @using MoneyMinderContracts.Responses.Accounts
 @inherits MoneyMinderClient.Core.BasePage
@@ -44,42 +41,6 @@
 
     </Authorized>
 </AuthorizeView>
-
-
-@* *@
-@* <AuthorizeView> *@
-@*     <NotAuthorized> *@
-@*         <MudCard Elevation="5" Class="mx-auto pa-10 mt-10 rounded-xl" Style="width: 40%; min-width: 300px;"> *@
-@*             <MudCardHeader ><h1>Your personal info.</h1></MudCardHeader> *@
-@*             <MudForm Model="request" @ref="@form" Validation="@(validator.ValidateValue)" ValidationDelay="0"> *@
-@*                 <MudCardContent> *@
-@*                      *@
-@*                     <MudTextField @bind-Value="request.Login" *@
-@*                                   For="@(() => request.Login)" *@
-@*                                   Immediate="true" *@
-@*                                   Label="Login"/> *@
-@*                     <MudTextField @bind-Value="request.Password" *@
-@*                                   For="@(() => request.Password)" *@
-@*                                   InputType="InputType.Password" *@
-@*                                   Immediate="true" *@
-@*                                   Label="Password" *@
-@*                                   HelperText="ex. abc132Das" *@
-@*                                   Variant="Variant.Filled"/> *@
-@*                     <MudTextField @bind-Value="request.ConfirmPassword" *@
-@*                                   For="@(() => request.ConfirmPassword)" *@
-@*                                   InputType="InputType.Password" *@
-@*                                   Immediate="true" *@
-@*                                   Label="Password" *@
-@*                                   HelperText="ex. abc132Das" *@
-@*                                   Variant="Variant.Filled"/> *@
-@*                      *@
-@*                      *@
-@*                      *@
-@*                 </MudCardContent> *@
-@*             </MudForm> *@
-@*         </MudCard> *@
-@*     </NotAuthorized> *@
-@* </AuthorizeView> *@
 
 @code {
     private bool _succeded = false;

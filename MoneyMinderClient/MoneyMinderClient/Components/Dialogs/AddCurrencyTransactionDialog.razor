@@ -5,7 +5,7 @@
 @using MoneyMinderContracts.Requests.CurrencyAccounts.Validators
 
 @using MoneyMinderContracts.Requests.CurrencyAccounts
-@inject ICurrencyAccountService CurrencyAccountService
+@inject ICurrencyAccountService CurrencyService
 
 
 <MudDialog DisableSidePadding="true">
@@ -200,14 +200,14 @@
             {
                 _requestIncome.CurrencyAccountId = CurrencyAccountId;
 
-                result = await CurrencyAccountService.PostIncomeAsync(_requestIncome);
+                result = await CurrencyService.PostIncomeAsync(_requestIncome);
 
             }
             else
             {
                 _requestPayment.CurrencyAccountId = CurrencyAccountId;
             
-                result = await CurrencyAccountService.PostPaymentAsync(_requestPayment);
+                result = await CurrencyService.PostPaymentAsync(_requestPayment);
             }
             
             MudDialog.Close(DialogResult.Ok(result));

@@ -1,7 +1,7 @@
 ﻿@using MoneyMinderClient.Services.Interfaces
 @using MoneyMinderContracts.Models.Dtos
 @using MoneyMinderContracts.Requests.CurrencyAccounts
-@inject ICurrencyAccountService CurrencyAccountService
+@inject ICurrencyAccountService CurrencyService
 
 <MudDialog>
     <DialogContent>
@@ -36,7 +36,7 @@
         {
             var request = new RemoveIncomeRequest(CurrencyAccountId, TransactionDto.Id);
 
-            var result = await CurrencyAccountService.RemoveIncomeAsync(request);
+            var result = await CurrencyService.RemoveIncomeAsync(request);
 
             MudDialog.Close(DialogResult.Ok(result));
         }
@@ -45,7 +45,7 @@
         {
             var request = new RemovePaymentRequest(CurrencyAccountId, TransactionDto.Id);
 
-            var result = await CurrencyAccountService.RemovePaymentAsync(request);
+            var result = await CurrencyService.RemovePaymentAsync(request);
 
             MudDialog.Close(DialogResult.Ok(result));
         }

@@ -1,6 +1,6 @@
 ﻿@using MoneyMinderClient.Services.Interfaces
 @using MoneyMinderContracts.Requests.CurrencyAccounts
-@inject ICurrencyAccountService CurrencyAccountService
+@inject ICurrencyAccountService CurrencyService
 
 <MudDialog>
     <DialogContent>
@@ -23,7 +23,7 @@
     private async Task Submit()
     {
         var request = new DeleteCurrencyAccountRequest(CurrencyAccountId);
-        var result = await CurrencyAccountService.DeleteCurrencyAccountAsync(request);
+        var result = await CurrencyService.DeleteCurrencyAccountAsync(request);
 
         MudDialog.Close(DialogResult.Ok(result));
     }

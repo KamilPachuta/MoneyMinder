@@ -4,7 +4,7 @@
 @using MoneyMinderClient.Services.Interfaces
 @using MoneyMinderContracts.Models.Dtos
 @using MoneyMinderContracts.Requests.CurrencyAccounts
-@inject ICurrencyAccountService CurrencyAccountService
+@inject ICurrencyAccountService CurrencyService
 @inherits BasePage
 
 <style>
@@ -136,7 +136,7 @@
     
     private async Task SetParams()
     {
-        var firstResult = await CurrencyAccountService.GetIdByNameAsync(name);
+        var firstResult = await CurrencyService.GetIdByNameAsync(name);
         if (!firstResult.Succeeded)
         {
             _succeded = false;
@@ -146,7 +146,7 @@
         
         CurrencyAccountId = firstResult.Response.Id;
 
-        var secondResult = await CurrencyAccountService.GetCurrencyAccountTransactionsAsync(CurrencyAccountId);
+        var secondResult = await CurrencyService.GetCurrencyAccountTransactionsAsync(CurrencyAccountId);
         
         if (!secondResult.Succeeded)
         {
