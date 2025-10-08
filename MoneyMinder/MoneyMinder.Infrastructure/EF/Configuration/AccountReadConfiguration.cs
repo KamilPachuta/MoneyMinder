@@ -28,10 +28,10 @@ public class AccountReadConfiguration :
             .WithOne()
             .HasForeignKey<UserReadModel>();
 
-        /*builder
+        builder
             .HasMany(a => a.CurrencyAccounts)
             .WithOne()
-            .HasForeignKey(ca => ca.AccountId);*/
+            .HasForeignKey(ca => ca.AccountId);
         
         builder
             .HasMany(a => a.SavingsAccounts)

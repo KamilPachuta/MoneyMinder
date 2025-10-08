@@ -52,7 +52,11 @@ public class CurrencyAccountService : BaseService, ICurrencyAccountService
     
     public async Task<Result<GetCurrencyAccountIdByNameResponse>> GetIdByNameAsync(string name)
         => await GetAsync<GetCurrencyAccountIdByNameResponse>($"api/CurrencyAccount/Id/{name}");
-    
+
+    public async Task<Result<GetCurrencyAccountDetailsResponse>> GetCurrencyAccountDetailsAsync(string name)
+        => await GetAsync<GetCurrencyAccountDetailsResponse>($"api/CurrencyAccount/Details/{name}");
+
+
     public async Task<Result<GetCurrencyAccountBalancesResponse>> GetCurrencyAccountBalancesAsync(Guid id)
         => await GetAsync<GetCurrencyAccountBalancesResponse>($"api/CurrencyAccount/{id}/Balances");
 

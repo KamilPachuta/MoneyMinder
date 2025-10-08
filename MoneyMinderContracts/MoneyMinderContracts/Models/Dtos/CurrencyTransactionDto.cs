@@ -10,5 +10,4 @@ public class CurrencyTransactionDto
     public CurrencyDto Currency { get; set; }
     public decimal Amount { get; set; }
     public CategoryDto? Category { get; set; }
-    
 }

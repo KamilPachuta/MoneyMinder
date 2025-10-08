@@ -39,8 +39,7 @@ public class CurrencyAccountModule : BaseModule
         commands.MapPut("/Budget/Limit", CurrencyAccountEndpoints.LimitEdit);
         
         commands.MapDelete("/Budget", CurrencyAccountEndpoints.BudgetDelete);
-        
-        
+
         
         var queries = app.MapGroup("").AddFluentValidationAutoValidation();
         
@@ -48,7 +47,9 @@ public class CurrencyAccountModule : BaseModule
         
         queries.MapGet("/id/{name}", CurrencyAccountReadEndpoints.GetCurrencyAccountIdByName);
         
-        queries.MapGet("/{id}/balances", CurrencyAccountReadEndpoints.GetCurrencyAccountBalances);
+        queries.MapGet("/Details/{name}", CurrencyAccountReadEndpoints.GetCurrencyAccountDetails);
+        
+        queries.MapGet("/{id}/Balances", CurrencyAccountReadEndpoints.GetCurrencyAccountBalances);
         
         queries.MapGet("/{id}/Transactions", CurrencyAccountReadEndpoints.GetCurrencyAccountTransactions);
         

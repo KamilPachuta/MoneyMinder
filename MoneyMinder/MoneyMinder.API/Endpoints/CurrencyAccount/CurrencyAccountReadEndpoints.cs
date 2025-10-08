@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyMinder.API.Services;
 using MoneyMinder.Application.CurrencyAccounts.Queries;
+using MoneyMinder.Infrastructure.EF.QueryHandlers.CurrencyAccounts;
 
 namespace MoneyMinder.API.Endpoints.CurrencyAccount;
 
@@ -31,6 +32,21 @@ internal static class CurrencyAccountReadEndpoints
         var accountId = userService.GetAccountId();
         
         var query = new GetCurrencyAccountIdByNameQuery(accountId, name);
+        
+        var response = await sender.Send(query);
+        
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> GetCurrencyAccountDetails(
+        [FromRoute]string name,
+        [FromServices]IUserService userService,
+        [FromServices]ISender sender)
+    {
+        var accountId = userService.GetAccountId();
+        
+        var query = new GetCurrencyAccountDetailsQuery(accountId, name);
         
         var response = await sender.Send(query);
         
