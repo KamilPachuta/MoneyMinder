@@ -1,0 +1,58 @@
+﻿@using MoneyMinderClient.Core
+@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Requests.SavingsAccounts
+@using MoneyMinderContracts.Requests.SavingsAccounts.Validators
+
+@inject ISavingsAccountService SavingsService
+
+
+<MudDialog DisableSidePadding="true">
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
+
+            <MudForm Model="_request" @ref="@form" Validation="@ValidationAdapter.ValidateValue(_validator)" ValidationDelay="0">
+                <MudTextField @bind-Value="_request.Name" 
+                              For="@(() => _request.Name)" 
+                              Immediate="true" 
+                              Label="New name" 
+                              Variant="Variant.Outlined" />
+                        
+            </MudForm>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
+        <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public Guid SavingsAccountId { get; set; }
+    
+    MudForm form = new();
+    
+    ChangeSavingsAccountNameRequest _request = new();
+    ChangeSavingsAccountNameValidator _validator = new();
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            _request.SavingsAccountId = SavingsAccountId;
+            var result = await SavingsService.PatchSavingsAccountNameAsync(_request);
+
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+}

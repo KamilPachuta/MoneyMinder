@@ -19,9 +19,16 @@ public class SavingsAccountService : BaseService, ISavingsAccountService
     public async Task<Result> PostSavingsAccountAsync(CreateSavingsAccountRequest request)
         => await SendAsync("api/SavingsAccount", HttpMethod.Post, request);
     
-    public async Task<Result> PatchSavingsAccountAsync(ChangeSavingsAccountNameRequest request)
-        => await SendAsync("api/SavingsAccount", HttpMethod.Patch, request);
-    
+    public async Task<Result> PatchSavingsAccountNameAsync(ChangeSavingsAccountNameRequest request)
+        => await SendAsync("api/SavingsAccount/Name", HttpMethod.Patch, request);
+
+    public async Task<Result> PatchSavingsAccountPlannedAmountAsync(ChangeSavingsAccountPlannedAmountRequest request)
+        => await SendAsync("api/SavingsAccount/PlannedAmount", HttpMethod.Patch, request);
+
+    public async Task<Result> PostSavingsTransactionAsync(ProcessSavingsTransactionRequest request)
+        => await SendAsync("api/SavingsAccount/Transaction", HttpMethod.Post, request);
+
+
     public async Task<Result> DeleteSavingsAccountAsync(DeleteSavingsAccountRequest request)
         => await SendAsync("api/SavingsAccount", HttpMethod.Delete, request);
    

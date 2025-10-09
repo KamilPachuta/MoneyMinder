@@ -1,0 +1,110 @@
+﻿@using MoneyMinderClient.Core
+@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Models.Enums
+@using MoneyMinderContracts.Requests.SavingsAccounts
+@using MoneyMinderContracts.Requests.SavingsAccounts.Validators
+@inject ISavingsAccountService SavingsService
+
+
+<MudDialog DisableSidePadding="true">
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
+            <MudCard Elevation="4">
+                <MudCardHeader>
+                        <MudText Typo="Typo.h5">Add Savings Transaction</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                 
+                    <MudForm Model="_request" @ref="@form" Validation="@ValidationAdapter.ValidateValue(_validator)" ValidationDelay="0">
+                        <MudTextField @bind-Value="_request.Name"
+                                      For="@(() => _request.Name)"
+                                      Immediate="true"
+                                      Label=" Transaction Name"
+                                      Variant="Variant.Outlined"/>
+
+                        <MudDatePicker @bind-Date="_request.Date"
+                                       For="@(() => _request.Date)"
+                                       Label="Transaction Date"
+                                       DisableToolbar="true"
+                                       Editable="true"
+                                       Mask="@(new DateMask("dd.MM.yyyy"))"
+                                       DateFormat="dd.MM.yyyy"
+                                       Placeholder="dd.MM.yyyy"/>
+
+                        <MudNumericField @bind-Value="_request.Amount"
+                                         Label="Outlined"
+                                         Variant="Variant.Outlined"
+                                         Step="10M"
+                                         DebounceInterval="500"/>
+                    </MudForm>
+                                   
+                    
+                </MudCardContent>
+                <MudCardActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
+                </MudCardActions>
+    
+            </MudCard>
+
+
+        </MudContainer>
+    </DialogContent>
+
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    IMudDialogInstance MudDialog { get; set; }
+    
+    [Parameter]
+    public Guid SavingsAccountId { get; set; }
+    [Parameter]
+    public CurrencyDto Currency { get; set; }
+
+    MudForm form = new();
+    
+    ProcessSavingsTransactionRequest _request = new()
+    {
+        Date = DateTime.UtcNow
+    };
+    ProcessSavingsTransactionValidator _validator = new();
+
+
+
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+
+            
+            if (_request.Amount < 0)
+            {
+                _request.TransactionType = TransactionTypeDto.Withdraw;
+            }
+            else
+            {
+                _request.TransactionType = TransactionTypeDto.Deposit;
+
+            }
+
+            _request.SavingsAccountId = SavingsAccountId;
+            
+            _request.CurrencyDto = Currency;
+            
+            var result = await SavingsService.PostSavingsTransactionAsync(_request);
+                
+            
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+    
+}

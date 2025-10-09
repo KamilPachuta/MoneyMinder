@@ -1,0 +1,172 @@
+﻿@page "/SavingsAccount/{name}"
+@using MoneyMinderClient.Components.Dialogs
+@using MoneyMinderClient.Core
+@using MoneyMinderClient.Services.Interfaces
+@using MoneyMinderContracts.Models.Dtos
+@using MoneyMinderContracts.Models.Enums
+@using MoneyMinderContracts.Responses.SavingsAccounts
+@inject ISavingsAccountService SavingsService
+@inject NavigationManager NavManager
+@inherits BasePage
+
+<style>
+    .selected {
+        background-color: #E0E0E0 !important;
+    }
+</style>
+
+
+<MudPaper Elevation="2" Class="px-4 py-4">
+
+<MudGrid>
+        <MudItem xs="12" sm="12">
+                 <MudPaper Elevation="2" Class="align-start px-4 py-4">
+                                <MudText Typo="Typo.h3">Savings Account</MudText>
+                                <MudText Typo="Typo.h5">@Name</MudText>
+                                <MudText Typo="Typo.h6">@Currency</MudText>
+                            </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="0">
+                    <MudPaper Elevation="2" Class="px-4 py-4">
+                                        <MudText Typo="Typo.h6"> Current Amount / Planned Amount</MudText>
+                                        @if (_succeded && _response is not null)
+                                        {
+                                            <MudText Typo="Typo.body1">@_response.CurrentAmount / @_response.PlannedAmount</MudText>
+                                        }
+                                    </MudPaper>
+                                    <MudPaper Elevation="2" Class="px-4 py-4">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="ProcessTransaction"></MudIconButton>
+                                        <MudIconButton Icon="@Icons.Material.Filled.EditNote" OnClick="EditSavingsAccountName"></MudIconButton>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit"OnClick="ChangePlannedAmount"></MudIconButton>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Remove"OnClick="RemoveSavingsAccount"></MudIconButton>
+                                    </MudPaper>
+                </MudPaper>
+            </MudItem>
+    <MudItem xs="12" sm="8">
+            <MudPaper Elevation="2" Class="align-start d-flex">
+                                <MudPaper Elevation="0" Width="100%" MinWidth="300px">
+                                    <MudContainer Style="max-height: 800px; overflow-y: scroll;"  Class="px-0">                                                 
+                                        <MudTable T="SavingsTransactionDto" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
+                                                  RowClass="cursor-pointer">
+                                            <HeaderContent>
+                                                <MudTh>Type</MudTh>
+                                                <MudTh>Name</MudTh>
+                                                <MudTh>Date</MudTh>
+                                                <MudTh>Amount</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd DataLabel="Type">@context.TransactionType</MudTd>
+                                                <MudTd DataLabel="Name">@context.Name</MudTd>
+                                                <MudTd DataLabel="Date">@context.Date.ToString("dd-MM-yyyy")</MudTd>
+                                                <MudTd DataLabel="Amount">@context.Amount</MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                            </MudContainer>
+                                        </MudPaper>
+                            </MudPaper>
+        </MudItem>
+</MudGrid>
+</MudPaper>
+
+@code {
+    [Parameter] 
+    public string Name { get; set; }
+    [CascadingParameter]
+    public Guid SavingsAccountId { get; set; } 
+    [CascadingParameter]
+    public CurrencyDto Currency { get; set; }
+
+    private DialogParameters _parameters = new DialogParameters();
+
+
+    private List<SavingsTransactionDto> _transactions = new();
+    private GetSavingsAccountDetailsResponse _response;
+    
+    private MudTable<SavingsTransactionDto> mudTable;
+    private int selectedRowNumber = -1;
+    private SavingsTransactionDto? _selectedTransactionDto;
+
+    private bool _succeded = false;
+    private List<string> _errors;
+    
+    
+    private async Task SetParams()
+    {
+        var result = await SavingsService.GetSavingsAccountDetailsAsync(Name);
+        
+        if (!result.Succeeded)
+        {
+            _succeded = false;
+            _errors = result.ErrorList;
+            return;
+        }
+
+        _response = result.Response;
+
+        _transactions = _response.Transactions.ToList();
+
+        SavingsAccountId = _response.Id;
+        
+        Currency = _response.Currency;
+
+        _parameters = new DialogParameters
+        {
+            { "SavingsAccountId", SavingsAccountId }
+        };
+        
+        _succeded = true;
+    }
+    
+    protected async override Task OnParametersSetAsync()
+    {
+        await SetParams();
+    }
+
+
+
+    private async Task ProcessTransaction()
+    {
+        var parameters = new DialogParameters
+        {
+            { "SavingsAccountId", SavingsAccountId },
+            { "Currency", Currency}
+        };
+        await ShowDialogAsync<ProcessSavingsTransactionDialog>("Add Savings Transaction", parameters);
+    }
+
+    
+    private async Task EditSavingsAccountName()
+        => await ShowDialogAsync<EditSavingsAccountNameDialog>("Edit Savings Account Name", _parameters);
+    
+    private async Task ChangePlannedAmount()
+        => await ShowDialogAsync<EditSavingsAccountPlannedAmountDialog>("Edit Savings Account Planned Amount", _parameters);
+    
+    private async Task RemoveSavingsAccount()
+        => await ShowDialogAsync<DeleteSavingsAccountDialog>("Delete Savings Account", _parameters);
+    
+    
+
+    private string SelectedRowClassFunc(SavingsTransactionDto transaction, int rowNumber)
+    {
+        if (selectedRowNumber == rowNumber)
+        {
+            selectedRowNumber = -1;
+
+            _selectedTransactionDto = null;
+            
+            return string.Empty;
+        }
+        
+        if (mudTable.SelectedItem != null && mudTable.SelectedItem.Equals(transaction))
+        {
+            selectedRowNumber = rowNumber;
+            
+            _selectedTransactionDto = transaction;
+            
+            return "selected";
+        }
+        
+        return string.Empty;
+    }
+}
