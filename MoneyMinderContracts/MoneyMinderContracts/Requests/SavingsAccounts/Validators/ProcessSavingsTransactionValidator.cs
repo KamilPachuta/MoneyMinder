@@ -18,7 +18,7 @@ public sealed class ProcessSavingsTransactionValidator : AbstractValidator<Proce
             .NotEmpty()
             .LessThanOrEqualTo(DateTime.UtcNow)
             .WithMessage("Date cannot be in the future.")
-            .Must(d => d.Year == DateTime.UtcNow.Year && d.Month == DateTime.UtcNow.Month)
+            .Must(d => d.Value.Year == DateTime.UtcNow.Year && d.Value.Month == DateTime.UtcNow.Month)
             .WithMessage("Date must be in the current month.");
         
         RuleFor(x => x.CurrencyDto)
@@ -27,7 +27,7 @@ public sealed class ProcessSavingsTransactionValidator : AbstractValidator<Proce
         RuleFor(x => x.Amount)
             .NotEmpty();
         
-        RuleFor(x => x.TransactionTypeDto)
+        RuleFor(x => x.TransactionType)
             .IsInEnum();
     }
 }

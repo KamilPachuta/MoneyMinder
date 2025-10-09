@@ -6,10 +6,10 @@ public class ProcessSavingsTransactionRequest
 {
     public Guid SavingsAccountId { get; set; }
     public string Name { get; set; } = string.Empty;
-    public DateTime Date { get; set; }
+    public DateTime? Date { get; set; }
     public CurrencyDto CurrencyDto { get; set; }
     public decimal Amount { get; set; }
-    public TransactionTypeDto TransactionTypeDto { get; set; }
+    public TransactionTypeDto TransactionType { get; set; }
 
     public ProcessSavingsTransactionRequest()
     {
@@ -21,13 +21,13 @@ public class ProcessSavingsTransactionRequest
         DateTime date, 
         CurrencyDto currencyDto, 
         decimal amount, 
-        TransactionTypeDto transactionTypeDto)
+        TransactionTypeDto transactionType)
     {
         SavingsAccountId = savingsAccountId;
         Name = name;
         Date = date;
         CurrencyDto = currencyDto;
         Amount = amount;
-        TransactionTypeDto = transactionTypeDto;
+        TransactionType = transactionType;
     }
 }

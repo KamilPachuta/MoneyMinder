@@ -79,10 +79,10 @@ internal static class SavingsAccountEndpoints
             accountId, 
             request.SavingsAccountId, 
             request.Name, 
-            request.Date, 
+            request.Date.Value, 
             (Currency)request.CurrencyDto, 
             request.Amount, 
-            (TransactionType)request.TransactionTypeDto);
+            (TransactionType)request.TransactionType);
         
         await sender.Send(command);
         return Results.Ok();
