@@ -37,6 +37,9 @@ public class SavingsAccountService : BaseService, ISavingsAccountService
     public async Task<Result<GetSavingsAccountNamesResponse>> GetSavingsAccountNames()
         => await GetAsync<GetSavingsAccountNamesResponse>("api/SavingsAccount/Names");
 
+    public async Task<Result<GetSavingsAccountDetailsResponse>> GetSavingsAccountDetailsAsync(string name)
+        => await GetAsync<GetSavingsAccountDetailsResponse>($"api/SavingsAccount/Details/{name}");    
+    
     public async Task<Result<GetSavingsAccountsDetailsResponse>> GetSavingsAccountsDetailsAsync()
         => await GetAsync<GetSavingsAccountsDetailsResponse>("api/SavingsAccount/Details");
 

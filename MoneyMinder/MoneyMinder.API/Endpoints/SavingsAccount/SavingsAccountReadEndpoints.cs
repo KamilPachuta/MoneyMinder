@@ -24,6 +24,21 @@ internal static class SavingsAccountReadEndpoints
     }
     
     [Authorize]
+    public static async Task<IResult> GetSavingsAccountDetails(
+        [FromRoute]string name,
+        [FromServices]IUserService userService,
+        [FromServices]ISender sender)
+    {
+        var accountId = userService.GetAccountId();
+        
+        var query = new GetSavingsAccountDetailsQuery(accountId, name);
+        
+        var response = await sender.Send(query);
+        
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
     public static async Task<IResult> GetSavingsAccountsDetails(
         [FromServices]IUserService userService,
         [FromServices]ISender sender)

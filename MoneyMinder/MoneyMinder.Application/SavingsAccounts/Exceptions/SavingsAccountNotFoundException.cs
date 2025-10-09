@@ -2,5 +2,15 @@ using MoneyMinder.Domain.Shared.Abstractions;
 
 namespace MoneyMinder.Application.SavingsAccounts.Exceptions;
 
-public sealed class SavingsAccountNotFoundException(Guid id)
-    : MoneyMinderException($"The savings account with ID: '{id}' was not found.");
+public sealed class SavingsAccountNotFoundException : MoneyMinderException
+{
+    public SavingsAccountNotFoundException(Guid Id) 
+        : base($"Savings account with ID: '{Id}' was not found.")
+    {
+    }
+
+    public SavingsAccountNotFoundException(string name) 
+        : base($"Savings account with name: '{name}' was not found.")
+    {
+    }
+}

@@ -11,6 +11,7 @@ public interface ISavingsAccountService
     public Task<Result> DeleteSavingsAccountAsync(DeleteSavingsAccountRequest request);
     
     public Task<Result<GetSavingsAccountNamesResponse>> GetSavingsAccountNames();
+    public Task<Result<GetSavingsAccountDetailsResponse>> GetSavingsAccountDetailsAsync(string name);
     public Task<Result<GetSavingsAccountsDetailsResponse>> GetSavingsAccountsDetailsAsync();
     
 }
