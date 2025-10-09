@@ -1,12 +1,7 @@
 ﻿@page "/login"
-@using MoneyMinderClient.Components.Dialogs
-@using MoneyMinderClient.Core
-@using MoneyMinderClient.Services.Authentication
-@using MoneyMinderClient.Services.Interfaces
 @using MoneyMinderContracts.Requests.Accounts
 @using MoneyMinderContracts.Requests.Accounts.Validators
 @inject IAccountService AccountService
-@inject AppAuthenticationStateProvider AuthStateProvider
 @inherits BasePage 
 
 
@@ -75,8 +70,6 @@
 
         if (result.Succeeded)
         {
-            AuthStateProvider.NotifyUserAuthentication();
-
             Snackbar.Add("Login successful!", Severity.Success);
             NavigationManager.NavigateTo("/", true);
         }

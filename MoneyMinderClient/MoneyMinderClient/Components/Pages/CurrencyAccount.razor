@@ -1,8 +1,4 @@
 ﻿@page "/CurrencyAccount/{name}"
-@using MoneyMinderClient.Components.Dialogs
-@using MoneyMinderClient.Core
-@using MoneyMinderClient.Services.Interfaces
-@using MoneyMinderContracts.Models.Dtos
 @using MoneyMinderContracts.Responses.CurrencyAccounts
 @inject ICurrencyAccountService CurrencyService
 @inherits BasePage
@@ -10,7 +6,7 @@
 <MudGrid>
     <MudItem xs="12" sm="4">
             <MudPaper Elevation="2" Class="mx-4 my-4 px-4 py-4">
-                <MudText Typo="Typo.h4" Class="px-2 py-2">@name</MudText>
+                <MudText Typo="Typo.h4" Class="px-2 py-2">@Name</MudText>
                  @if (_succeded)
                 {
                     <MudPaper Width="300px" Elevation="2">
@@ -42,7 +38,7 @@
                 <MudIconButton Icon="@Icons.Material.Filled.EditNote" OnClick="EditCurrencyAccountName"></MudIconButton>
             </MudTooltip>
             <MudTooltip Text="Transaction History">
-            <MudIconButton Icon="@Icons.Material.Filled.History" OnClick="History"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.History" OnClick="TransactionHistory"></MudIconButton>
             </MudTooltip>
             <MudTooltip Text="Budget">
                 <MudIconButton Icon="@Icons.Material.Filled.BarChart" OnClick="Budget"></MudIconButton>
@@ -60,7 +56,7 @@
                         <MudFab Label="Add new transaction" Icon="@Icons.Material.Filled.Add" OnClick="AddTransaction"></MudFab>
                                     <MudFab Label="Currency Exchange" Icon="@Icons.Material.Filled.CurrencyExchange" OnClick="ConvertCurrency"/>
                                     <MudFab Label="Edit Currency Account Name" Icon="@Icons.Material.Filled.EditNote" OnClick="EditCurrencyAccountName"/>
-                                    <MudFab Label="Transaction History" Icon="@Icons.Material.Filled.History" OnClick="History"/>
+                                    <MudFab Label="Transaction History" Icon="@Icons.Material.Filled.History" OnClick="TransactionHistory"/>
                                     <MudFab Label="Budget" Icon="@Icons.Material.Filled.BarChart" OnClick="Budget"/>
                                     <MudFab Label="Remove Currency Account" Icon="@Icons.Material.Filled.DeleteForever" OnClick="DeleteCurrencyAccount"/>
                     </MudStack>
@@ -76,12 +72,12 @@
 
 @code {
     [Parameter] 
-    public string name { get; set; }
+    public string Name { get; set; }
     [CascadingParameter]
     public Guid CurrencyAccountId { get; set; }
     
     private bool _succeded = false;
-    private DialogParameters Parameters = new DialogParameters();
+    private DialogParameters _parameters = new DialogParameters();
 
     private List<string> _errors;
     private GetCurrencyAccountNamesResponse _response;
@@ -90,7 +86,7 @@
 
 
     private async Task AddTransaction()
-        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", Parameters);
+        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", _parameters);
     
     private async Task UploadFile()
     {
@@ -101,19 +97,20 @@
         throw new NotImplementedException();
     }
     private async Task EditCurrencyAccountName()
-        => await ShowDialogAsync<EditCurrencyAccountNameDialog>("Edit Currency Account", Parameters);
+        => await ShowDialogAsync<EditCurrencyAccountNameDialog>("Edit Currency Account", _parameters);
 
-    private async Task History()
+    private async Task TransactionHistory()
     {
-        throw new NotImplementedException();
+        NavigationManager.NavigateTo(PathBuilder.CurrencyTransactionHistoryPath(Name));
     }
+    
     private async Task Budget()
     {
-        throw new NotImplementedException();
+        NavigationManager.NavigateTo(PathBuilder.BudgetPath(Name));
     }
 
     private async Task DeleteCurrencyAccount()
-        => await ShowDialogAsync<DeleteCurrencyAccountDialog>("Delete Currency Account", Parameters);
+        => await ShowDialogAsync<DeleteCurrencyAccountDialog>("Delete Currency Account", _parameters);
 
     protected override async Task OnParametersSetAsync()
     {
@@ -122,7 +119,7 @@
     
     private async Task SetParams()
     {
-        var firstResult = await CurrencyService.GetIdByNameAsync(name);
+        var firstResult = await CurrencyService.GetIdByNameAsync(Name);
         if (!firstResult.Succeeded)
         {
             _succeded = false;
@@ -143,7 +140,7 @@
 
         _balances = secondResult.Response.Balances.ToList();
 
-        Parameters = new DialogParameters()
+        _parameters = new DialogParameters()
         {
             { "CurrencyAccountId", CurrencyAccountId }
         };
