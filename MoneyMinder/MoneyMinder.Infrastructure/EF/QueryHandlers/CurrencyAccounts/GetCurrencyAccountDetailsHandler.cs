@@ -59,7 +59,7 @@ internal class GetCurrencyAccountDetailsHandler : IRequestHandler<GetCurrencyAcc
                 })
             )
             .OrderByDescending(t => t.Date)
-            .Take(10));
+            .Take(5));
         
         return details;
     }

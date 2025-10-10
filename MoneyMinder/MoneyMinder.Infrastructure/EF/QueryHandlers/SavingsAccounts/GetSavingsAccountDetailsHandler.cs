@@ -40,6 +40,7 @@ internal class GetSavingsAccountDetailsHandler : IRequestHandler<GetSavingsAccou
                 Date = t.Date,
                 Amount = t.Amount,
                 TransactionType = (TransactionTypeDto)t.Type
-            }));
+            })
+            .OrderByDescending(t => t.Date));
     }  
 }

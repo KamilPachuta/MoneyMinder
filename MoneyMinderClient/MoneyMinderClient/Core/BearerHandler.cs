@@ -1,6 +1,6 @@
 ﻿using Blazored.LocalStorage;
 
-namespace MoneyMinderClient;
+namespace MoneyMinderClient.Core;
 
 public class BearerHandler : DelegatingHandler
 {

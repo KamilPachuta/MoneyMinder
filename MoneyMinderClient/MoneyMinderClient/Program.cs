@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MoneyMinderClient;
+using MoneyMinderClient.Core;
 using MoneyMinderClient.Services;
 using MoneyMinderClient.Services.Authentication;
 using MoneyMinderClient.Services.Interfaces;
