@@ -21,7 +21,7 @@ internal sealed class CreateBudgetHandler : CurrencyHandler<CreateBudgetCommand>
             .Select(lm => new Limit(lm.Category, lm.Amount))
             .ToList();
         
-        var budget = new Budget(request.Date, request.Currency, limits);
+        var budget = new Budget(request.Currency, limits);
         
         currencyAccount.CreateBudget(budget);
 

@@ -9,11 +9,6 @@ public sealed class CreateBudgetValidator : AbstractValidator<CreateBudgetReques
     {
         RuleFor(x => x.CurrencyAccountId)
             .NotEmpty();
-        
-        RuleFor(x => x.Date)
-            .NotEmpty()
-            .Must(BeInCurrentMonth)
-            .WithMessage("Date must be in the current month.");
 
         RuleFor(x => x.CurrencyDto)
             .IsInEnum();
@@ -25,11 +20,5 @@ public sealed class CreateBudgetValidator : AbstractValidator<CreateBudgetReques
                 .Distinct()
                 .Count() == Enum.GetNames(typeof(CategoryDto)).Length)
             .WithMessage("Limits must contain each category exactly once.");
-    }
-    
-    private bool BeInCurrentMonth(DateTime date)
-    {
-        var now = DateTime.UtcNow;
-        return date.Year == now.Year && date.Month == now.Month;
     }
 }

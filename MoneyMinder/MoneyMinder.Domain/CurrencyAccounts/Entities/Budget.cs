@@ -16,9 +16,9 @@ public class Budget : Entity
     {
     }
     
-    public Budget(BudgetDate date, DefinedCurrency currency, List<Limit> limits)
+    public Budget(DefinedCurrency currency, List<Limit> limits)
     {
-        Date = date;
+        Date = new BudgetDate(DateTime.UtcNow);
         Currency = currency;
 
         if (limits.Select(l => l.Category).Distinct().Count() != DefinedCategory.Count())

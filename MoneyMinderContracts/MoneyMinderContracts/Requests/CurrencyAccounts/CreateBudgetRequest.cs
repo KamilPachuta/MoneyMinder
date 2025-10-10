@@ -6,7 +6,6 @@ namespace MoneyMinderContracts.Requests.CurrencyAccounts;
 public class CreateBudgetRequest
 {
     public Guid CurrencyAccountId { get; set; }
-    public DateTime Date { get; set; }
     public CurrencyDto CurrencyDto { get; set; }
     public IEnumerable<LimitDto> Limits { get; set; }
 
@@ -14,10 +13,9 @@ public class CreateBudgetRequest
     {
     }
     
-    public CreateBudgetRequest(Guid currencyAccountId, DateTime date, CurrencyDto currencyDto, IEnumerable<LimitDto> limits)
+    public CreateBudgetRequest(Guid currencyAccountId, CurrencyDto currencyDto, IEnumerable<LimitDto> limits)
     {
         CurrencyAccountId = currencyAccountId;
-        Date = date;
         CurrencyDto = currencyDto;
         Limits = limits;
     }

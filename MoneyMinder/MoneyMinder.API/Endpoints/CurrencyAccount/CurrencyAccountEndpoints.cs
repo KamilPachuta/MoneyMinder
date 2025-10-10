@@ -121,7 +121,7 @@ internal static class CurrencyAccountEndpoints
     {
         var accountId = userService.GetAccountId();
 
-        var command = new CreateBudgetCommand(accountId, request.CurrencyAccountId, request.Date, (Currency)request.CurrencyDto, request.Limits.ToDomain());
+        var command = new CreateBudgetCommand(accountId, request.CurrencyAccountId, (Currency)request.CurrencyDto, request.Limits.ToDomain());
 
         await sender.Send(command);
                 

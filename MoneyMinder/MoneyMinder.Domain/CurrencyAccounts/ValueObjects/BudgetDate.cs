@@ -8,14 +8,16 @@ public record BudgetDate
 
     public BudgetDate(DateTime date)
     {
-        if (date.Month != DateTime.UtcNow.Month && date.Year != DateTime.UtcNow.Year)
-        {
-            throw new InvalidBudgetDateException(date);
-        }
-
         if (date.Kind != DateTimeKind.Utc)
         {
             date = date.ToUniversalTime();
+        }
+        
+        date = new DateTime(date.Year, date.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        
+        if (date.Month != DateTime.UtcNow.Month && date.Year != DateTime.UtcNow.Year)
+        {
+            throw new InvalidBudgetDateException(date);
         }
         
         Date = date;

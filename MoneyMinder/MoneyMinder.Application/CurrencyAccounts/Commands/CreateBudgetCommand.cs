@@ -7,7 +7,6 @@ namespace MoneyMinder.Application.CurrencyAccounts.Commands;
 public record CreateBudgetCommand(
     Guid AccountId, 
     Guid CurrencyAccountId,
-    DateTime Date, 
     Currency Currency, 
     IEnumerable<LimitWriteModel> Limits) 
     : CurrencyCommand(AccountId, CurrencyAccountId);
