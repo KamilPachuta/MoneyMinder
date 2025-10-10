@@ -99,4 +99,19 @@ internal static class CurrencyAccountReadEndpoints
         
         return Results.Ok(response);
     }
+    
+    [Authorize]
+    public static async Task<IResult> GetBudgets(
+        [FromRoute]Guid id,
+        [FromServices]IUserService userService,
+        [FromServices]ISender sender)
+    {
+        var accountId = userService.GetAccountId();
+        
+        var query = new GetCurrencyAccountBudgetsQuery(accountId, id);
+        
+        var response = await sender.Send(query);
+        
+        return Results.Ok(response);
+    }
 }

@@ -2,4 +2,8 @@ using MoneyMinderContracts.Models.Enums;
 
 namespace MoneyMinderContracts.Models.Dtos;
 
-public record LimitDto(CategoryDto CategoryDto, decimal Amount);
+public class LimitDto
+{
+    public CategoryDto CategoryDto { get; set; }
+    public decimal Amount { get; set; }
+}
