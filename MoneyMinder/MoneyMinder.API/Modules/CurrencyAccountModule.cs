@@ -55,5 +55,8 @@ public class CurrencyAccountModule : BaseModule
         
         queries.MapGet("/{id}/Budgets", CurrencyAccountReadEndpoints.GetBudgets);
         
+        queries.MapGet("/{id}/MonthPayments", CurrencyAccountReadEndpoints.GetCurrencyAccountMonthPayments);
+        queries.MapGet("/{id}/MonthPaymentsByCurrency", CurrencyAccountReadEndpoints.GetCurrencyAccountMonthPaymentsByCurrency);
+        
     }
 }

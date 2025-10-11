@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyMinder.API.Services;
 using MoneyMinder.Application.CurrencyAccounts.Queries;
+using MoneyMinder.Domain.Shared.Enums;
 using MoneyMinder.Infrastructure.EF.QueryHandlers.CurrencyAccounts;
 
 namespace MoneyMinder.API.Endpoints.CurrencyAccount;
@@ -109,6 +110,39 @@ internal static class CurrencyAccountReadEndpoints
         var accountId = userService.GetAccountId();
         
         var query = new GetCurrencyAccountBudgetsQuery(accountId, id);
+        
+        var response = await sender.Send(query);
+        
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> GetCurrencyAccountMonthPayments(
+        [FromRoute]Guid id,
+        [FromQuery] DateTime month,
+        [FromServices]IUserService userService,
+        [FromServices]ISender sender)
+    {
+        var accountId = userService.GetAccountId();
+        
+        var query = new GetCurrencyAccountMonthPaymentsQuery(accountId, id,  month);
+        
+        var response = await sender.Send(query);
+        
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> GetCurrencyAccountMonthPaymentsByCurrency(
+        [FromRoute]Guid id,
+        [FromQuery] DateTime month,
+        [FromQuery] Currency currency,
+        [FromServices]IUserService userService,
+        [FromServices]ISender sender)
+    {
+        var accountId = userService.GetAccountId();
+        
+        var query = new GetCurrencyAccountMonthPaymentsByCurrencyQuery(accountId, id,  month, currency);
         
         var response = await sender.Send(query);
         

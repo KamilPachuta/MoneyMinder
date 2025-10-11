@@ -4,6 +4,7 @@ using Blazored.LocalStorage;
 using MoneyMinderClient.Core;
 using MoneyMinderClient.Services.Abstractions;
 using MoneyMinderClient.Services.Interfaces;
+using MoneyMinderContracts.Models.Enums;
 using MoneyMinderContracts.Requests.CurrencyAccounts;
 using MoneyMinderContracts.Responses.CurrencyAccounts;
 
@@ -62,6 +63,17 @@ public class CurrencyAccountService : BaseService, ICurrencyAccountService
 
     public async Task<Result<GetCurrencyAccountTransactionsResponse>> GetCurrencyAccountTransactionsAsync(Guid id)
         => await GetAsync<GetCurrencyAccountTransactionsResponse>($"api/CurrencyAccount/{id}/Transactions");
+
+    public async Task<Result<GetCurrencyAccountBudgetsResponse>> GetCurrencyAccountBudgetsAsync(Guid id)
+        => await GetAsync<GetCurrencyAccountBudgetsResponse>($"api/CurrencyAccount/{id}/Budgets");
+
+    public async Task<Result<GetCurrencyAccountMonthPaymentsResponse>> GetCurrencyAccountMonthPaymentsAsync(Guid id, DateTime month)
+        => await GetAsync<GetCurrencyAccountMonthPaymentsResponse>($"api/CurrencyAccount/{id}/MonthPayments?month={month.ToString("yyyy-MM-dd")}");
+
+    public async Task<Result<GetCurrencyAccountMonthPaymentsResponse>> GetCurrencyAccountMonthPaymentsAsync(Guid id, DateTime month, CurrencyDto currency)
+        => await GetAsync<GetCurrencyAccountMonthPaymentsResponse>
+            ($"api/CurrencyAccount/{id}/MonthPayments?month={month.ToString("yyyy-MM-dd")}&currency={currency.ToString()}");
+    
     
     // public async Task<Result<GetCurrencyAccountTransactionsResponse>> GetCurrencyAccountTransactionsAsync(Guid id, DateTime startDate, DateTime endDate)
     //     => await GetAsync<GetCurrencyAccountTransactionsResponse>($"api/CurrencyAccount/{id}/Transactions?startDate={startDate.ToString("yyyy-MM-dd")}&endDate={endDate.ToString("yyyy-MM-dd")}");

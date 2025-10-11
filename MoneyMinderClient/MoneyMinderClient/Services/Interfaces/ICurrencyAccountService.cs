@@ -1,4 +1,5 @@
 ﻿using MoneyMinderClient.Core;
+using MoneyMinderContracts.Models.Enums;
 using MoneyMinderContracts.Requests.CurrencyAccounts;
 using MoneyMinderContracts.Responses.CurrencyAccounts;
 
@@ -32,6 +33,7 @@ public interface ICurrencyAccountService
     public Task<Result<GetCurrencyAccountTransactionsResponse>> GetCurrencyAccountTransactionsAsync(Guid id);
     
 
-    // public Task<Result<GetBudgetDetailsResponse>> GetBudgetDetailsAsync(Guid id);
-    // public Task<Result<GetCurrentMonthPaymentsResponse>> GetCurrentMonthPaymentsAsync(Guid id);
+    public Task<Result<GetCurrencyAccountBudgetsResponse>> GetCurrencyAccountBudgetsAsync(Guid id);
+    public Task<Result<GetCurrencyAccountMonthPaymentsResponse>> GetCurrencyAccountMonthPaymentsAsync(Guid id, DateTime month);
+    public Task<Result<GetCurrencyAccountMonthPaymentsResponse>> GetCurrencyAccountMonthPaymentsAsync(Guid id, DateTime month, CurrencyDto currency);
 }
