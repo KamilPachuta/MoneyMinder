@@ -1,10 +1,218 @@
-﻿@page "/Budget"
+﻿@page "/CurrencyAccount/{Name}/Budget"
+@using MoneyMinderContracts.Responses.CurrencyAccounts
+@inject ICurrencyAccountService CurrencyService
+
 <h3>Budget</h3>
+<MudStack Style="width: 200px">
+    <MudSelect Value="Month" ValueChanged="OnMonthChanged" Label="Select Month" T="DateTime">
+        @foreach (var month in Last12Months)
+        {
+            <MudSelectItem Value="month">
+                @month.ToString("MMMM yyyy")
+            </MudSelectItem>
+        }
+    </MudSelect>
+</MudStack>
+   
+@if (barChart)
+{
+    <MudPaper Class="doc-section-component-container">
+        <MudChart ChartType="ChartType.Bar"
+                  ChartSeries="@_series"
+                  XAxisLabels="@_xAxisLabels"
+                  Class="w-100"
+                  Height="500px" />
+    </MudPaper>
+}
+else
+{
+    <MudGrid>
+        @foreach (var chart in _pieCharts)
+        {
+            <MudItem xs="12" sm="6" md="4"> <!-- 1 wykres = 1/3 szerokości -->
+                <MudPaper Class="pa-4">
+                    <MudText Typo="Typo.h6" Class="mb-2">Payments in @chart.Key</MudText>
+                    <MudChart 
+                        ChartType="ChartType.Pie"
+                        InputData="@chart.Value.Data"
+                        InputLabels="@chart.Value.Labels"
+                        Width="300px"
+                        Height="300px" />
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+}
+    
 
 @code {
-    //wykres slupkowy jak jest budget, pary slupkow payments+limit\
-    //wykrew kolowy jak budget nie ma i wtedy wydatki9 dla konkretnej currency ( np ta co ma najwiecej payemnts jest podstawowo i mozna zminic a inna)
-    //wykres liniowy wydatkó w ciagu miesiąca
-    //MudPieChart albo MudDonutChart
+    [Parameter] 
+    public string Name { get; set; }
+
+    public Guid CurrencyAccountId;
+    public bool barChart { get; set; } = false;
+
+    private string[] _xAxisLabels = Enum.GetNames(typeof(CategoryDto));
+    private List<ChartSeries> _series;
+
+    public DateTime Month { get; set; } = new(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+
+    public List<DateTime> Last12Months { get; set; } = Enumerable
+        .Range(0, 12)
+        .Select(i => new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1).AddMonths(-i))
+        .ToList();
+
+    private GetCurrencyAccountBudgetsResponse _budgetsResponse;
+    private GetCurrencyAccountMonthPaymentsResponse _paymentsResponse;
+    private BudgetDto selectedBudget = null;
+    private bool _succeded = false;
+    private List<string> _errors;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await SetParams();
+    }
+
+    private async Task OnMonthChanged(DateTime newMonth)
+    {
+        Month = newMonth;
+        await SetChart();
+    }
+
+    private async Task SetParams()
+    {
+        var idResult = await CurrencyService.GetIdByNameAsync(Name);
+        if (!idResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = idResult.ErrorList;
+            return;
+        }
+
+        CurrencyAccountId = idResult.Response.Id;
+
+        var budgetsResult = await CurrencyService.GetCurrencyAccountBudgetsAsync(CurrencyAccountId);
+        if (!budgetsResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = budgetsResult.ErrorList;
+            return;
+        }
+
+        _budgetsResponse = budgetsResult.Response;
+        await SetChart();
+    }
+
+    private async Task SetChart()
+    {
+        if (_budgetsResponse is null)
+            return;
+
+        selectedBudget = _budgetsResponse.Budgets
+            .FirstOrDefault(b => b.Date.Month == Month.Month && b.Date.Year == Month.Year);
+
+        if (selectedBudget is not null)
+        {
+            var paymentsByCurrencyResult = await CurrencyService.GetCurrencyAccountMonthPaymentsAsync(
+                CurrencyAccountId, Month, selectedBudget.Currency);
+
+            if (!paymentsByCurrencyResult.Succeeded)
+            {
+                _succeded = false;
+                _errors = paymentsByCurrencyResult.ErrorList;
+                return;
+            }
+
+            _paymentsResponse = paymentsByCurrencyResult.Response;
+            barChart = true;
+            GenerateChartData(selectedBudget.Limits, _paymentsResponse.Payments);
+            return;
+        }
+
+        var paymentsResult = await CurrencyService.GetCurrencyAccountMonthPaymentsAsync(CurrencyAccountId, Month);
+        _paymentsResponse = paymentsResult.Response;
+        barChart = false;
+        GeneratePieCharts(_paymentsResponse.Payments);
+    }
+
+    private void GenerateChartData(IEnumerable<LimitDto> limits, IEnumerable<CurrencyPaymentDto> payments)
+    {
+        var limitsByCategory = limits
+            .OrderBy(l => l.CategoryDto)
+            .Select(l => (double)l.Amount)
+            .ToArray();
+
+        var paymentsByCategory = Enum.GetValues<CategoryDto>()
+            .OrderBy(c => c)
+            .Select(c => payments
+                .Where(p => p.Category == c)
+                .Select(p => Math.Abs((double)p.Amount))
+                .Sum())
+            .ToArray();
+
+        _series = new List<ChartSeries>
+        {
+            new ChartSeries
+            {
+                Name = "Limits",
+                Data = limitsByCategory
+            },
+            new ChartSeries
+            {
+                Name = "Payments",
+                Data = paymentsByCategory
+            }
+        };
+    }
     
+    private Dictionary<CurrencyDto, List<ChartSeries>> _pieChartSeries = new();
+    private Dictionary<CurrencyDto, (double[] Data, string[] Labels)> _pieCharts = new();
+
+    private void GeneratePieCharts(IEnumerable<CurrencyPaymentDto> payments)
+    {
+        _pieCharts = payments
+            .GroupBy(p => p.Currency)
+            .ToDictionary(
+                g => g.Key,
+                g =>
+                {
+                    var labels = Enum.GetValues<CategoryDto>()
+                        .OrderBy(c => c)
+                        .Select(c => c.ToString())
+                        .ToArray();
+
+                    var data = Enum.GetValues<CategoryDto>()
+                        .OrderBy(c => c)
+                        .Select(c => g
+                            .Where(p => p.Category == c)
+                            .Select(p => Math.Abs((double)p.Amount))
+                            .Sum())
+                        .ToArray();
+
+                    return (data, labels);
+                });
+    }
+
+    // private void GeneratePieCharts(IEnumerable<CurrencyPaymentDto> payments)
+    // {
+    //     _pieChartSeries = payments
+    //         .GroupBy(p => p.Currency)
+    //         .ToDictionary(
+    //             g => g.Key,
+    //             g => new List<ChartSeries>
+    //             {
+    //                 new ChartSeries
+    //                 {
+    //                     Name = $"Payments in {g.Key}",
+    //                     Data = Enum.GetValues<CategoryDto>()
+    //                         .OrderBy(c => c)
+    //                         .Select(c => g
+    //                             .Where(p => p.Category == c)
+    //                             .Select(p => Math.Abs((double)p.Amount))
+    //                             .Sum())
+    //                         .ToArray()
+    //                 }
+    //             });
+    // }
+
 }
