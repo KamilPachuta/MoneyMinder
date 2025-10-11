@@ -31,7 +31,8 @@
                                            Editable="true"  
                                            Mask="@(new DateMask("dd.MM.yyyy"))" 
                                            DateFormat="dd.MM.yyyy" 
-                                           Placeholder="dd.MM.yyyy"/>
+                                           Placeholder="dd.MM.yyyy"
+                                           MaxDate="DateTime.UtcNow"/>
                             
                             <MudNumericField @bind-Value="_requestIncome.Amount" 
                                              Label="Outlined" 

@@ -26,7 +26,7 @@ public class BasePage : ComponentBase
         if (dialogResult.Succeeded)
         {
             Snackbar.Add("Operation successful", Severity.Success);
-            NavigationManager.Refresh();
+            //NavigationManager.Refresh();
         }
         else
         {

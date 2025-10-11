@@ -1,0 +1,49 @@
+﻿@page "/Reports"
+<h3>Reports</h3>
+<MudStack Style="width: 200px">
+    <MudSelect Value="_type" ValueChanged="OnReportChanged" Label="Select Report Type" T="ReportType">
+        <MudSelectItem Value="ReportType.PaymentsReport">Payments Report</MudSelectItem>
+        <MudSelectItem Value="ReportType.BalancesReport">Balances Report</MudSelectItem>
+        <MudSelectItem Value="ReportType.SavingsReport">Savings Report</MudSelectItem>
+    </MudSelect>
+</MudStack>
+
+@if (_type == ReportType.PaymentsReport)
+{
+    
+}
+
+@if (_type == ReportType.BalancesReport)
+{
+    
+}
+
+@if (_type == ReportType.SavingsReport)
+{
+    
+}
+
+@code {
+
+    private ReportType _type = ReportType.PaymentsReport;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    private async Task OnReportChanged(ReportType newType)
+    {
+        _type = newType;
+    }
+    
+    private enum ReportType
+    {
+        PaymentsReport = 1,
+        BalancesReport = 2,
+        SavingsReport = 3
+    }
+}
