@@ -15,6 +15,9 @@ public class AccountReadConfiguration :
         builder.HasKey(a => a.Id);
 
         builder
+            .Property(a => a.CreatedAt);
+        
+        builder
             .Property(a => a.Email);
 
         builder

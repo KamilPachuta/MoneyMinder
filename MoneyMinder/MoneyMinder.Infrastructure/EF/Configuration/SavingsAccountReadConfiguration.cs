@@ -14,6 +14,9 @@ public class SavingsAccountReadConfiguration:
         builder.HasKey(sa => sa.Id);
 
         builder
+            .Property(sa => sa.CreatedAt);
+        
+        builder
             .Property(sa => sa.Name);
 
         builder

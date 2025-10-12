@@ -17,7 +17,8 @@ public class CurrencyAccountReadConfiguration :
         builder.ToTable(TableNames.CurrencyAccounts);
         builder.HasKey(ca => ca.Id);
 
-        builder.Property(ca => ca.Id);
+        builder.Property(ca => ca.CreatedAt);
+        
         builder.Property(ca => ca.Name);
 
         builder

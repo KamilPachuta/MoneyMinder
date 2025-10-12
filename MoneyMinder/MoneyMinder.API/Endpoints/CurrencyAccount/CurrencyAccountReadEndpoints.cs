@@ -85,23 +85,6 @@ internal static class CurrencyAccountReadEndpoints
     }
     
     [Authorize]
-    public static async Task<IResult> GetCurrencyAccountTransactionsByDate(
-        [FromRoute]Guid id,
-        [FromQuery] DateTime startDate,
-        [FromQuery] DateTime endDate,
-        [FromServices]IUserService userService,
-        [FromServices]ISender sender)
-    {
-        var accountId = userService.GetAccountId();
-        
-        var query = new GetCurrencyAccountTransactionsByDateQuery(accountId, id, startDate, endDate);
-        
-        var response = await sender.Send(query);
-        
-        return Results.Ok(response);
-    }
-    
-    [Authorize]
     public static async Task<IResult> GetBudgets(
         [FromRoute]Guid id,
         [FromServices]IUserService userService,

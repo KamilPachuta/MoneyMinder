@@ -19,6 +19,11 @@ public class CurrencyAccountConfiguration :
         builder.HasKey(ca => ca.Id);
 
         builder
+            .Property(ca => ca.CreatedAt)
+            .HasConversion(c => c.Value, c => new(c))
+            .IsRequired();
+        
+        builder
             .Property(ca => ca.Name)
             .HasConversion(n => n.Name, n => new(n))
             .IsRequired();

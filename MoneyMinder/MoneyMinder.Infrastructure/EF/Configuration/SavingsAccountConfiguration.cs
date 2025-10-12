@@ -15,6 +15,11 @@ internal sealed class SavingsAccountConfiguration :
         builder.HasKey(sp => sp.Id);
 
         builder
+            .Property(sa => sa.CreatedAt)
+            .HasConversion(c => c.Value, c => new(c))
+            .IsRequired();
+        
+        builder
             .Property(sa => sa.Name)
             .HasConversion(n => n.Name, n => new(n))
             .IsRequired();
@@ -45,7 +50,7 @@ internal sealed class SavingsAccountConfiguration :
     {
         builder.ToTable(TableNames.SavingsTransactions);
         builder.HasKey(st => st.Id);
-
+        
         builder
             .Property(st => st.Name)
             .HasConversion(n => n.Name, n => new(n))

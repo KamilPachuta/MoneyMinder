@@ -23,7 +23,7 @@ public record UserBirthDate
     
     private bool NotOver18(DateTime date)
     {
-        int age = DateTime.Now.Year - date.Year;
+        int age = DateTime.UtcNow.Year - date.Year;
 
         if (DateTime.Now < date.AddYears(age))
         {
