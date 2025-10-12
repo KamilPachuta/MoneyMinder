@@ -183,6 +183,11 @@ public class CurrencyAccount : AggregateRoot
     
     private void ProcessTransaction(Transaction transaction)
     {
+        if (transaction.Date < CreatedAt.Value)
+        {
+            throw new CurrencyTransactionDateBeforeAccountCreationException(transaction.Date, CreatedAt.Value);
+        }
+        
         if (BalanceExist(transaction.Currency))
         {
             var balance = GetBalance(transaction.Currency);

@@ -65,6 +65,9 @@ public class SavingsAccount : AggregateRoot
 
     public void ProcessTransaction(SavingsTransaction transaction)
     {
+        if (transaction.Date < CreatedAt.Value)
+            throw new SavingsTransactionDateBeforeAccountCreationException(transaction.Date, CreatedAt.Value);
+        
         if(Currency != transaction.Currency)
             throw new CurrencyMismatchException(Currency, transaction.Currency);
         
