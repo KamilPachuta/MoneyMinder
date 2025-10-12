@@ -29,6 +29,7 @@ internal class GetSavingsAccountDetailsHandler : IRequestHandler<GetSavingsAccou
         
         return new GetSavingsAccountDetailsResponse(
             details.Id,
+            details.CreatedAt,
             details.Name,
             (CurrencyDto)details.Currency,
             details.CurrentAmount,

@@ -32,6 +32,7 @@ internal class GetCurrencyAccountDetailsHandler : IRequestHandler<GetCurrencyAcc
 
         var details = new GetCurrencyAccountDetailsResponse(
             currencyAccount.Id,
+            currencyAccount.CreatedAt,
             currencyAccount.Name,
             currencyAccount.Balances.Select(b => new BalanceDto
             {

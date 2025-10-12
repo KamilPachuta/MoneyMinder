@@ -25,6 +25,7 @@ internal class GetSavingsAccountsDetailsHandler
             .Select(sa => new SavingsAccountDetailsDto
             {
                 Id = sa.Id,
+                CreatedAt = sa.CreatedAt,
                 Name = sa.Name,
                 Currency = (CurrencyDto)sa.Currency,
                 CurrentAmount = sa.CurrentAmount,

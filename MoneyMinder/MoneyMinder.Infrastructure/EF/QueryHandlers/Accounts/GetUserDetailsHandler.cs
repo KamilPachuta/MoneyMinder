@@ -25,6 +25,7 @@ internal class GetUserDetailsHandler : IRequestHandler<GetUserDetailsQuery, GetU
             .Where(a => a.Id == request.AccountId)
             .Select(a => new
             {
+                a.CreatedAt,
                 a.Email,
                 a.User!.Name,
                 a.User.PhoneNumber,
@@ -43,6 +44,7 @@ internal class GetUserDetailsHandler : IRequestHandler<GetUserDetailsQuery, GetU
         }
 
         return new GetUserDetailsResponse(
+            result.CreatedAt,
             result.Email,
             result.Name,
             result.PhoneNumber,

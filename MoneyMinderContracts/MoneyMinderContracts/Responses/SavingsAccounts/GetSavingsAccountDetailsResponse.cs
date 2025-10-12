@@ -6,6 +6,7 @@ namespace MoneyMinderContracts.Responses.SavingsAccounts;
 
 public record GetSavingsAccountDetailsResponse(
     Guid Id, 
+    DateTime CreatedAt,
     string Name, 
     CurrencyDto Currency,
     decimal CurrentAmount, 
