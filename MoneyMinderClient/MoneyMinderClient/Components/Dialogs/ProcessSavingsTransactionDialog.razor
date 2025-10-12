@@ -26,7 +26,9 @@
                                        Editable="true"
                                        Mask="@(new DateMask("dd.MM.yyyy"))"
                                        DateFormat="dd.MM.yyyy"
-                                       Placeholder="dd.MM.yyyy"/>
+                                       Placeholder="dd.MM.yyyy"
+                                       MinDate="SavingsAccountCreatedAt"
+                                       MaxDate="DateTime.UtcNow"/>
 
                         <MudNumericField @bind-Value="_request.Amount"
                                          Label="Outlined"
@@ -58,6 +60,8 @@
     public Guid SavingsAccountId { get; set; }
     [Parameter]
     public CurrencyDto Currency { get; set; }
+    [Parameter] 
+    public DateTime SavingsAccountCreatedAt { get; set; }
 
     MudForm form = new();
     

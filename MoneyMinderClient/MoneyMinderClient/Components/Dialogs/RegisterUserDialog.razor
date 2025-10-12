@@ -8,66 +8,66 @@
         <MudContainer Style="max-height: 500px; overflow-y: scroll">
             <MudPaper Class="mx-4 my-4" Elevation="2">
             
-            <MudForm Model="request" @ref="@_form" Validation="@ValidationAdapter.ValidateValue(validator)" ValidationDelay="0">
+            <MudForm Model="_request" @ref="@_form" Validation="@ValidationAdapter.ValidateValue(_validator)" ValidationDelay="0">
                 <MudCardContent>
-                    <MudTextField @bind-Value="request.Email"
-                                  For="@(() => request.Email)"
+                    <MudTextField @bind-Value="_request.Email"
+                                  For="@(() => _request.Email)"
                                   Immediate="true"
                                   Label="Email"/>
 
-                    <MudTextField @bind-Value="request.Password"
-                                  For="@(() => request.Password)"
+                    <MudTextField @bind-Value="_request.Password"
+                                  For="@(() => _request.Password)"
                                   Immediate="true"
                                   InputType="InputType.Password"
                                   Label="Password"/>
-                    <MudTextField @bind-Value="request.FirstName"
-                                  For="@(() => request.FirstName)"
+                    <MudTextField @bind-Value="_request.FirstName"
+                                  For="@(() => _request.FirstName)"
                                   Immediate="true"
                                   Label="First Name"/>
 
-                    <MudTextField @bind-Value="request.LastName"
-                                  For="@(() => request.LastName)"
+                    <MudTextField @bind-Value="_request.LastName"
+                                  For="@(() => _request.LastName)"
                                   Immediate="true"
                                   Label="Last Name"/>
 
-                    <MudTextField @bind-Value="request.PhoneCode"
-                                  For="@(() => request.PhoneCode)"
+                    <MudTextField @bind-Value="_request.PhoneCode"
+                                  For="@(() => _request.PhoneCode)"
                                   Immediate="true"
                                   Label="Phone Code"/>
 
-                    <MudTextField @bind-Value="request.PhoneNumber"
-                                  For="@(() => request.PhoneNumber)"
+                    <MudTextField @bind-Value="_request.PhoneNumber"
+                                  For="@(() => _request.PhoneNumber)"
                                   Immediate="true"
                                   Label="Phone Number"/>
 
-                    <MudSelect @bind-Value="request.GenderDto"
+                    <MudSelect @bind-Value="_request.GenderDto"
                                Label="Gender"
-                               For="@(() => request.GenderDto)">
+                               For="@(() => _request.GenderDto)">
                         <MudSelectItem Value="GenderDto.Men">Men</MudSelectItem>
                         <MudSelectItem Value="GenderDto.Women">Women</MudSelectItem>
                     </MudSelect>
 
-                    <MudDatePicker @bind-Date="request.BirthDate"
+                    <MudDatePicker @bind-Date="_request.BirthDate"
                                    Label="Birth Date"
-                                   For="@(() => request.BirthDate)"/>
+                                   For="@(() => _request.BirthDate)"/>
 
-                    <MudTextField @bind-Value="request.Country"
-                                  For="@(() => request.Country)"
+                    <MudTextField @bind-Value="_request.Country"
+                                  For="@(() => _request.Country)"
                                   Immediate="true"
                                   Label="Country"/>
 
-                    <MudTextField @bind-Value="request.City"
-                                  For="@(() => request.City)"
+                    <MudTextField @bind-Value="_request.City"
+                                  For="@(() => _request.City)"
                                   Immediate="true"
                                   Label="City"/>
                     
-                    <MudTextField @bind-Value="request.PostalCode"
-                                  For="@(() => request.PostalCode)"
+                    <MudTextField @bind-Value="_request.PostalCode"
+                                  For="@(() => _request.PostalCode)"
                                   Immediate="true"
                                   Label="Postal Code"/>
 
-                    <MudTextField @bind-Value="request.Street"
-                                  For="@(() => request.Street)"
+                    <MudTextField @bind-Value="_request.Street"
+                                  For="@(() => _request.Street)"
                                   Immediate="true"
                                   Label="Street"/>
                     <MudCardActions>
@@ -90,12 +90,13 @@
 
     MudForm _form = new();
     
-    CreateUserRequest request = new()
+    CreateUserRequest _request = new()
     {
+        BirthDate = DateTime.UtcNow.AddYears(-18),
         GenderDto = GenderDto.Men
     };
 
-    CreateUserValidator validator = new();
+    CreateUserValidator _validator = new();
     
 
     private void CloseDialog()
@@ -109,7 +110,7 @@
 
         if (_form.IsValid)
         {
-            var isSucces = await AccountService.RegisterAsync(request);
+            var isSucces = await AccountService.RegisterAsync(_request);
             
             MudDialog.Close(DialogResult.Ok(isSucces));
         }

@@ -75,9 +75,12 @@
     public string Name { get; set; }
     [CascadingParameter]
     public Guid CurrencyAccountId { get; set; }
+    [CascadingParameter]
+    public DateTime CurrencyAccountCreatedAt { get; set; }
     
     private bool _succeded = false;
     private DialogParameters _parameters = new DialogParameters();
+    private DialogParameters _fullParameters = new DialogParameters();
 
     private List<string> _errors;
     private GetCurrencyAccountNamesResponse _response;
@@ -86,7 +89,7 @@
 
 
     private async Task AddTransaction()
-        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", _parameters);
+        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", _fullParameters);
     
     private async Task UploadFile()
     {
@@ -119,7 +122,7 @@
     
     private async Task SetParams()
     {
-        var firstResult = await CurrencyService.GetIdByNameAsync(Name);
+        var firstResult = await CurrencyService.GetCurrencyAccountMetadataByNameAsync(Name);
         if (!firstResult.Succeeded)
         {
             _succeded = false;
@@ -128,6 +131,8 @@
         }
 
         CurrencyAccountId = firstResult.Response.Id;
+        
+        CurrencyAccountCreatedAt = firstResult.Response.CreatedAt;
 
         var secondResult = await CurrencyService.GetCurrencyAccountBalancesAsync(CurrencyAccountId);
 
@@ -143,6 +148,12 @@
         _parameters = new DialogParameters()
         {
             { "CurrencyAccountId", CurrencyAccountId }
+        };
+        
+        _fullParameters = new DialogParameters()
+        {
+            { "CurrencyAccountId", CurrencyAccountId },
+            { "CurrencyAccountCreatedAt", CurrencyAccountCreatedAt}
         };
         
 

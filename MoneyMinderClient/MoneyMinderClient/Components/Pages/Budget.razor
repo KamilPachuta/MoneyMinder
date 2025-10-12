@@ -5,7 +5,7 @@
 <h3>Budget</h3>
 <MudStack Style="width: 200px">
     <MudSelect Value="Month" ValueChanged="OnMonthChanged" Label="Select Month" T="DateTime">
-        @foreach (var month in Last12Months)
+        @foreach (var month in AvailableMonths)
         {
             <MudSelectItem Value="month">
                 @month.ToString("MMMM yyyy")
@@ -14,7 +14,7 @@
     </MudSelect>
 </MudStack>
    
-@if (barChart)
+@if (BarChart)
 {
     <MudPaper Class="doc-section-component-container">
         <MudChart ChartType="ChartType.Bar"
@@ -50,17 +50,23 @@ else
     public string Name { get; set; }
 
     public Guid CurrencyAccountId;
-    public bool barChart { get; set; } = false;
+    public DateTime CurrencyAccountCreatedAt;
+    
+    public bool BarChart { get; set; } = false;
 
     private string[] _xAxisLabels = Enum.GetNames(typeof(CategoryDto));
     private List<ChartSeries> _series;
 
     public DateTime Month { get; set; } = new(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc);
 
-    public List<DateTime> Last12Months { get; set; } = Enumerable
-        .Range(0, 12)
-        .Select(i => new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1).AddMonths(-i))
-        .ToList();
+    public List<DateTime> AvailableMonths =>
+        Enumerable.Range(0, MonthsBetween(CurrencyAccountCreatedAt, DateTime.UtcNow) + 1)
+            .Select(i => new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1).AddMonths(-i))
+            .ToList();
+
+    private int MonthsBetween(DateTime from, DateTime to)
+        => (to.Year - from.Year) * 12 + (to.Month - from.Month);
+    
 
     private GetCurrencyAccountBudgetsResponse _budgetsResponse;
     private GetCurrencyAccountMonthPaymentsResponse _paymentsResponse;
@@ -81,15 +87,16 @@ else
 
     private async Task SetParams()
     {
-        var idResult = await CurrencyService.GetIdByNameAsync(Name);
-        if (!idResult.Succeeded)
+        var metadataResult = await CurrencyService.GetCurrencyAccountMetadataByNameAsync(Name);
+        if (!metadataResult.Succeeded)
         {
             _succeded = false;
-            _errors = idResult.ErrorList;
+            _errors = metadataResult.ErrorList;
             return;
         }
 
-        CurrencyAccountId = idResult.Response.Id;
+        CurrencyAccountId = metadataResult.Response.Id;
+        CurrencyAccountCreatedAt = metadataResult.Response.CreatedAt;
 
         var budgetsResult = await CurrencyService.GetCurrencyAccountBudgetsAsync(CurrencyAccountId);
         if (!budgetsResult.Succeeded)
@@ -124,14 +131,14 @@ else
             }
 
             _paymentsResponse = paymentsByCurrencyResult.Response;
-            barChart = true;
+            BarChart = true;
             GenerateChartData(selectedBudget.Limits, _paymentsResponse.Payments);
             return;
         }
 
         var paymentsResult = await CurrencyService.GetCurrencyAccountMonthPaymentsAsync(CurrencyAccountId, Month);
         _paymentsResponse = paymentsResult.Response;
-        barChart = false;
+        BarChart = false;
         GeneratePieCharts(_paymentsResponse.Payments);
     }
 

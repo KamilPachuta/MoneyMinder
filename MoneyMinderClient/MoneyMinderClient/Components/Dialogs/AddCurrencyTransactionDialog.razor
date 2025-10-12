@@ -76,7 +76,9 @@
                                                                    Editable="true"  
                                                                    Mask="@(new DateMask("dd.MM.yyyy"))" 
                                                                    DateFormat="dd.MM.yyyy" 
-                                                                   Placeholder="dd.MM.yyyy"/>
+                                                                   Placeholder="dd.MM.yyyy"
+                                                                   MinDate="CurrencyAccountCreatedAt"
+                                                                   MaxDate="DateTime.UtcNow"/>
                                                     
                                                     <MudNumericField @bind-Value="_requestPayment.Amount" 
                                                                      Label="Outlined" 
@@ -137,6 +139,9 @@
     
     [Parameter]
     public Guid CurrencyAccountId { get; set; }
+
+    [Parameter] 
+    public DateTime CurrencyAccountCreatedAt { get; set; }
 
     bool type = true;
     MudForm form = new();

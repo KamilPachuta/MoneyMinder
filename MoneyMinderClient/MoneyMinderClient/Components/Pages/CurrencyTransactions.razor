@@ -20,8 +20,8 @@
         </MudItem>
         <MudItem xs="12" sm="12">
             <MudPaper>
-                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTransaction"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="NewRemoveDialog"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTransactionDialog"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="RemoveTransactionDialog"></MudIconButton>
                 <MudPaper Elevation="2" Class="align-start d-flex">
                     <MudPaper Elevation="0" MinWidth="300px" Width="45%" Class="align-start d-flex">
                         <MudContainer Style="max-height: 800px; overflow-y: scroll;">
@@ -79,7 +79,8 @@
     public string name { get; set; }
     [CascadingParameter]
     public Guid CurrencyAccountId { get; set; }
-    
+    [CascadingParameter]
+    public DateTime CurrencyAccountCreatedAt { get; set; }
     
     
     private bool show = false;
@@ -93,7 +94,9 @@
     private RemoveIncomeRequest _incomeRequest;
     private RemovePaymentRequest _paymentRequest;
 
-    private DialogParameters Parameters = new DialogParameters();
+    private DialogParameters _parameters = new DialogParameters();
+    private DialogParameters _fullParameters = new DialogParameters();
+    
         
     private string SelectedRowClassFunc(CurrencyTransactionDto transaction, int rowNumber)
     {
@@ -132,7 +135,7 @@
     
     private async Task SetParams()
     {
-        var firstResult = await CurrencyService.GetIdByNameAsync(name);
+        var firstResult = await CurrencyService.GetCurrencyAccountMetadataByNameAsync(name);
         if (!firstResult.Succeeded)
         {
             _succeded = false;
@@ -141,6 +144,7 @@
         }
         
         CurrencyAccountId = firstResult.Response.Id;
+        CurrencyAccountCreatedAt = firstResult.Response.CreatedAt;
 
         var secondResult = await CurrencyService.GetCurrencyAccountTransactionsAsync(CurrencyAccountId);
         
@@ -154,10 +158,16 @@
         _transactions= secondResult.Response.Transactions.ToList();
 
         _succeded = true;
-        
-        Parameters = new DialogParameters()
+
+        _parameters = new DialogParameters()
         {
             { "CurrencyAccountId", CurrencyAccountId }
+        };
+        
+        _fullParameters = new DialogParameters()
+        {
+            { "CurrencyAccountId", CurrencyAccountId },
+            { "CurrencyAccountCreatedAt", CurrencyAccountCreatedAt}
         };
     }
     
@@ -166,19 +176,17 @@
         await SetParams();
     }
 
-    private async Task AddTransaction()
-        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", Parameters);
+    private async Task AddTransactionDialog()
+        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", _parameters);
 
-    private async Task NewRemoveDialog()
+    private async Task RemoveTransactionDialog()
     {
-       
+        if(selectedModel is null)
+            return;
         
-        if(selectedModel is not null)
-        {
-            Parameters.Add("TransactionDto", selectedModel);
-            
-            await ShowDialogAsync<RemoveCurrencyTransactionDialog>("Remove Transaction", Parameters);
-        }
+        _parameters.Add("TransactionDto", selectedModel);
+        
+        await ShowDialogAsync<RemoveCurrencyTransactionDialog>("Remove Transaction", _parameters);
     }
 }
 
