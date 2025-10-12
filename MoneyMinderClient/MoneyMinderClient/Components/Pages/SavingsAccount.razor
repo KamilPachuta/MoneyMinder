@@ -71,6 +71,8 @@
     public Guid SavingsAccountId { get; set; } 
     [CascadingParameter]
     public CurrencyDto Currency { get; set; }
+    [CascadingParameter]
+    public DateTime SavingsAccountCreatedAt { get; set; }
 
     private DialogParameters _parameters = new DialogParameters();
 
@@ -105,6 +107,8 @@
         
         Currency = _response.Currency;
 
+        SavingsAccountCreatedAt = _response.CreatedAt;
+
         _parameters = new DialogParameters
         {
             { "SavingsAccountId", SavingsAccountId }
@@ -125,7 +129,8 @@
         var parameters = new DialogParameters
         {
             { "SavingsAccountId", SavingsAccountId },
-            { "Currency", Currency}
+            { "Currency", Currency},
+            { "SavingsAccountCreatedAt", SavingsAccountCreatedAt}
         };
         await ShowDialogAsync<ProcessSavingsTransactionDialog>("Add Savings Transaction", parameters);
     }

@@ -177,7 +177,7 @@
     }
 
     private async Task AddTransactionDialog()
-        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", _parameters);
+        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", _fullParameters);
 
     private async Task RemoveTransactionDialog()
     {

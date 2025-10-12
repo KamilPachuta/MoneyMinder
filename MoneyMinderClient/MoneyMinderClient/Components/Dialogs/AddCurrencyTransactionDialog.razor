@@ -32,7 +32,8 @@
                                            Mask="@(new DateMask("dd.MM.yyyy"))" 
                                            DateFormat="dd.MM.yyyy" 
                                            Placeholder="dd.MM.yyyy"
-                                           MaxDate="DateTime.UtcNow"/>
+                                           MaxDate="DateTime.UtcNow"
+                                           MinDate="CurrencyAccountCreatedAt"/>
                             
                             <MudNumericField @bind-Value="_requestIncome.Amount" 
                                              Label="Outlined" 
@@ -200,7 +201,7 @@
             if (type)
             {
                 _requestIncome.CurrencyAccountId = CurrencyAccountId;
-
+                
                 result = await CurrencyService.PostIncomeAsync(_requestIncome);
 
             }
