@@ -6,6 +6,7 @@ using MoneyMinder.Domain.Accounts.ValueObjects;
 using MoneyMinder.Domain.CurrencyAccounts;
 using MoneyMinder.Domain.SavingsAccounts;
 using MoneyMinder.Domain.Shared.Primitives;
+using MoneyMinder.Domain.Shared.ValueObjects;
 
 namespace MoneyMinder.Domain.Accounts;
 
@@ -14,6 +15,8 @@ public class Account : AggregateRoot
     public AccountEmail Email { get; }
     
     public AccountRole Role { get; }
+    
+    public CreatedAt CreatedAt { get; }
     
     public AccountPasswordHash PasswordHash { get; private set; }
     
@@ -27,9 +30,16 @@ public class Account : AggregateRoot
     {
     }
 
-    internal Account(Guid id, AccountEmail email, AccountRole role, string password, IPasswordHasher<Account> passwordHasher)
+    internal Account(
+        Guid id, 
+        CreatedAt createdAt,
+        AccountEmail email, 
+        AccountRole role, 
+        string password, 
+        IPasswordHasher<Account> passwordHasher)
         : base(id)
     {
+        CreatedAt = createdAt;
         Email = email;
         Role = role;
         PasswordHash = new AccountPasswordHash(password, this, passwordHasher);

@@ -15,7 +15,9 @@ internal sealed class AccountFactory : IAccountFactory
     {
         var accountId = Guid.NewGuid();
         
-        var account = new Account(accountId, email, new AccountRole(Role.User), password, passwordHasher);
+        var createdAt = DateTime.UtcNow;
+        
+        var account = new Account(accountId, createdAt, email,  new AccountRole(Role.User), password, passwordHasher);
 
         var userId = Guid.NewGuid();
 
@@ -34,7 +36,9 @@ internal sealed class AccountFactory : IAccountFactory
     {
         var id = Guid.NewGuid();
         
-        var account = new Account(id, email, new AccountRole(Role.Admin), password, passwordHasher);
+        var createdAt = DateTime.UtcNow;
+        
+        var account = new Account(id, createdAt, email, new AccountRole(Role.Admin), password, passwordHasher);
         
         return account;
     }

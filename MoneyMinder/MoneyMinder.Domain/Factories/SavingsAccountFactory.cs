@@ -9,5 +9,5 @@ namespace MoneyMinder.Domain.Factories;
 public class SavingsAccountFactory : ISavingsAccountFactory
 {
     public SavingsAccount Create(SavingsAccountName name, DefinedCurrency currency, Amount plannedAmount, Account account)
-        => new(Guid.NewGuid(),name, currency, plannedAmount, account);
+        => new(Guid.NewGuid(), DateTime.UtcNow,name, currency, plannedAmount, account);
 }

@@ -11,6 +11,7 @@ namespace MoneyMinder.Domain.CurrencyAccounts;
 public class CurrencyAccount : AggregateRoot
 {
     public CurrencyAccountName Name { get; private set; }
+    public CreatedAt CreatedAt { get; }
     
     public Account Account { get; init; }
 
@@ -24,9 +25,10 @@ public class CurrencyAccount : AggregateRoot
     {
     }
 
-    internal CurrencyAccount(Guid id, CurrencyAccountName name, Account account)
+    internal CurrencyAccount(Guid id, CreatedAt createdAt, CurrencyAccountName name, Account account)
         : base(id)
     {
+        CreatedAt = createdAt;
         Name = name;
         Account = account;
         

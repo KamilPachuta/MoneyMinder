@@ -3,6 +3,7 @@ namespace MoneyMinder.Infrastructure.EF.ReadModels.CurrencyAccounts;
 public class CurrencyAccountReadModel
 {
     public Guid Id { get; set; }
+    public DateTime CreatedAt { get; set; }
     public string Name { get; set; }
     public IEnumerable<BalanceReadModel> Balances { get; set; }
     public IEnumerable<IncomeReadModel> Incomes { get; set; }

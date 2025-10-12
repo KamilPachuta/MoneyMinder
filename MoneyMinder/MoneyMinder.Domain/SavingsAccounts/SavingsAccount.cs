@@ -12,6 +12,7 @@ namespace MoneyMinder.Domain.SavingsAccounts;
 
 public class SavingsAccount : AggregateRoot
 {
+    public CreatedAt CreatedAt { get; }
     public SavingsAccountName Name { get; private set; }
     public DefinedCurrency Currency { get; }
     public Amount PlannedAmount { get; private set; }
@@ -27,9 +28,10 @@ public class SavingsAccount : AggregateRoot
         
     }
     
-    internal SavingsAccount(Guid id, SavingsAccountName name, DefinedCurrency currency, Amount plannedAmount, Account account)
+    internal SavingsAccount(Guid id, CreatedAt createdAt, SavingsAccountName name, DefinedCurrency currency, Amount plannedAmount, Account account)
         : base(id)
     {
+        CreatedAt = createdAt;
         Account = account;
         Name = name;
         Currency = currency;
