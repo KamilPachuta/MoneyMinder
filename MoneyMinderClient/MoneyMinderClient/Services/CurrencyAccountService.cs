@@ -51,8 +51,8 @@ public class CurrencyAccountService : BaseService, ICurrencyAccountService
     public async Task<Result<GetCurrencyAccountNamesResponse>> GetCurrencyAccountNamesAsync()
         => await GetAsync<GetCurrencyAccountNamesResponse>("api/CurrencyAccount/Names");
     
-    public async Task<Result<GetCurrencyAccountIdByNameResponse>> GetIdByNameAsync(string name)
-        => await GetAsync<GetCurrencyAccountIdByNameResponse>($"api/CurrencyAccount/Id/{name}");
+    public async Task<Result<GetCurrencyAccountMetadataByNameResponse>> GetCurrencyAccountMetadataByNameAsync(string name)
+        => await GetAsync<GetCurrencyAccountMetadataByNameResponse>($"api/CurrencyAccount/Metadata/{name}");
 
     public async Task<Result<GetCurrencyAccountDetailsResponse>> GetCurrencyAccountDetailsAsync(string name)
         => await GetAsync<GetCurrencyAccountDetailsResponse>($"api/CurrencyAccount/Details/{name}");

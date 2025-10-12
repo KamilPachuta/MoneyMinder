@@ -45,7 +45,7 @@ public class CurrencyAccountModule : BaseModule
         
         queries.MapGet("/Names", CurrencyAccountReadEndpoints.GetCurrencyAccountNames);
         
-        queries.MapGet("/id/{name}", CurrencyAccountReadEndpoints.GetCurrencyAccountIdByName);
+        queries.MapGet("/Metadata/{name}", CurrencyAccountReadEndpoints.GetCurrencyAccountMetadataByName);
         
         queries.MapGet("/Details/{name}", CurrencyAccountReadEndpoints.GetCurrencyAccountDetails);
         

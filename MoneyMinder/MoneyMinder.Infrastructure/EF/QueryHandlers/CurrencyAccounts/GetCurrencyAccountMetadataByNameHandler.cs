@@ -7,25 +7,25 @@ using MoneyMinderContracts.Responses.CurrencyAccounts;
 
 namespace MoneyMinder.Infrastructure.EF.QueryHandlers.CurrencyAccounts;
 
-internal sealed class GetCurrencyAccountIdByNameHandler : IRequestHandler<GetCurrencyAccountIdByNameQuery, GetCurrencyAccountIdByNameResponse>
+internal sealed class GetCurrencyAccountMetadataByNameHandler : IRequestHandler<GetCurrencyAccountMetadataByNameQuery, GetCurrencyAccountMetadataByNameResponse>
 {
     private readonly MoneyMinderReadDbContext _context;
 
-    public GetCurrencyAccountIdByNameHandler(MoneyMinderReadDbContext context)
+    public GetCurrencyAccountMetadataByNameHandler(MoneyMinderReadDbContext context)
     {
         _context = context;
     }
     
-    public async Task<GetCurrencyAccountIdByNameResponse> Handle(GetCurrencyAccountIdByNameQuery request, CancellationToken cancellationToken)
+    public async Task<GetCurrencyAccountMetadataByNameResponse> Handle(GetCurrencyAccountMetadataByNameQuery request, CancellationToken cancellationToken)
     {
-        var id = await _context.CurrencyAccounts
+        var response = await _context.CurrencyAccounts
             .Where(ca => ca.AccountId == request.AccountId && ca.Name == request.Name)
-            .Select(ca => ca.Id)
+            .Select(ca => new GetCurrencyAccountMetadataByNameResponse(ca.Id, ca.CreatedAt))
             .FirstOrDefaultAsync(cancellationToken);
         
-        if (id == Guid.Empty)
+        if (response is null)
             throw new CurrencyAccountNotFoundException(request.Name);
         
-        return new GetCurrencyAccountIdByNameResponse(id);
+        return response;
     }
 }

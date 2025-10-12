@@ -25,14 +25,14 @@ internal static class CurrencyAccountReadEndpoints
     }
     
     [Authorize]
-    public static async Task<IResult> GetCurrencyAccountIdByName(
+    public static async Task<IResult> GetCurrencyAccountMetadataByName(
         [FromRoute]string name,
         [FromServices]ISender sender,
         [FromServices]IUserService userService)
     {
         var accountId = userService.GetAccountId();
         
-        var query = new GetCurrencyAccountIdByNameQuery(accountId, name);
+        var query = new GetCurrencyAccountMetadataByNameQuery(accountId, name);
         
         var response = await sender.Send(query);
         

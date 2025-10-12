@@ -27,7 +27,7 @@ public interface ICurrencyAccountService
     // public Task<Result> ConvertFromAsync(ConvertCurrencyFromRequest request);
     
     public Task<Result<GetCurrencyAccountNamesResponse>> GetCurrencyAccountNamesAsync();
-    public Task<Result<GetCurrencyAccountIdByNameResponse>> GetIdByNameAsync(string name);
+    public Task<Result<GetCurrencyAccountMetadataByNameResponse>> GetCurrencyAccountMetadataByNameAsync(string name);
     public Task<Result<GetCurrencyAccountDetailsResponse>> GetCurrencyAccountDetailsAsync(string name);
     public Task<Result<GetCurrencyAccountBalancesResponse>> GetCurrencyAccountBalancesAsync(Guid id);
     public Task<Result<GetCurrencyAccountTransactionsResponse>> GetCurrencyAccountTransactionsAsync(Guid id);
