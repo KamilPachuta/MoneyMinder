@@ -12,7 +12,11 @@ public interface ISavingsAccountService
     public Task<Result> PostSavingsTransactionAsync(ProcessSavingsTransactionRequest request);
     public Task<Result> DeleteSavingsAccountAsync(DeleteSavingsAccountRequest request);
     
+    public Task<Result<GetSavingsReportResponse>> PostSavingsReportAsync(PostSavingsReportRequest request);
+    public Task<Result<GetSavingsReportResponse>> PostAllTimeSavingsReportAsync(PostAllTimeSavingsReportRequest request);
+    
     public Task<Result<GetSavingsAccountNamesResponse>> GetSavingsAccountNames();
+    public Task<Result<GetSavingsAccountsMetadataResponse>> GetSavingsAccountsMetadataAsync();
     public Task<Result<GetSavingsAccountDetailsResponse>> GetSavingsAccountDetailsAsync(string name);
     public Task<Result<GetSavingsAccountsDetailsResponse>> GetSavingsAccountsDetailsAsync();
     

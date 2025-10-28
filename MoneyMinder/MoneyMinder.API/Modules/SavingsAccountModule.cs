@@ -24,14 +24,18 @@ public class SavingsAccountModule : BaseModule
         
         commands.MapPatch("/PlannedAmount/", SavingsAccountEndpoints.PatchSavingsAccountPlannedAmount);
         
-        
         commands.MapPost("/Transaction/", SavingsAccountEndpoints.PostSavingsTransaction);
+        
+        
+        commands.MapPost("/SavingsReport", SavingsAccountEndpoints.SavingsReport);
+        
+        commands.MapPost("/AllTimeSavingsReport", SavingsAccountEndpoints.AllTimeSavingsReport);
         
         
         var queries = app.MapGroup("").AddFluentValidationAutoValidation();
         
         queries.MapGet("/Names", SavingsAccountReadEndpoints.GetSavingsAccountNames);
-        
+        queries.MapGet("/Metadata", SavingsAccountReadEndpoints.GetSavingsAccountsMetadata);
         queries.MapGet("/Details/{name}", SavingsAccountReadEndpoints.GetSavingsAccountDetails);
         queries.MapGet("/Details", SavingsAccountReadEndpoints.GetSavingsAccountsDetails);
         

@@ -16,6 +16,7 @@ public class SavingsAccountService : BaseService, ISavingsAccountService
     }
     
     #region Commands
+    
     public async Task<Result> PostSavingsAccountAsync(CreateSavingsAccountRequest request)
         => await SendAsync("api/SavingsAccount", HttpMethod.Post, request);
     
@@ -31,18 +32,23 @@ public class SavingsAccountService : BaseService, ISavingsAccountService
 
     public async Task<Result> DeleteSavingsAccountAsync(DeleteSavingsAccountRequest request)
         => await SendAsync("api/SavingsAccount", HttpMethod.Delete, request);
-   
-    
-    
 
+    
+    public async Task<Result<GetSavingsReportResponse>> PostSavingsReportAsync(PostSavingsReportRequest request)
+        => await PostReportAsync<PostSavingsReportRequest, GetSavingsReportResponse>("api/SavingsAccount/SavingsReport", request);
+
+    public async Task<Result<GetSavingsReportResponse>> PostAllTimeSavingsReportAsync(PostAllTimeSavingsReportRequest request)
+        => await PostReportAsync<PostAllTimeSavingsReportRequest, GetSavingsReportResponse>("api/SavingsAccount/AllTimeSavingsReport", request);
+    
     #endregion
     
     #region Queries
 
-    
-
     public async Task<Result<GetSavingsAccountNamesResponse>> GetSavingsAccountNames()
         => await GetAsync<GetSavingsAccountNamesResponse>("api/SavingsAccount/Names");
+
+    public async Task<Result<GetSavingsAccountsMetadataResponse>> GetSavingsAccountsMetadataAsync()
+        => await GetAsync<GetSavingsAccountsMetadataResponse>("api/SavingsAccount/Metadata");
 
     public async Task<Result<GetSavingsAccountDetailsResponse>> GetSavingsAccountDetailsAsync(string name)
         => await GetAsync<GetSavingsAccountDetailsResponse>($"api/SavingsAccount/Details/{name}");    
