@@ -1,7 +1,4 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
-using Blazored.LocalStorage;
-using MoneyMinderClient.Core;
+﻿using MoneyMinderClient.Core;
 using MoneyMinderClient.Services.Abstractions;
 using MoneyMinderClient.Services.Interfaces;
 using MoneyMinderContracts.Models.Enums;
@@ -43,6 +40,19 @@ public class CurrencyAccountService : BaseService, ICurrencyAccountService
     public async Task<Result> RemovePaymentAsync(RemovePaymentRequest request)
         => await SendAsync("api/CurrencyAccount/Payment", HttpMethod.Delete, request);
 
+    
+    public async Task<Result<GetCurrencyAccountReportPaymentsResponse>> PostPaymentsReportAsync(PostPaymentsReportRequest request)
+        => await PostReportAsync<PostPaymentsReportRequest, GetCurrencyAccountReportPaymentsResponse>("api/CurrencyAccount/PaymentsReport", request);
+
+    public async Task<Result<GetCurrencyAccountReportPaymentsResponse>> PostAllTimePaymentsReportAsync(PostAllTimePaymentsReportRequest request)
+        => await PostReportAsync<PostAllTimePaymentsReportRequest, GetCurrencyAccountReportPaymentsResponse>("api/CurrencyAccount/AllTimePaymentsReport", request);
+
+    public async Task<Result<GetCurrencyAccountBalanceReportResponse>> PostBalanceReportAsync(PostBalanceReportRequest request)
+        => await PostReportAsync<PostBalanceReportRequest, GetCurrencyAccountBalanceReportResponse>("api/CurrencyAccount/BalanceReport", request);
+    
+    public async Task<Result<GetCurrencyAccountBalanceReportResponse>> PostAllTimeBalanceReportAsync(PostAllTimeBalanceReportRequest request)
+            => await PostReportAsync<PostAllTimeBalanceReportRequest, GetCurrencyAccountBalanceReportResponse>("api/CurrencyAccount/AllTimeBalanceReport", request);
+
 
     #endregion
     
@@ -50,6 +60,9 @@ public class CurrencyAccountService : BaseService, ICurrencyAccountService
     
     public async Task<Result<GetCurrencyAccountNamesResponse>> GetCurrencyAccountNamesAsync()
         => await GetAsync<GetCurrencyAccountNamesResponse>("api/CurrencyAccount/Names");
+    
+    public async Task<Result<GetCurrencyAccountsMetadataResponse>> GetCurrencyAccountsMetadataAsync()
+        => await GetAsync<GetCurrencyAccountsMetadataResponse>($"api/CurrencyAccount/Metadata");
     
     public async Task<Result<GetCurrencyAccountMetadataByNameResponse>> GetCurrencyAccountMetadataByNameAsync(string name)
         => await GetAsync<GetCurrencyAccountMetadataByNameResponse>($"api/CurrencyAccount/Metadata/{name}");

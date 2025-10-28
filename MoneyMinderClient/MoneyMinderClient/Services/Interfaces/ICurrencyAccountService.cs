@@ -17,16 +17,20 @@ public interface ICurrencyAccountService
     public Task<Result> PostPaymentAsync(AddPaymentRequest request);
     public Task<Result> RemovePaymentAsync(RemovePaymentRequest request);
     
-    // public Task<Result> PostBudgetAsync(ChangeBudgetNameRequest request);
-    // public Task<Result> DeleteBudgetAsync(DeleteBudgetRequest request);
-    // public Task<Result> Limited(AddExpenseRequest request);
-    
     // public Task<Result> ImportCSVAsync(UploadCsvTransactionsRequest request);
     
     // public Task<Result> ConvertToAsync(ConvertCurrencyToRequest request);
     // public Task<Result> ConvertFromAsync(ConvertCurrencyFromRequest request);
     
+    public Task<Result<GetCurrencyAccountReportPaymentsResponse>> PostPaymentsReportAsync(PostPaymentsReportRequest request);
+    public Task<Result<GetCurrencyAccountReportPaymentsResponse>> PostAllTimePaymentsReportAsync(PostAllTimePaymentsReportRequest request);
+    
+    public Task<Result<GetCurrencyAccountBalanceReportResponse>> PostBalanceReportAsync(PostBalanceReportRequest request);
+    public Task<Result<GetCurrencyAccountBalanceReportResponse>> PostAllTimeBalanceReportAsync(PostAllTimeBalanceReportRequest request);
+    
+    
     public Task<Result<GetCurrencyAccountNamesResponse>> GetCurrencyAccountNamesAsync();
+    public Task<Result<GetCurrencyAccountsMetadataResponse>> GetCurrencyAccountsMetadataAsync();
     public Task<Result<GetCurrencyAccountMetadataByNameResponse>> GetCurrencyAccountMetadataByNameAsync(string name);
     public Task<Result<GetCurrencyAccountDetailsResponse>> GetCurrencyAccountDetailsAsync(string name);
     public Task<Result<GetCurrencyAccountBalancesResponse>> GetCurrencyAccountBalancesAsync(Guid id);

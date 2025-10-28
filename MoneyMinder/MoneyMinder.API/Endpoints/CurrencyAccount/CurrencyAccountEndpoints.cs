@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MoneyMinder.API.Mappings;
 using MoneyMinder.API.Services;
 using MoneyMinder.Application.CurrencyAccounts.Commands;
+using MoneyMinder.Application.CurrencyAccounts.Queries;
 using MoneyMinder.Domain.Shared.Enums;
 using MoneyMinderContracts.Requests.CurrencyAccounts;
 
@@ -156,5 +157,80 @@ internal static class CurrencyAccountEndpoints
         await sender.Send(command);
                 
         return Results.Ok();
+    }
+    
+    [Authorize]
+    public static async Task<IResult> PaymentsReport(
+        [FromBody]PostPaymentsReportRequest request,
+        [FromServices] ISender sender,
+        [FromServices] IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+
+        var query = new GetCurrencyAccountPaymentsReportQuery(
+            accountId, 
+            request.CurrencyAccountIds, 
+            request.From, 
+            request.To, 
+            request.Currencies.Select(c => (Currency)c));
+
+        var response = await sender.Send(query);
+                
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> AllTimePaymentsReport(
+        [FromBody]PostAllTimePaymentsReportRequest request,
+        [FromServices] ISender sender,
+        [FromServices] IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+
+        var query = new GetCurrencyAccountAllTimePaymentsReportQuery(
+            accountId, request.CurrencyAccountIds, 
+            request.Currencies.Select(c => (Currency)c));
+
+        var response = await sender.Send(query);
+                
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> BalanceReport(
+        [FromBody]PostBalanceReportRequest request,
+        [FromServices] ISender sender,
+        [FromServices] IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+
+        var query = new GetCurrencyAccountBalanceReportQuery(
+            accountId, 
+            request.CurrencyAccountIds, 
+            request.From, 
+            request.To, 
+            request.Currencies.Select(c => (Currency)c));
+
+        var response = await sender.Send(query);
+                
+        return Results.Ok(response);
+    }
+    
+    [Authorize]
+    public static async Task<IResult> AllTimeBalanceReport(
+        [FromBody]PostAllTimeBalanceReportRequest request,
+        [FromServices] ISender sender,
+        [FromServices] IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+
+        var query = new GetCurrencyAccountAllTimeBalanceReportQuery(
+            accountId, 
+            request.CurrencyAccountIds, 
+            request.Currencies.Select(c => (Currency)c));
+
+        var response = await sender.Send(query);
+                
+        return Results.Ok(response);
     }
 }

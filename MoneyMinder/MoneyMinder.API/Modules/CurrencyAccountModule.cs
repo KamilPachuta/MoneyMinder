@@ -39,11 +39,22 @@ public class CurrencyAccountModule : BaseModule
         commands.MapPut("/Budget/Limit", CurrencyAccountEndpoints.LimitEdit);
         
         commands.MapDelete("/Budget", CurrencyAccountEndpoints.BudgetDelete);
+        
 
+        commands.MapPost("/PaymentsReport", CurrencyAccountEndpoints.PaymentsReport);
+        
+        commands.MapPost("/AllTimePaymentsReport", CurrencyAccountEndpoints.AllTimePaymentsReport);
+        
+        commands.MapPost("/BalanceReport", CurrencyAccountEndpoints.BalanceReport);
+        
+        commands.MapPost("/AllTimeBalanceReport", CurrencyAccountEndpoints.AllTimeBalanceReport);
+        
         
         var queries = app.MapGroup("").AddFluentValidationAutoValidation();
         
         queries.MapGet("/Names", CurrencyAccountReadEndpoints.GetCurrencyAccountNames);
+        
+        queries.MapGet("/Metadata", CurrencyAccountReadEndpoints.GetCurrencyAccountsMetadata);
         
         queries.MapGet("/Metadata/{name}", CurrencyAccountReadEndpoints.GetCurrencyAccountMetadataByName);
         
@@ -56,6 +67,7 @@ public class CurrencyAccountModule : BaseModule
         queries.MapGet("/{id}/Budgets", CurrencyAccountReadEndpoints.GetBudgets);
         
         queries.MapGet("/{id}/MonthPayments", CurrencyAccountReadEndpoints.GetCurrencyAccountMonthPayments);
+        
         queries.MapGet("/{id}/MonthPaymentsByCurrency", CurrencyAccountReadEndpoints.GetCurrencyAccountMonthPaymentsByCurrency);
         
     }
