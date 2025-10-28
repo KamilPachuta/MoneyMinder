@@ -34,7 +34,7 @@ internal class GetSavingsAccountDetailsHandler : IRequestHandler<GetSavingsAccou
             (CurrencyDto)details.Currency,
             details.CurrentAmount,
             details.PlannedAmount,
-            details.Transactions.Select(t => new SavingsTransactionDto
+            details.Transactions.Select(t => new SavingsTransactionDetailsDto()
             {
                 Id = t.Id,
                 Name = t.Name,

@@ -11,6 +11,6 @@ public record GetSavingsAccountDetailsResponse(
     CurrencyDto Currency,
     decimal CurrentAmount, 
     decimal PlannedAmount, 
-    IEnumerable<SavingsTransactionDto> Transactions) 
+    IEnumerable<SavingsTransactionDetailsDto> Transactions) 
     : IResponse;
 

@@ -42,7 +42,7 @@
             <MudPaper Elevation="2" Class="align-start d-flex">
                                 <MudPaper Elevation="0" Width="100%" MinWidth="300px">
                                     <MudContainer Style="max-height: 800px; overflow-y: scroll;"  Class="px-0">                                                 
-                                        <MudTable T="SavingsTransactionDto" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
+                                        <MudTable T="SavingsTransactionDetailsDto" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
                                                   RowClass="cursor-pointer">
                                             <HeaderContent>
                                                 <MudTh>Type</MudTh>
@@ -77,12 +77,12 @@
     private DialogParameters _parameters = new DialogParameters();
 
 
-    private List<SavingsTransactionDto> _transactions = new();
+    private List<SavingsTransactionDetailsDto> _transactions = new();
     private GetSavingsAccountDetailsResponse _response;
     
-    private MudTable<SavingsTransactionDto> mudTable;
+    private MudTable<SavingsTransactionDetailsDto> mudTable;
     private int selectedRowNumber = -1;
-    private SavingsTransactionDto? _selectedTransactionDto;
+    private SavingsTransactionDetailsDto? _selectedTransactionDto;
 
     private bool _succeded = false;
     private List<string> _errors;
@@ -147,7 +147,7 @@
     
     
 
-    private string SelectedRowClassFunc(SavingsTransactionDto transaction, int rowNumber)
+    private string SelectedRowClassFunc(SavingsTransactionDetailsDto transaction, int rowNumber)
     {
         if (selectedRowNumber == rowNumber)
         {
