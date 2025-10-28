@@ -31,7 +31,7 @@ internal sealed class GetAllTimeSavingsReportHandler : IRequestHandler<GetAllTim
                     Date = t.Date,
                     TransactionType = (TransactionTypeDto)t.Type
                 })
-                .OrderByDescending(t => t.Date))
+                .OrderBy(t => t.Date))
             .ToListAsync();
 
         return new GetSavingsReportResponse(result);

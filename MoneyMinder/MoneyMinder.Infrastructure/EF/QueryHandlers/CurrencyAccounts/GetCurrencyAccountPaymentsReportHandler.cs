@@ -37,7 +37,7 @@ internal sealed class GetCurrencyAccountPaymentsReportHandler : IRequestHandler<
                     Amount = p.Amount,
                     Category = (CategoryDto)p.Category
                 })
-                .OrderByDescending(t => t.Date))
+                .OrderBy(t => t.Date))
             .ToList();
         
         return new GetCurrencyAccountReportPaymentsResponse(result);

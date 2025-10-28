@@ -4,124 +4,340 @@
 @using MoneyMinderContracts.Requests.SavingsAccounts
 @using MoneyMinderContracts.Responses.CurrencyAccounts
 @using MoneyMinderContracts.Responses.SavingsAccounts
+@using Severity = MudBlazor.Severity
 @inject ICurrencyAccountService CurrencyService
 @inject ISavingsAccountService SavingsService
+@inherits BasePage
 
 <h3>Reports</h3>
-<MudStack Style="width: 200px">
-    <MudSelect Value="_type" Variant="Variant.Outlined" ValueChanged="OnReportChanged" Label="Select Report Type" T="ReportType">
-        <MudSelectItem Value="ReportType.PaymentsReport">Payments Report</MudSelectItem>
-        <MudSelectItem Value="ReportType.BalancesReport">Balances Report</MudSelectItem>
-        <MudSelectItem Value="ReportType.SavingsReport">Savings Report</MudSelectItem>
-    </MudSelect>
-</MudStack>
-
-@if(_setParamsSucceded)
-    
+@if (_setParamsSucceded)
+{
     <MudForm Model="_reportParams" @ref="@currencyForm"
              Validation="@_reportParamsValidator.ValidateValue" ValidationDelay="0">
+        <MudGrid>
+            <MudItem xs="12" sm="6" md="6" lg="4" xl="2">
+                <MudSelect Value="_type" Variant="Variant.Outlined" ValueChanged="OnReportChanged" Label="Select Report Type" T="ReportType">
+                    <MudSelectItem Value="ReportType.PaymentsReport">Payments Report</MudSelectItem>
+                    <MudSelectItem Value="ReportType.BalancesReport">Balances Report</MudSelectItem>
+                    <MudSelectItem Value="ReportType.SavingsReport">Savings Report</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            @if (_type == ReportType.PaymentsReport || _type == ReportType.BalancesReport)
+            {
+                <MudItem xs="12" sm="6" md="6" lg="4" xl="2">
+                    <MudSelect T="string"
+                               Label="Currency Accounts"
+                               Variant="Variant.Outlined"
+                               MultiSelection="true"
+                               SelectAll="true"
+                               SelectAllText="Select all currency accounts"
+                               @bind-Value="_reportParams.NameCollection"
+                               SelectedValues="_reportParams.Names"
+                               SelectedValuesChanged="OnCurrencyNamesChanged"
+                               For="@(() => _reportParams.NameCollection)">
+                        @foreach (var dto in _currencyAccountsMetadata.CurrencyAccountMetadataDtos)
+                        {
+                            <MudSelectItem T="string" Value="@dto.Name">@dto.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="6" lg="4" xl="2">
+                    <MudSelect T="string"
+                               Label="Currencies"
+                               Variant="Variant.Outlined"
+                               MultiSelection="true"
+                               SelectAll="true"
+                               SelectAllText="Select all currencies"
+                               @bind-Value="_reportParams.CurrencyCollection"
+                               @bind-SelectedValues="_reportParams.Currencies"
+                               For="@(() => _reportParams.CurrencyCollection)">
+                        @foreach (var currency in Enum.GetValues<CurrencyDto>())
+                        {
+                            <MudSelectItem T="string" Value="@currency.ToString()">@currency</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            }
+            @if (_type == ReportType.SavingsReport)
+            {
+                <MudItem xs="12" sm="6" md="6" lg="4" xl="2">
+                    <MudSelect T="string"
+                               Label="Savings Accounts"
+                               Variant="Variant.Outlined"
+                               MultiSelection="true"
+                               SelectAll="true"
+                               SelectAllText="Select all savings accounts"
+                               @bind-Value="_reportParams.NameCollection"
+                               SelectedValues="_reportParams.Names"
+                               SelectedValuesChanged="OnSavingsNamesChanged"
+                               For="@(() => _reportParams.NameCollection)">
+                        @foreach (var dto in _savingsAccountsMetadata.MetadataDtos)
+                        { 
+                            <MudSelectItem T="string" Value="@dto.Name">@dto.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            }
+            <MudItem xs="12" sm="6" md="6" lg="4" xl="2">
+                <MudSwitch 
+                    @bind-Value="_reportParams.AllTime" 
+                    ThumbIcon="@(_reportParams.AllTime ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" 
+                    ThumbIconColor="@(_reportParams.AllTime ? Color.Success : Color.Error)">All Time</MudSwitch>
+            </MudItem>
+            @if (!_reportParams.AllTime)
+            {
+                <MudItem xs="12" sm="6" md="6" lg="4" xl="2">
+                    <MudDatePicker @bind-Date="_reportParams.From"
+                                   For="@(() => _reportParams.From)"
+                                   Label="Transactions From"
+                                   Editable="true"
+                                   Mask="@(new DateMask("dd.MM.yyyy"))"
+                                   DateFormat="dd.MM.yyyy"
+                                   Placeholder="dd.MM.yyyy"
+                                   MaxDate="DateTime.UtcNow.AddDays(-1)"
+                                   MinDate="_earliestCurrencyCreatedAt"/>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="6" lg="4" xl="2">
 
-        @if (_type == ReportType.PaymentsReport || _type == ReportType.BalancesReport)
-        {
-            <MudSelect T="string"
-                       Label="Currency Accounts"
-                       Variant="Variant.Outlined"
-                       MultiSelection="true"
-                       SelectAll="true"
-                       SelectAllText="Select all currency accounts"
-                       @bind-Value="_reportParams.NameCollection" 
-                       SelectedValues="_reportParams.Names"
-                       SelectedValuesChanged="OnCurrencyNamesChanged"
-                       For="@(() => _reportParams.NameCollection)">
-                @foreach (var dto in _currencyAccountsMetadata.CurrencyAccountMetadataDtos)
-                {
-                    <MudSelectItem T="string" Value="@dto.Name">@dto.Name</MudSelectItem>
-                }
-            </MudSelect>
-        
-            <MudSelect T="string" 
-                       Label="Currencies"
-                       Variant="Variant.Outlined"
-                       MultiSelection="true"
-                       SelectAll="true"
-                       SelectAllText="Select all currencies"
-                       @bind-Value="_reportParams.CurrencyCollection" 
-                       @bind-SelectedValues="_reportParams.Currencies"
-                       For="@(() => _reportParams.CurrencyCollection)">
-                @foreach (var currency in Enum.GetValues<CurrencyDto>())
-                {
-                    <MudSelectItem T="string" Value="@currency.ToString()">@currency</MudSelectItem>
-                }
-            </MudSelect>
-        }
-        @if (_type == ReportType.SavingsReport)
-        {
-            <MudSelect T="string"
-                       Label="Savings Accounts"
-                       Variant="Variant.Outlined"
-                       MultiSelection="true"
-                       SelectAll="true"
-                       SelectAllText="Select all savings accounts"
-                       @bind-Value="_reportParams.NameCollection"
-                       SelectedValues="_reportParams.Names"
-                       SelectedValuesChanged="OnSavingsNamesChanged"
-                       For="@(() => _reportParams.NameCollection)">
-                @foreach (var dto in _savingsAccountsMetadata.MetadataDtos)
-                { 
-                    <MudSelectItem T="string" Value="@dto.Name">@dto.Name</MudSelectItem>
-                }
-            </MudSelect>
-        }
-
-        <MudSwitch @bind-Value="_reportParams.AllTime" ThumbIcon="@(_reportParams.AllTime ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(_reportParams.AllTime ? Color.Success : Color.Error)">All Time</MudSwitch>
-        
-        @if (!_reportParams.AllTime)
-        {
-            <MudDatePicker @bind-Date="_reportParams.From"
-                           For="@(() => _reportParams.From)"
-                           Label="Transactions From"
-                           Editable="true"
-                           Mask="@(new DateMask("dd.MM.yyyy"))"
-                           DateFormat="dd.MM.yyyy"
-                           Placeholder="dd.MM.yyyy"
-                           MaxDate="DateTime.UtcNow.AddDays(-1)"
-                           MinDate="_earliestCurrencyCreatedAt"/>
-        
-            <MudDatePicker @bind-Date="_reportParams.To"
-                           For="@(() => _reportParams.To)"
-                           Label="Transactions To"
-                           Editable="true"
-                           Mask="@(new DateMask("dd.MM.yyyy"))"
-                           DateFormat="dd.MM.yyyy"
-                           Placeholder="dd.MM.yyyy"
-                           MaxDate="DateTime.UtcNow"
-                           MinDate="_reportParams.From"/>
-        }
-    </MudForm>
+                    <MudDatePicker @bind-Date="_reportParams.To"
+                                   For="@(() => _reportParams.To)"
+                                   Label="Transactions To"
+                                   Editable="true"
+                                   Mask="@(new DateMask("dd.MM.yyyy"))"
+                                   DateFormat="dd.MM.yyyy"
+                                   Placeholder="dd.MM.yyyy"
+                                   MaxDate="DateTime.UtcNow"
+                                   MinDate="_reportParams.From"/>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudForm> 
     <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="GetCurrencyReport">Send</MudButton>
-
 }
 
+
+
+
+
+
+
+
+@if (_paymentsReportSucceded)
+{
+    @if (!_noData)
+    {
+        <MudGrid>
+            @* Podsumowania *@
+            <MudItem xs="12">
+                <MudStack Row="true" Spacing="2" Class="flex-wrap">
+                    <MudPaper Class="p-3 rounded-xl">
+                        <MudText Typo="Typo.subtitle2">Total number of expenses</MudText>
+                        <MudText Typo="Typo.h6">@_totalCount</MudText>
+                    </MudPaper>
+                    @foreach (var summary in _summaries)
+                    {
+                        <MudPaper Class="p-3 rounded-xl">
+                            <MudText Typo="Typo.subtitle2">Expenses total — @summary.currency</MudText>
+                            <MudText Typo="Typo.h6">@summary.Total.ToString("0.00")</MudText>
+                            <MudText Typo="Typo.caption">Transactions: @summary.Count</MudText>
+                        </MudPaper>
+                    }
+                    <MudPaper Class="p-3 rounded-xl">
+                        <MudText Typo="Typo.subtitle2">Period</MudText>
+                        <MudText Typo="Typo.h6">@_dateRangeText</MudText>
+                    </MudPaper>
+                </MudStack>
+            </MudItem>
+
+            @* Wykresy liniowe – osobny na każdą walutę *@
+            @foreach (var (currency, chart) in _charts)
+            {
+                var opts = chart.Labels.Length >= 4 ? _splineOptions : _straightOptions;
+                <MudItem xs="12" md="6" lg="4">
+                    <MudCard Class="h-full">
+                        <MudCardHeader>
+                            <MudText Typo="Typo.h6">@currency — expenses over time</MudText>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudChart ChartType="ChartType.Line"
+                                      XAxisLabels="chart.Labels"
+                                      Width="100%"
+                                      AxisChartOptions="_axisChartOptions"
+                                      ChartOptions="opts"
+                                      ChartSeries="chart.Series"
+                                      Height="260"/>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            }
+
+            @* Tabela szczegółów *@
+            <MudItem xs="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h6">Expense details</MudText>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudTable Items="_payments" Hover="true" Dense="true">
+                            <HeaderContent>
+                                <MudTh>Date</MudTh>
+                                <MudTh>Currency</MudTh>
+                                <MudTh align="right">Amount</MudTh>
+                                <MudTh>Category</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Date">@context.Date.ToString("dd.MM.yyyy")</MudTd>
+                                <MudTd DataLabel="Currency">@context.Currency</MudTd>
+                                <MudTd DataLabel="Amount" Align="Align.Right">
+                                    @Math.Abs(context.Amount).ToString("0.00")
+                                </MudTd>
+                                <MudTd DataLabel="Category">@context.Category</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Elevation="0">
+            No data for the selected filters.
+        </MudAlert>
+    }
+}
+
+
+
+
+
+
 @code {
+    private AxisChartOptions _axisChartOptions = new AxisChartOptions() { XAxisLabelRotation = 45, MatchBoundsToSize = true};
+    private ChartOptions _splineOptions = new ChartOptions(){InterpolationOption = InterpolationOption.NaturalSpline};
+    private ChartOptions _straightOptions = new ChartOptions(){InterpolationOption = InterpolationOption.Straight};
+
+    private bool _noData = false;
+    private bool _paymentsReportSucceded = false;
+    
+    private async Task BuildPaymentsReportView()
+    {
+        if (!_payments.Any())
+        {
+            _noData = true;
+            return;
+        }
+        
+        _totalCount = _payments.Count();
+        
+        _summaries = _payments
+            .GroupBy(p => p.Currency)
+            .Select(g => new CurrencySummary(g.Key, g.Count(), g.Sum(x => Math.Abs(x.Amount))))
+            .ToList();
+            
+        var minDate = _payments.Min(p => p.Date);
+        var maxDate = _payments.Max(p => p.Date);
+        _dateRangeText = $"{minDate:dd.MM.yyyy} – {maxDate:dd.MM.yyyy}";
+        
+        _charts = _payments
+            .GroupBy(p => p.Currency)
+            .ToDictionary(
+                g => g.Key,
+                g =>
+                {
+                    var points = g.GroupBy(p => p.Date.Date)
+                        .OrderBy(x => x.Key)
+                        .Select(x => new
+                        {
+                            Date = x.Key,
+                            Label = x.Key.ToString("dd.MM"),
+                            DailyTotal = (double)x.Sum(p => Math.Abs(p.Amount))
+                        })
+                        .ToList();
+
+                    double runningTotal = 0;
+                    var cumulativePoints = points.Select(p =>
+                    {
+                        runningTotal += p.DailyTotal;
+                        return new
+                        {
+                            p.Label,
+                            Total = runningTotal
+                        };
+                    }).ToList();
+
+                    var labels = cumulativePoints.Select(p => p.Label).ToArray();
+                    var data = cumulativePoints.Select(p => p.Total).ToArray();
+
+                    return new ChartData(labels, new List<ChartSeries>
+                    {
+                        new ChartSeries
+                        {
+                            Name = g.Key.ToString(),
+                            Data = data
+                        }
+                    });
+                });
+
+        
+    }
+    
+    
+    
+    
+    private List<CurrencySummary> _summaries = new();
+
+    private record CurrencySummary(CurrencyDto currency, int Count, decimal Total);
+
+    private Dictionary<CurrencyDto, ChartData> _charts = new();
+
+    private int _totalCount;
+    private string _dateRangeText = string.Empty;
+
+  
+
+    private record ChartData(string[] Labels, List<ChartSeries> Series);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    MudForm currencyForm;
 
     private ReportParams _reportParams = new();
     private ReportParamsValidator _reportParamsValidator;
     private ReportType _type = ReportType.PaymentsReport;
-    MudForm currencyForm = new();
     private bool _setParamsSucceded = false;
-    private List<string> _errors;
     private DateTime _earliestCurrencyCreatedAt;
+    
     private GetCurrencyAccountsMetadataResponse _currencyAccountsMetadata;
     private GetSavingsAccountsMetadataResponse _savingsAccountsMetadata;
+    
     private PostPaymentsReportRequest _paymentsReportRequest = new();
     private PostAllTimePaymentsReportRequest _allTimePaymentsReportRequest = new();
+
+    //private GetCurrencyAccountReportPaymentsResponse _paymentsReportResponse;
+    
     private PostBalanceReportRequest _balanceReportRequest = new();
     private PostAllTimeBalanceReportRequest _allTimeBalanceReportRequest = new();
+
+    //private GetCurrencyAccountBalanceReportResponse _balanceReportResponse;
+    
     private PostSavingsReportRequest _savingsReportRequest = new();
     private PostAllTimeSavingsReportRequest _allTimeSavingsReportRequest = new();
-    private GetCurrencyAccountReportPaymentsResponse _paymentsReportResponse;
-    private GetCurrencyAccountBalanceReportResponse _balanceReportResponse;
-    private GetSavingsReportResponse _savingsReportResponse;
+    
+    //private GetSavingsReportResponse _savingsReportResponse;
+    private List<CurrencyPaymentDto> _payments = new();
+    private List<CurrencyTransactionDto> _currencyTransactions = new();
+    private List<SavingsTransactionDto> _savingsTransactions = new();
     
 
     protected override async Task OnParametersSetAsync()
@@ -158,7 +374,20 @@
                 .ToList();
             var result = await CurrencyService.PostAllTimePaymentsReportAsync(_allTimePaymentsReportRequest);
 
-            _paymentsReportResponse = result.Response;
+            if (!result.Succeeded)
+            {
+                SetErrors(result.ErrorList);
+                return;
+            }
+
+            
+            _payments = result.Response.Payments
+                .OrderBy(t => t.Date)
+                .ToList();
+            
+            _paymentsReportSucceded = true;
+
+            await BuildPaymentsReportView();
         }
         else
         {
@@ -174,7 +403,19 @@
                 .ToList();
             var result = await CurrencyService.PostPaymentsReportAsync(_paymentsReportRequest);
 
-            _paymentsReportResponse = result.Response;
+            if (!result.Succeeded)
+            {
+                SetErrors(result.ErrorList);
+                return;
+            }
+            
+            _payments = result.Response.Payments
+                .OrderBy(t => t.Date)
+                .ToList();
+
+            _paymentsReportSucceded = true;
+            
+            await BuildPaymentsReportView();
         }
     }
 
@@ -192,7 +433,16 @@
                     
             var result = await CurrencyService.PostAllTimeBalanceReportAsync(_allTimeBalanceReportRequest);
 
-            _balanceReportResponse = result.Response;
+            if (!result.Succeeded)
+            {
+                SetErrors(result.ErrorList);
+                return;
+            }
+
+            _currencyTransactions = result.Response.Transactions
+                .OrderBy(t => t.Date)
+                .ToList();
+
         }
         else
         {
@@ -209,7 +459,15 @@
                     
             var result = await CurrencyService.PostBalanceReportAsync(_balanceReportRequest);
 
-            _balanceReportResponse = result.Response;
+            if (!result.Succeeded)
+            {
+                SetErrors(result.ErrorList);
+                return;
+            }
+
+            _currencyTransactions = result.Response.Transactions
+                .OrderBy(t => t.Date)
+                .ToList();
         }
     }
 
@@ -223,7 +481,15 @@
 
             var result = await SavingsService.PostAllTimeSavingsReportAsync(_allTimeSavingsReportRequest);
 
-            _savingsReportResponse = result.Response;
+            if (!result.Succeeded)
+            {
+                SetErrors(result.ErrorList);
+                return;
+            }
+            
+            _savingsTransactions = result.Response.Transactions
+                .OrderBy(t => t.Date)
+                .ToList();
         }
         else
         {
@@ -235,8 +501,16 @@
             _savingsReportRequest.To = DateTime.SpecifyKind(_reportParams.To.Value, DateTimeKind.Utc);
 
             var result = await SavingsService.PostSavingsReportAsync(_savingsReportRequest);
-
-            _savingsReportResponse = result.Response;
+            
+            if (!result.Succeeded)
+            {
+                SetErrors(result.ErrorList);
+                return;
+            }
+            
+            _savingsTransactions = result.Response.Transactions
+                .OrderBy(t => t.Date)
+                .ToList();
         }
     }
     
@@ -247,7 +521,7 @@
         if (!currencyResponse.Succeeded)
         {
             _setParamsSucceded = false;
-            _errors = currencyResponse.ErrorList;
+            SetErrors(currencyResponse.ErrorList);
             return;
         }
 
@@ -258,7 +532,7 @@
         if (!savingsResponse.Succeeded)
         {
             _setParamsSucceded = false;
-            _errors = savingsResponse.ErrorList;
+            SetErrors(savingsResponse.ErrorList);
             return;
         }
 

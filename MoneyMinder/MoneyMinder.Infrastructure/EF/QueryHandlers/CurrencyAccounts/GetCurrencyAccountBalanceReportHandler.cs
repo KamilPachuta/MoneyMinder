@@ -52,7 +52,7 @@ internal sealed class GetCurrencyAccountBalanceReportHandler : IRequestHandler<G
                         })
                     )
             )
-            .OrderByDescending(t => t.Date)
+            .OrderBy(t => t.Date)
             .ToListAsync(cancellationToken);
         
         return new GetCurrencyAccountBalanceReportResponse(transactions);
