@@ -63,7 +63,7 @@
                                             <MudContainer Style="max-height: 600px; overflow-y: scroll;">
                                                 <MudText Typo="Typo.h5">Transactions history</MudText>
 
-                                                <MudTable T="CurrencyTransactionDto" Items="@_currencyDetails.Transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTableTransactions"
+                                                <MudTable T="CurrencyTransactionDetailsDto" Items="@_currencyDetails.Transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTableTransactions"
                                                           RowClass="cursor-pointer" Class="d-inline">
                                                     <HeaderContent>
                                                         <MudTh>Name</MudTh>
@@ -129,7 +129,7 @@
     private bool _currencySucceded = false;
     private List<string> _errors;
     
-    private MudTable<CurrencyTransactionDto> mudTableTransactions;
+    private MudTable<CurrencyTransactionDetailsDto> mudTableTransactions;
 
     
     private List<string> _currencyAccountNames = new(); 
