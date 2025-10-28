@@ -3,4 +3,4 @@ using MoneyMinderContracts.Responses.Interfaces;
 
 namespace MoneyMinderContracts.Responses.CurrencyAccounts;
 
-public record GetCurrencyAccountTransactionsResponse(IEnumerable<CurrencyTransactionDto> Transactions) : IResponse;
+public record GetCurrencyAccountTransactionsResponse(IEnumerable<CurrencyTransactionDetailsDto> Transactions) : IResponse;

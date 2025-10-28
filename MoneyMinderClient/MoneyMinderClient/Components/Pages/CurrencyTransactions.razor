@@ -50,7 +50,7 @@
                     <MudPaper Elevation="0" MinWidth="300px" Width="50%" >
                                               <MudContainer Style="max-height: 800px; overflow-y: scroll;">
                                                               
-                                                                      <MudTable T="CurrencyTransactionDto" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
+                                                                      <MudTable T="CurrencyTransactionDetailsDto" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
                                                                                 RowClass="cursor-pointer" OnRowClick="RowClickEvent" RowClassFunc="@SelectedRowClassFunc" Class="d-inline">
                                                                           <HeaderContent>
                                                                               <MudTh>Name</MudTh>
@@ -84,10 +84,10 @@
     
     
     private bool show = false;
-    private MudTable<CurrencyTransactionDto> mudTable;
+    private MudTable<CurrencyTransactionDetailsDto> mudTable;
     private int selectedRowNumber = -1;
-    private CurrencyTransactionDto? selectedModel = null;
-    private List<CurrencyTransactionDto> _transactions = new();
+    private CurrencyTransactionDetailsDto? selectedModel = null;
+    private List<CurrencyTransactionDetailsDto> _transactions = new();
     private bool _succeded = false;
     private List<string> _errors;
 
@@ -98,7 +98,7 @@
     private DialogParameters _fullParameters = new DialogParameters();
     
         
-    private string SelectedRowClassFunc(CurrencyTransactionDto transaction, int rowNumber)
+    private string SelectedRowClassFunc(CurrencyTransactionDetailsDto transaction, int rowNumber)
     {
         if (selectedRowNumber == rowNumber)
         {
@@ -118,7 +118,7 @@
 
 
     
-    private void RowClickEvent(TableRowClickEventArgs<CurrencyTransactionDto> args)
+    private void RowClickEvent(TableRowClickEventArgs<CurrencyTransactionDetailsDto> args)
     {
         if (selectedModel == args.Item)
         {

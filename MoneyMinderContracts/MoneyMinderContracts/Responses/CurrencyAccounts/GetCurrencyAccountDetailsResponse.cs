@@ -8,5 +8,5 @@ public record GetCurrencyAccountDetailsResponse(
     DateTime CreatedAt,
     string Name, 
     IEnumerable<BalanceDto> Balances, 
-    IEnumerable<CurrencyTransactionDto> Transactions) 
+    IEnumerable<CurrencyTransactionDetailsDto> Transactions) 
     : IResponse;

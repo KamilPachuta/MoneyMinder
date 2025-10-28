@@ -39,7 +39,7 @@ internal class GetCurrencyAccountDetailsHandler : IRequestHandler<GetCurrencyAcc
                 Currency = (CurrencyDto)b.Currency,
                 Amount = b.Amount
             }), 
-            currencyAccount.Incomes.Select(i => new CurrencyTransactionDto()
+            currencyAccount.Incomes.Select(i => new CurrencyTransactionDetailsDto()
             {
                 Id = i.Id,
                 Name = i.Name,
@@ -49,7 +49,7 @@ internal class GetCurrencyAccountDetailsHandler : IRequestHandler<GetCurrencyAcc
                 Category = null
             })
             .Concat(
-                currencyAccount.Payments.Select(p => new CurrencyTransactionDto
+                currencyAccount.Payments.Select(p => new CurrencyTransactionDetailsDto
                 {
                     Id = p.Id,
                     Name = p.Name,

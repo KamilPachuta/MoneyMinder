@@ -22,7 +22,7 @@ internal sealed class GetCurrencyAccountTransactionsHandler : IRequestHandler<Ge
         var transactions = await _context.CurrencyAccounts
             .Where(ca => ca.Id == request.CurrencyAccountId && ca.AccountId == request.AccountId)
             .SelectMany(ca => 
-                ca.Incomes.Select(i => new CurrencyTransactionDto()
+                ca.Incomes.Select(i => new CurrencyTransactionDetailsDto()
                     {
                         Id = i.Id,
                         Name = i.Name,
@@ -32,7 +32,7 @@ internal sealed class GetCurrencyAccountTransactionsHandler : IRequestHandler<Ge
                         Category = null
                     })
                     .Concat(
-                        ca.Payments.Select(p => new CurrencyTransactionDto
+                        ca.Payments.Select(p => new CurrencyTransactionDetailsDto
                         {
                             Id = p.Id,
                             Name = p.Name,
