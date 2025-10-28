@@ -1,49 +1,375 @@
 ﻿@page "/Reports"
+@using FluentValidation
+@using MoneyMinderContracts.Requests.CurrencyAccounts
+@using MoneyMinderContracts.Requests.SavingsAccounts
+@using MoneyMinderContracts.Responses.CurrencyAccounts
+@using MoneyMinderContracts.Responses.SavingsAccounts
+@inject ICurrencyAccountService CurrencyService
+@inject ISavingsAccountService SavingsService
+
 <h3>Reports</h3>
 <MudStack Style="width: 200px">
-    <MudSelect Value="_type" ValueChanged="OnReportChanged" Label="Select Report Type" T="ReportType">
+    <MudSelect Value="_type" Variant="Variant.Outlined" ValueChanged="OnReportChanged" Label="Select Report Type" T="ReportType">
         <MudSelectItem Value="ReportType.PaymentsReport">Payments Report</MudSelectItem>
         <MudSelectItem Value="ReportType.BalancesReport">Balances Report</MudSelectItem>
         <MudSelectItem Value="ReportType.SavingsReport">Savings Report</MudSelectItem>
     </MudSelect>
 </MudStack>
 
-@if (_type == ReportType.PaymentsReport)
-{
+@if(_setParamsSucceded)
     
-}
+    <MudForm Model="_reportParams" @ref="@currencyForm"
+             Validation="@_reportParamsValidator.ValidateValue" ValidationDelay="0">
 
-@if (_type == ReportType.BalancesReport)
-{
-    
-}
+        @if (_type == ReportType.PaymentsReport || _type == ReportType.BalancesReport)
+        {
+            <MudSelect T="string"
+                       Label="Currency Accounts"
+                       Variant="Variant.Outlined"
+                       MultiSelection="true"
+                       SelectAll="true"
+                       SelectAllText="Select all currency accounts"
+                       @bind-Value="_reportParams.NameCollection" 
+                       SelectedValues="_reportParams.Names"
+                       SelectedValuesChanged="OnCurrencyNamesChanged"
+                       For="@(() => _reportParams.NameCollection)">
+                @foreach (var dto in _currencyAccountsMetadata.CurrencyAccountMetadataDtos)
+                {
+                    <MudSelectItem T="string" Value="@dto.Name">@dto.Name</MudSelectItem>
+                }
+            </MudSelect>
+        
+            <MudSelect T="string" 
+                       Label="Currencies"
+                       Variant="Variant.Outlined"
+                       MultiSelection="true"
+                       SelectAll="true"
+                       SelectAllText="Select all currencies"
+                       @bind-Value="_reportParams.CurrencyCollection" 
+                       @bind-SelectedValues="_reportParams.Currencies"
+                       For="@(() => _reportParams.CurrencyCollection)">
+                @foreach (var currency in Enum.GetValues<CurrencyDto>())
+                {
+                    <MudSelectItem T="string" Value="@currency.ToString()">@currency</MudSelectItem>
+                }
+            </MudSelect>
+        }
+        @if (_type == ReportType.SavingsReport)
+        {
+            <MudSelect T="string"
+                       Label="Savings Accounts"
+                       Variant="Variant.Outlined"
+                       MultiSelection="true"
+                       SelectAll="true"
+                       SelectAllText="Select all savings accounts"
+                       @bind-Value="_reportParams.NameCollection"
+                       SelectedValues="_reportParams.Names"
+                       SelectedValuesChanged="OnSavingsNamesChanged"
+                       For="@(() => _reportParams.NameCollection)">
+                @foreach (var dto in _savingsAccountsMetadata.MetadataDtos)
+                { 
+                    <MudSelectItem T="string" Value="@dto.Name">@dto.Name</MudSelectItem>
+                }
+            </MudSelect>
+        }
 
-@if (_type == ReportType.SavingsReport)
-{
-    
+        <MudSwitch @bind-Value="_reportParams.AllTime" ThumbIcon="@(_reportParams.AllTime ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)" ThumbIconColor="@(_reportParams.AllTime ? Color.Success : Color.Error)">All Time</MudSwitch>
+        
+        @if (!_reportParams.AllTime)
+        {
+            <MudDatePicker @bind-Date="_reportParams.From"
+                           For="@(() => _reportParams.From)"
+                           Label="Transactions From"
+                           Editable="true"
+                           Mask="@(new DateMask("dd.MM.yyyy"))"
+                           DateFormat="dd.MM.yyyy"
+                           Placeholder="dd.MM.yyyy"
+                           MaxDate="DateTime.UtcNow.AddDays(-1)"
+                           MinDate="_earliestCurrencyCreatedAt"/>
+        
+            <MudDatePicker @bind-Date="_reportParams.To"
+                           For="@(() => _reportParams.To)"
+                           Label="Transactions To"
+                           Editable="true"
+                           Mask="@(new DateMask("dd.MM.yyyy"))"
+                           DateFormat="dd.MM.yyyy"
+                           Placeholder="dd.MM.yyyy"
+                           MaxDate="DateTime.UtcNow"
+                           MinDate="_reportParams.From"/>
+        }
+    </MudForm>
+    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="GetCurrencyReport">Send</MudButton>
+
 }
 
 @code {
 
+    private ReportParams _reportParams = new();
+    private ReportParamsValidator _reportParamsValidator;
     private ReportType _type = ReportType.PaymentsReport;
+    MudForm currencyForm = new();
+    private bool _setParamsSucceded = false;
+    private List<string> _errors;
+    private DateTime _earliestCurrencyCreatedAt;
+    private GetCurrencyAccountsMetadataResponse _currencyAccountsMetadata;
+    private GetSavingsAccountsMetadataResponse _savingsAccountsMetadata;
+    private PostPaymentsReportRequest _paymentsReportRequest = new();
+    private PostAllTimePaymentsReportRequest _allTimePaymentsReportRequest = new();
+    private PostBalanceReportRequest _balanceReportRequest = new();
+    private PostAllTimeBalanceReportRequest _allTimeBalanceReportRequest = new();
+    private PostSavingsReportRequest _savingsReportRequest = new();
+    private PostAllTimeSavingsReportRequest _allTimeSavingsReportRequest = new();
+    private GetCurrencyAccountReportPaymentsResponse _paymentsReportResponse;
+    private GetCurrencyAccountBalanceReportResponse _balanceReportResponse;
+    private GetSavingsReportResponse _savingsReportResponse;
     
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await SetParams();
+    }
+
+    private async Task GetCurrencyReport()
+    {
+        await currencyForm.Validate();
+
+        if (currencyForm.IsValid)
+        {
+            await (_type switch
+            {
+                ReportType.PaymentsReport => PaymentsReport(),
+                ReportType.BalancesReport => BalanceReport(),
+                ReportType.SavingsReport => SavingsReport(),
+                _ => Task.CompletedTask
+            });
+        }
+    }
     
+    private async Task PaymentsReport()
+    {
+        if (_reportParams.AllTime)
+        {
+            _allTimePaymentsReportRequest.CurrencyAccountIds = _currencyAccountsMetadata.CurrencyAccountMetadataDtos
+                .Where(m => _reportParams.Names.Contains(m.Name))
+                .Select(m => m.Id);
+
+            _allTimePaymentsReportRequest.Currencies = _reportParams.Currencies
+                .Select(x => Enum.Parse<CurrencyDto>(x))
+                .ToList();
+            var result = await CurrencyService.PostAllTimePaymentsReportAsync(_allTimePaymentsReportRequest);
+
+            _paymentsReportResponse = result.Response;
+        }
+        else
+        {
+            _paymentsReportRequest.CurrencyAccountIds = _currencyAccountsMetadata.CurrencyAccountMetadataDtos
+                .Where(m => _reportParams.Names.Contains(m.Name))
+                .Select(m => m.Id);
+
+            _paymentsReportRequest.From = DateTime.SpecifyKind(_reportParams.From.Value, DateTimeKind.Utc);
+            _paymentsReportRequest.To = DateTime.SpecifyKind(_reportParams.To.Value, DateTimeKind.Utc);
+                
+            _paymentsReportRequest.Currencies = _reportParams.Currencies
+                .Select(x => Enum.Parse<CurrencyDto>(x))
+                .ToList();
+            var result = await CurrencyService.PostPaymentsReportAsync(_paymentsReportRequest);
+
+            _paymentsReportResponse = result.Response;
+        }
+    }
+
+    private async Task BalanceReport()
+    {
+        if (_reportParams.AllTime)
+        {
+            _allTimeBalanceReportRequest.CurrencyAccountIds = _currencyAccountsMetadata.CurrencyAccountMetadataDtos
+                .Where(m => _reportParams.Names.Contains(m.Name))
+                .Select(m => m.Id);
+                    
+            _allTimeBalanceReportRequest.Currencies = _reportParams.Currencies
+                .Select(x => Enum.Parse<CurrencyDto>(x))
+                .ToList();
+                    
+            var result = await CurrencyService.PostAllTimeBalanceReportAsync(_allTimeBalanceReportRequest);
+
+            _balanceReportResponse = result.Response;
+        }
+        else
+        {
+            _balanceReportRequest.CurrencyAccountIds = _currencyAccountsMetadata.CurrencyAccountMetadataDtos
+                .Where(m => _reportParams.Names.Contains(m.Name))
+                .Select(m => m.Id);
+
+            _balanceReportRequest.From = DateTime.SpecifyKind(_reportParams.From.Value, DateTimeKind.Utc);
+            _balanceReportRequest.To = DateTime.SpecifyKind(_reportParams.To.Value, DateTimeKind.Utc);
+                
+            _balanceReportRequest.Currencies = _reportParams.Currencies
+                .Select(x => Enum.Parse<CurrencyDto>(x))
+                .ToList();
+                    
+            var result = await CurrencyService.PostBalanceReportAsync(_balanceReportRequest);
+
+            _balanceReportResponse = result.Response;
+        }
+    }
+
+    private async Task SavingsReport()
+    {
+        if (_reportParams.AllTime)
+        {
+            _allTimeSavingsReportRequest.SavingsAccountIds = _savingsAccountsMetadata.MetadataDtos
+                .Where(m => _reportParams.Names.Contains(m.Name))
+                .Select(m => m.Id);
+
+            var result = await SavingsService.PostAllTimeSavingsReportAsync(_allTimeSavingsReportRequest);
+
+            _savingsReportResponse = result.Response;
+        }
+        else
+        {
+            _savingsReportRequest.SavingsAccountIds = _savingsAccountsMetadata.MetadataDtos
+                .Where(m => _reportParams.Names.Contains(m.Name))
+                .Select(m => m.Id);
+
+            _savingsReportRequest.From = DateTime.SpecifyKind(_reportParams.From.Value, DateTimeKind.Utc);
+            _savingsReportRequest.To = DateTime.SpecifyKind(_reportParams.To.Value, DateTimeKind.Utc);
+
+            var result = await SavingsService.PostSavingsReportAsync(_savingsReportRequest);
+
+            _savingsReportResponse = result.Response;
+        }
+    }
     
-    
-    
-    
-    
-    
+    private async Task SetParams()
+    {
+        var currencyResponse = await CurrencyService.GetCurrencyAccountsMetadataAsync();
+        
+        if (!currencyResponse.Succeeded)
+        {
+            _setParamsSucceded = false;
+            _errors = currencyResponse.ErrorList;
+            return;
+        }
+
+        _currencyAccountsMetadata = currencyResponse.Response;
+        
+        var savingsResponse = await SavingsService.GetSavingsAccountsMetadataAsync();
+        
+        if (!savingsResponse.Succeeded)
+        {
+            _setParamsSucceded = false;
+            _errors = savingsResponse.ErrorList;
+            return;
+        }
+
+        _savingsAccountsMetadata = savingsResponse.Response;
+        
+        _reportParamsValidator = new(() => _earliestCurrencyCreatedAt);
+        
+        _setParamsSucceded = true;
+    }
     
     private async Task OnReportChanged(ReportType newType)
     {
         _type = newType;
     }
     
+    private void OnSavingsNamesChanged(IEnumerable<string> names)
+    {
+        _reportParams.Names = names?.ToList() ?? new List<string>();
+        
+        var earliest = _savingsAccountsMetadata.MetadataDtos
+            .Where(m => _reportParams.Names.Contains(m.Name))
+            .Select(m => m.CreatedAt)
+            .OrderBy(d => d)
+            .FirstOrDefault();
+
+        _earliestCurrencyCreatedAt = earliest;
+    }
+    
+    private void OnCurrencyNamesChanged(IEnumerable<string> names)
+    {
+        _reportParams.Names = names?.ToList() ?? new List<string>();
+        
+        var earliest = _currencyAccountsMetadata.CurrencyAccountMetadataDtos
+            .Where(m => _reportParams.Names.Contains(m.Name))
+            .Select(m => m.CreatedAt)
+            .OrderBy(d => d)
+            .FirstOrDefault();
+
+        _earliestCurrencyCreatedAt = earliest;
+    }
+    
+    
     private enum ReportType
     {
         PaymentsReport = 1,
         BalancesReport = 2,
         SavingsReport = 3
+    }
+    
+    private class ReportParams 
+    {
+        public bool AllTime { get; set; }
+        public DateTime? From { get; set; }
+        public DateTime? To { get; set; }
+        
+        public string CurrencyCollection { get; set; } // Helper for Multiselect validation
+        public IEnumerable<string> Currencies { get; set; }      
+        
+        public string NameCollection { get; set; } // Helper for Multiselect validation
+        public IEnumerable<string> Names { get; set; }
+    }
+    
+    
+    private class ReportParamsValidator : AbstractValidator<ReportParams>
+    {
+        private readonly Func<DateTime> _getEarliest;
+        
+        public ReportParamsValidator(Func<DateTime> getEarliest)
+        {
+            _getEarliest = getEarliest;
+            RuleFor(x => x.Currencies)
+                .NotEmpty()
+                .WithMessage("Choose at least one currency");
+
+            RuleFor(x => x.Names)
+                .NotEmpty()
+                .WithMessage("Choose at least one Currency Account");
+                
+            
+            When(x => !x.AllTime, () =>
+            {
+                RuleFor(x => x.From)
+                    .NotNull()
+                    .WithMessage("From date is required when 'AllTime' is false.")
+                    .GreaterThanOrEqualTo(_ =>_getEarliest() )
+                    .LessThanOrEqualTo(DateTime.UtcNow)
+                    .WithMessage("From date cannot be in the future.");
+
+                RuleFor(x => x.To)
+                    .NotNull()
+                    .WithMessage("To date is required when 'AllTime' is false.")
+                    .GreaterThan(x => x.From)
+                    .WithMessage("To date must be later than From date.")
+                    .LessThanOrEqualTo(DateTime.UtcNow)
+                    .WithMessage("To date cannot be in the future.");
+            });
+        }
+        
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+        {        
+            propertyName = propertyName switch
+            {
+                nameof(ReportParams.CurrencyCollection) => nameof(ReportParams.Currencies),
+                nameof(ReportParams.NameCollection)     => nameof(ReportParams.Names),
+                _ => propertyName
+            };
+            
+            var result = await ValidateAsync(ValidationContext<ReportParams>.CreateWithOptions((ReportParams)model, x => x.IncludeProperties(propertyName)));
+            if (result.IsValid)
+                return Array.Empty<string>();
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
     }
 }
