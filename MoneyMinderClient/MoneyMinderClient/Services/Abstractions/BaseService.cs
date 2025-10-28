@@ -62,6 +62,46 @@ public abstract class BaseService
         return await _httpClient.SendAsync(httpRequest);
     }
     
+    protected async Task<Result<TResponse>> PostReportAsync<TRequest, TResponse>(
+        string url,
+        TRequest? request = null)
+        where TRequest : class
+        where TResponse : class, IResponse
+    {
+        try
+        {
+            var httpResponse = await _httpClient.PostAsJsonAsync(url, request);
+
+            var content = await httpResponse.Content.ReadAsStringAsync();
+
+            if (!httpResponse.IsSuccessStatusCode)
+                return Result<TResponse>.Failure(
+                    $"Status Code: {httpResponse.StatusCode}",
+                    $"Content: {content}");
+
+            if (string.IsNullOrWhiteSpace(content))
+                return Result<TResponse>.Failure(
+                    "Response is empty.",
+                    $"Status Code: {httpResponse.StatusCode}");
+
+            var dto = JsonSerializer.Deserialize<TResponse>(
+                content,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return dto is not null
+                ? Result<TResponse>.Success(dto)
+                : Result<TResponse>.Failure("Deserialization returned null.", $"Content: {content}");
+        }
+        catch (HttpRequestException ex)
+        {
+            return Result<TResponse>.Failure("HTTP request failed", ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return Result<TResponse>.Failure("Unexpected error", ex.Message);
+        }
+    }
+    
     protected async Task<Result<TResponse>> GetAsync<TResponse>(string url)
         where TResponse : class, IResponse
     {
