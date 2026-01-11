@@ -10,7 +10,12 @@
 @inherits BasePage
 
 <h3>Reports</h3>
-@if (_setParamsSucceded)
+
+
+
+@if (!_reportGenerated)
+{
+    @if (_setParamsSucceded)
 {
     <MudForm Model="_reportParams" @ref="@currencyForm"
              Validation="@_reportParamsValidator.ValidateValue" ValidationDelay="0">
@@ -112,100 +117,132 @@
             }
         </MudGrid>
     </MudForm> 
-    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="GetCurrencyReport">Send</MudButton>
+    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="GetReport">Send</MudButton>
 }
 
-
-
-
-
-
-
-
-@if (_paymentsReportSucceded)
+}
+else
 {
-    @if (!_noData)
+    @if (_reportSucceded)
     {
-        <MudGrid>
-            @* Podsumowania *@
-            <MudItem xs="12">
-                <MudStack Row="true" Spacing="2" Class="flex-wrap">
-                    <MudPaper Class="p-3 rounded-xl">
-                        <MudText Typo="Typo.subtitle2">Total number of expenses</MudText>
-                        <MudText Typo="Typo.h6">@_totalCount</MudText>
-                    </MudPaper>
-                    @foreach (var summary in _summaries)
-                    {
+        @if (!_noData)
+        {
+            
+            
+            <MudGrid>
+                @* Podsumowania *@
+                <MudItem xs="12">
+                    <MudStack Row="true" Spacing="2" Class="flex-wrap">
                         <MudPaper Class="p-3 rounded-xl">
-                            <MudText Typo="Typo.subtitle2">Expenses total — @summary.currency</MudText>
-                            <MudText Typo="Typo.h6">@summary.Total.ToString("0.00")</MudText>
-                            <MudText Typo="Typo.caption">Transactions: @summary.Count</MudText>
+                            <MudText Typo="Typo.subtitle2">Total number of expenses</MudText>
+                            <MudText Typo="Typo.h6">@_totalCount</MudText>
                         </MudPaper>
-                    }
-                    <MudPaper Class="p-3 rounded-xl">
-                        <MudText Typo="Typo.subtitle2">Period</MudText>
-                        <MudText Typo="Typo.h6">@_dateRangeText</MudText>
-                    </MudPaper>
-                </MudStack>
-            </MudItem>
+                        @foreach (var summary in _summaries)
+                        {
+                            <MudPaper Class="p-3 rounded-xl">
+                                <MudText Typo="Typo.subtitle2">Expenses total — @summary.currency</MudText>
+                                <MudText Typo="Typo.h6">@summary.Total.ToString("0.00")</MudText>
+                                <MudText Typo="Typo.caption">Transactions: @summary.Count</MudText>
+                            </MudPaper>
+                        }
+                        <MudPaper Class="p-3 rounded-xl">
+                            <MudText Typo="Typo.subtitle2">Period</MudText>
+                            <MudText Typo="Typo.h6">@_dateRangeText</MudText>
+                        </MudPaper>
+                    </MudStack>
+                </MudItem>
 
-            @* Wykresy liniowe – osobny na każdą walutę *@
-            @foreach (var (currency, chart) in _charts)
-            {
-                var opts = chart.Labels.Length >= 4 ? _splineOptions : _straightOptions;
-                <MudItem xs="12" md="6" lg="4">
-                    <MudCard Class="h-full">
+                @* Wykresy liniowe – osobny na każdą walutę *@
+                @foreach (var (currency, chart) in _charts)
+                {
+                    <MudItem xs="12" md="6" lg="4">
+                        <MudCard Class="h-full">
+                            <MudCardHeader>
+                                <MudText Typo="Typo.h6">@currency — expenses over time</MudText>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudChart ChartType="ChartType.Line"
+                                          XAxisLabels="chart.Labels"
+                                          Width="100%"
+                                          AxisChartOptions="_axisChartOptions"
+                                          ChartSeries="chart.Series"
+                                          Height="260"/>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                }
+
+                @* Tabela szczegółów *@
+                <MudItem xs="12">
+                    <MudCard>
                         <MudCardHeader>
-                            <MudText Typo="Typo.h6">@currency — expenses over time</MudText>
+                            <MudText Typo="Typo.h6">Expense details</MudText>
                         </MudCardHeader>
                         <MudCardContent>
-                            <MudChart ChartType="ChartType.Line"
-                                      XAxisLabels="chart.Labels"
-                                      Width="100%"
-                                      AxisChartOptions="_axisChartOptions"
-                                      ChartOptions="opts"
-                                      ChartSeries="chart.Series"
-                                      Height="260"/>
+                            <MudTable Items="_payments" Hover="true" Dense="true">
+                                <HeaderContent>
+                                    <MudTh>Date</MudTh>
+                                    <MudTh>Currency</MudTh>
+                                    <MudTh align="right">Amount</MudTh>
+                                    <MudTh>Category</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd DataLabel="Date">@context.Date.ToString("dd.MM.yyyy")</MudTd>
+                                    <MudTd DataLabel="Currency">@context.Currency</MudTd>
+                                    <MudTd DataLabel="Amount" Align="Align.Right">
+                                        @Math.Abs(context.Amount).ToString("0.00")
+                                    </MudTd>
+                                    <MudTd DataLabel="Category">@context.Category</MudTd>
+                                </RowTemplate>
+                            </MudTable>
                         </MudCardContent>
                     </MudCard>
                 </MudItem>
-            }
-
-            @* Tabela szczegółów *@
-            <MudItem xs="12">
-                <MudCard>
-                    <MudCardHeader>
-                        <MudText Typo="Typo.h6">Expense details</MudText>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudTable Items="_payments" Hover="true" Dense="true">
-                            <HeaderContent>
-                                <MudTh>Date</MudTh>
-                                <MudTh>Currency</MudTh>
-                                <MudTh align="right">Amount</MudTh>
-                                <MudTh>Category</MudTh>
-                            </HeaderContent>
-                            <RowTemplate>
-                                <MudTd DataLabel="Date">@context.Date.ToString("dd.MM.yyyy")</MudTd>
-                                <MudTd DataLabel="Currency">@context.Currency</MudTd>
-                                <MudTd DataLabel="Amount" Align="Align.Right">
-                                    @Math.Abs(context.Amount).ToString("0.00")
-                                </MudTd>
-                                <MudTd DataLabel="Category">@context.Category</MudTd>
-                            </RowTemplate>
-                        </MudTable>
-                    </MudCardContent>
-                </MudCard>
-            </MudItem>
-        </MudGrid>
+            </MudGrid>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        }
+        else // noData = true
+        {
+            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Elevation="0">
+                No data for the selected filters.
+            </MudAlert>
+        }
     }
-    else
+    else // reportSucceded = false
     {
         <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Elevation="0">
-            No data for the selected filters.
+            Report error.
         </MudAlert>
     }
+
+
+<MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.KeyboardReturn" Color="Color.Primary" OnClick="Return">Return</MudButton>
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
+
+
+
+
 
 
 
@@ -214,11 +251,12 @@
 
 @code {
     private AxisChartOptions _axisChartOptions = new AxisChartOptions() { XAxisLabelRotation = 45, MatchBoundsToSize = true};
-    private ChartOptions _splineOptions = new ChartOptions(){InterpolationOption = InterpolationOption.NaturalSpline};
-    private ChartOptions _straightOptions = new ChartOptions(){InterpolationOption = InterpolationOption.Straight};
+    //private ChartOptions _splineOptions = new ChartOptions(){InterpolationOption = InterpolationOption.NaturalSpline};
+    //private ChartOptions _straightOptions = new ChartOptions(){InterpolationOption = InterpolationOption.Straight};
 
-    private bool _noData = false;
-    private bool _paymentsReportSucceded = false;
+    private bool _noData = true;
+    private bool _reportSucceded = false;
+    private bool _reportGenerated = false;
     
     private async Task BuildPaymentsReportView()
     {
@@ -227,6 +265,8 @@
             _noData = true;
             return;
         }
+        
+        _noData = false;
         
         _totalCount = _payments.Count();
         
@@ -238,7 +278,7 @@
         var minDate = _payments.Min(p => p.Date);
         var maxDate = _payments.Max(p => p.Date);
         _dateRangeText = $"{minDate:dd.MM.yyyy} – {maxDate:dd.MM.yyyy}";
-        
+
         _charts = _payments
             .GroupBy(p => p.Currency)
             .ToDictionary(
@@ -278,8 +318,6 @@
                         }
                     });
                 });
-
-        
     }
     
     
@@ -297,11 +335,17 @@
   
 
     private record ChartData(string[] Labels, List<ChartSeries> Series);
-    
-    
-    
-    
-    
+
+
+
+
+
+    private async Task Return()
+    {
+        _noData = true;
+        _reportSucceded = false;
+        _reportGenerated = false;
+    }
     
     
     
@@ -345,7 +389,7 @@
         await SetParams();
     }
 
-    private async Task GetCurrencyReport()
+    private async Task GetReport()
     {
         await currencyForm.Validate();
 
@@ -359,6 +403,9 @@
                 _ => Task.CompletedTask
             });
         }
+
+        _reportGenerated = true;
+        
     }
     
     private async Task PaymentsReport()
@@ -385,7 +432,7 @@
                 .OrderBy(t => t.Date)
                 .ToList();
             
-            _paymentsReportSucceded = true;
+            _reportSucceded = true;
 
             await BuildPaymentsReportView();
         }
@@ -413,7 +460,7 @@
                 .OrderBy(t => t.Date)
                 .ToList();
 
-            _paymentsReportSucceded = true;
+            _reportSucceded = true;
             
             await BuildPaymentsReportView();
         }

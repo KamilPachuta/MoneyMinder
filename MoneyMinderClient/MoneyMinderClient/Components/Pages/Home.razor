@@ -12,7 +12,7 @@
         
             <MudPaper Elevation="2">
                 <MudGrid>
-                    <MudItem xs="12" sm="2">
+                    <MudItem xs="12" md="3">
                         <MudList T="string" @bind-SelectedItem="currencySelectedValue" SelectionMode="SelectionMode.SingleSelection" SelectedValueChanged="OnCurrencySelectedValueChanged">
                             <MudListSubheader>
                                 <MudPaper Elevation="0" Class="mx-1 my-0 px-1 py-0 align-start d-flex">
@@ -36,12 +36,12 @@
                     </MudItem>
                     @if (_currencyDetails is not null)
                     {
-                        <MudItem xs="12" sm="9">
+                        <MudItem xs="12" md="9">
                             <MudPaper Width="100%" Class="px-4 py-4" Elevation="3">
                                 <MudText Typo="Typo.h4">@_currencyDetails.Name</MudText>
                                 <MudGrid>
-                                    <MudItem xs="12" sm="6">
-                                        <MudItem xs="12" sm="6">
+                                    <MudItem xs="12" md="4">
+                                        
                                             @if (_currencyDetails.Balances is not null && _currencyDetails.Balances.Any())
                                             {
                                                 <MudPaper Class="px-4 py-4" Elevation="2">
@@ -55,11 +55,11 @@
                                                     }
                                                 </MudPaper>
                                             }
-                                        </MudItem>
+                                        
                                     </MudItem>
                                     @if (_currencyDetails.Transactions is not null && _currencyDetails.Transactions.Any())
                                     {
-                                        <MudItem xs="12" sm="6">
+                                        <MudItem xs="12" md="8">
                                             <MudContainer Style="max-height: 600px; overflow-y: scroll;">
                                                 <MudText Typo="Typo.h5">Transactions history</MudText>
 
@@ -94,7 +94,7 @@
     <MudItem xs="12" sm="7">
         <MudPaper Elevation="2" Class="px-4 py-4 align-start d-flex">
             <MudStack>
-                <MudText Typo="Typo.h5">Savings</MudText>
+                <MudText Typo="Typo.h5">Savings Accounts</MudText>
                 <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateSavingsAccount"></MudIconButton>
             </MudStack>
 
