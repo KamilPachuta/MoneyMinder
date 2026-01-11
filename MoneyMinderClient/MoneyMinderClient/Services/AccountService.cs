@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
@@ -38,11 +39,11 @@ public class AccountService : BaseService, IAccountService
         {
             var response = await _httpClient.PostAsJsonAsync("api/Account", request);
             if (!response.IsSuccessStatusCode)
-                return Result<LoginResponse>.Failure(await response.Content.ReadAsStringAsync());
+                return Result<LoginResponse>.Failure(response.StatusCode, await response.Content.ReadAsStringAsync());
 
             var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>(_jsonOptions);
             if (loginResponse?.Token is null)
-                return Result<LoginResponse>.Failure("Token not received from API");
+                return Result<LoginResponse>.Failure(response.StatusCode, "Token not received from API");
             
             await _localStorage.SetItemAsStringAsync("Token", loginResponse.Token);
             _httpClient.DefaultRequestHeaders.Authorization = 
@@ -50,11 +51,11 @@ public class AccountService : BaseService, IAccountService
 
             _authenticationStateProvider.NotifyUserAuthentication();
             
-            return Result<LoginResponse>.Success(loginResponse);
+            return Result<LoginResponse>.Success(response.StatusCode, loginResponse);
         }
         catch (Exception ex)
         {
-            return Result<LoginResponse>.Failure(ex.Message);
+            return Result<LoginResponse>.Failure(HttpStatusCode.InternalServerError, ex.Message);
         }
     }
 

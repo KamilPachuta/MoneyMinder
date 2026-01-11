@@ -1,6 +1,7 @@
 ﻿@inject IAccountService AccountService
 @inject ICurrencyAccountService CurrencyService
 @inject ISavingsAccountService SavingsService
+@using System.Net
 @inherits BasePage
 
 
@@ -65,12 +66,19 @@
     private async Task SetParams()
     {
         var responseCurrencyAccounts = await CurrencyService.GetCurrencyAccountNamesAsync();
+        
         if (responseCurrencyAccounts.Succeeded)
         {
             _currencyAccountNames = responseCurrencyAccounts.Response.Names.ToList();
         }
         else
         {
+            if (responseCurrencyAccounts.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await AccountService.LogoutAsync();
+                NavigationManager.NavigateTo("/login/", true);
+            }
+            
             _errorList = responseCurrencyAccounts.ErrorList;
         }
 

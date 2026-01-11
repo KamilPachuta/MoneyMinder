@@ -1,6 +1,8 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
 using MoneyMinderClient.Core;
+using MoneyMinderClient.Services.Interfaces;
 using MoneyMinderContracts.Responses.Interfaces;
 
 namespace MoneyMinderClient.Services.Abstractions;
@@ -8,6 +10,7 @@ namespace MoneyMinderClient.Services.Abstractions;
 public abstract class BaseService
 {
     private readonly HttpClient _httpClient;
+    private readonly IAccountService _accountService;
 
     public BaseService(IHttpClientFactory httpClientFactory)
     {
@@ -34,20 +37,20 @@ public abstract class BaseService
             if (!response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                return Result.Failure(
+                return Result.Failure(response.StatusCode,
                     $"Status Code: {response.StatusCode}",
                     $"Content: {content}");
             }
 
-            return Result.Success();
+            return Result.Success(response.StatusCode);
         }
         catch (HttpRequestException ex)
         {
-            return Result.Failure("HTTP request failed", ex.Message);
+            return Result.Failure(HttpStatusCode.InternalServerError, "HTTP request failed", ex.Message);
         }
         catch (Exception ex)
         {
-            return Result.Failure("Unexpected error", ex.Message);
+            return Result.Failure(HttpStatusCode.InternalServerError, "Unexpected error", ex.Message);
         }
     }
     
@@ -76,11 +79,13 @@ public abstract class BaseService
 
             if (!httpResponse.IsSuccessStatusCode)
                 return Result<TResponse>.Failure(
+                    httpResponse.StatusCode,
                     $"Status Code: {httpResponse.StatusCode}",
                     $"Content: {content}");
 
             if (string.IsNullOrWhiteSpace(content))
                 return Result<TResponse>.Failure(
+                    httpResponse.StatusCode,
                     "Response is empty.",
                     $"Status Code: {httpResponse.StatusCode}");
 
@@ -89,16 +94,16 @@ public abstract class BaseService
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             return dto is not null
-                ? Result<TResponse>.Success(dto)
-                : Result<TResponse>.Failure("Deserialization returned null.", $"Content: {content}");
+                ? Result<TResponse>.Success(httpResponse.StatusCode, dto)
+                : Result<TResponse>.Failure(httpResponse.StatusCode, "Deserialization returned null.", $"Content: {content}");
         }
         catch (HttpRequestException ex)
         {
-            return Result<TResponse>.Failure("HTTP request failed", ex.Message);
+            return Result<TResponse>.Failure(HttpStatusCode.InternalServerError, "HTTP request failed", ex.Message);
         }
         catch (Exception ex)
         {
-            return Result<TResponse>.Failure("Unexpected error", ex.Message);
+            return Result<TResponse>.Failure(HttpStatusCode.InternalServerError, "Unexpected error", ex.Message);
         }
     }
     
@@ -110,8 +115,13 @@ public abstract class BaseService
             var responseMessage = await _httpClient.GetAsync(url);
             var content = await responseMessage.Content.ReadAsStringAsync();
 
+            // if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+            //     await _accountService.LogoutAsync();
+            
+            
             if (!responseMessage.IsSuccessStatusCode)
                 return Result<TResponse>.Failure(
+                    responseMessage.StatusCode,
                     $"Status Code: {responseMessage.StatusCode}",
                     $"Content: {content}");
 
@@ -122,20 +132,21 @@ public abstract class BaseService
 
             if (response == null)
                 return Result<TResponse>.Failure(
+                    responseMessage.StatusCode,
                     "Response is null.",
                     $"Status Code: {responseMessage.StatusCode}",
                     $"Content: {content}");
 
-            return Result<TResponse>.Success(response);
+            return Result<TResponse>.Success(responseMessage.StatusCode, response);
 
         }
         catch (HttpRequestException ex)
         {
-            return Result<TResponse>.Failure("HTTP request failed", ex.Message);
+            return Result<TResponse>.Failure(HttpStatusCode.InternalServerError, "HTTP request failed", ex.Message);
         }
         catch (Exception ex)
         {
-            return Result<TResponse>.Failure("Unexpected error", ex.Message);
+            return Result<TResponse>.Failure(HttpStatusCode.InternalServerError, "Unexpected error", ex.Message);
         }
         
     }
