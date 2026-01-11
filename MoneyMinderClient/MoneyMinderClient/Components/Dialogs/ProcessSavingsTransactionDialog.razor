@@ -27,7 +27,7 @@
                                        Mask="@(new DateMask("dd.MM.yyyy"))"
                                        DateFormat="dd.MM.yyyy"
                                        Placeholder="dd.MM.yyyy"
-                                       MinDate="SavingsAccountCreatedAt"
+                                       MinDate="SavingsAccountCreatedAt.AddDays(-1)"
                                        MaxDate="DateTime.UtcNow"/>
 
                         <MudNumericField @bind-Value="_request.Amount"

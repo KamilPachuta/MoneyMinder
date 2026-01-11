@@ -33,7 +33,7 @@
                                            DateFormat="dd.MM.yyyy" 
                                            Placeholder="dd.MM.yyyy"
                                            MaxDate="DateTime.UtcNow"
-                                           MinDate="CurrencyAccountCreatedAt"/>
+                                           MinDate="CurrencyAccountCreatedAt.AddDays(-1)"/>
                             
                             <MudNumericField @bind-Value="_requestIncome.Amount" 
                                              Label="Outlined" 
