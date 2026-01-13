@@ -5,9 +5,6 @@
 
 <PageTitle>Profile</PageTitle>
 
-<AuthorizeView>
-    <Authorized>
-        <MudPaper Elevation="3" Class="px-4 py-4">
             <MudCard>
                 <MudCardHeader>
                     <MudText Typo="Typo.h4">Personal Information's</MudText>
@@ -15,15 +12,7 @@
                 <MudCardContent>
                     @if (_succeded)
                     {
-                        <MudText Typo="Typo.h6">Email: @_userDetails.Email</MudText>
-                        <MudText Typo="Typo.h6">Name: @_userDetails.Name</MudText>
-                        <MudText Typo="Typo.h6">Phone Number: @_userDetails.PhoneNumber</MudText>
-                        <MudText Typo="Typo.h6">Birth Date: @_userDetails.BirthDate.ToString("dd MMMM yyyy")</MudText>
-                        <MudText Typo="Typo.h6">Gender: @_userDetails.Gender</MudText>
-                        <MudText Typo="Typo.h6">Country: @_userDetails.Country</MudText>
-                        <MudText Typo="Typo.h6">City: @_userDetails.City</MudText>
-                        <MudText Typo="Typo.h6">Postal Code: @_userDetails.PostalCode</MudText>
-                        <MudText Typo="Typo.h6">Street: @_userDetails.Street</MudText>
+                        @InfoRender
                     }
                 </MudCardContent>
                 <MudCardActions>
@@ -34,11 +23,6 @@
                 </MudCardActions>
             </MudCard>
 
-        </MudPaper>
-
-
-    </Authorized>
-</AuthorizeView>
 
 @code {
     private bool _succeded = false;
@@ -80,5 +64,68 @@
     {
         await SetParams();
     }
+
+    
+    
+    RenderFragment InfoRender => _succeded
+        ? @<MudPaper MaxWidth="500px" Class="p-2 justify-start" Elevation="0">
+                <MudGrid Spacing="2">
+                    <MudItem xs="4">
+                        <MudText Typo="Typo.subtitle1">Email:</MudText>
+                    </MudItem>
+                    <MudItem xs="8">
+                        <MudText Typo="Typo.h6">@_userDetails.Email</MudText>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudText Typo="Typo.subtitle1">Name:</MudText>
+                    </MudItem>
+                    <MudItem xs="8">
+                        <MudText Typo="Typo.h6">@_userDetails.Name</MudText>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudText Typo="Typo.subtitle1">Phone Number:</MudText>
+                    </MudItem>
+                    <MudItem xs="8">
+                        <MudText Typo="Typo.h6">@_userDetails.PhoneNumber</MudText>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudText Typo="Typo.subtitle1">Birth Date:</MudText>
+                    </MudItem>
+                    <MudItem xs="8">
+                        <MudText Typo="Typo.h6">@_userDetails.BirthDate.ToString("dd MMMM yyyy")</MudText>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudText Typo="Typo.subtitle1">Gender:</MudText>
+                    </MudItem>
+                    <MudItem xs="8">
+                        <MudText Typo="Typo.h6">@_userDetails.Gender</MudText>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudText Typo="Typo.subtitle1">Country:</MudText>
+                    </MudItem>
+                    <MudItem xs="8">
+                        <MudText Typo="Typo.h6">@_userDetails.Country</MudText>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudText Typo="Typo.subtitle1">City:</MudText>
+                    </MudItem>
+                    <MudItem xs="8">
+                        <MudText Typo="Typo.h6">@_userDetails.City</MudText>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudText Typo="Typo.subtitle1">Postal Code:</MudText>
+                    </MudItem>
+                    <MudItem xs="8">
+                        <MudText Typo="Typo.h6">@_userDetails.PostalCode</MudText>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudText Typo="Typo.subtitle1">Street:</MudText>
+                    </MudItem>
+                    <MudItem xs="8">
+                        <MudText Typo="Typo.h6">@_userDetails.Street</MudText>
+                    </MudItem>
+                </MudGrid>
+          </MudPaper>
+        : null;
 
 }
