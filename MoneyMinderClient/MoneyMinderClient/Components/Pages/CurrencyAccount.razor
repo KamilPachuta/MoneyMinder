@@ -1,74 +1,32 @@
 ﻿@page "/CurrencyAccount/{name}"
+@using MoneyMinderContracts.Requests.CurrencyAccounts
 @using MoneyMinderContracts.Responses.CurrencyAccounts
 @inject ICurrencyAccountService CurrencyService
 @inherits BasePage
-
+    
 <MudGrid>
     <MudItem xs="12" sm="4">
-            <MudPaper Elevation="2" Class="mx-4 my-4 px-4 py-4">
-                <MudText Typo="Typo.h4" Class="px-2 py-2">@Name</MudText>
-                 @if (_succeded)
-                {
-                    <MudPaper Width="300px" Elevation="2">
-                        <MudText Typo="Typo.h6" Class="px-2 py-2">Available funds</MudText>
-                        <MudList T="string">
-                            @foreach (var balance in _balances)
-                            {
-                                <MudListItem Text="@($"{balance.Amount} {balance.Currency}")" Icon="@Icons.Material.Filled.AccountBalanceWallet" />
-                            }
-                        </MudList>
-                    </MudPaper>
-
-                }
-                </MudPaper>
-        </MudItem>
-        
-    <MudItem xs="12" sm="8">
-        <MudPaper Elevation="2" Class="mx-4 my-4 px-4 py-4">
-            <MudTooltip Text="Add new transaction">
-                          <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTransaction"></MudIconButton>
-            </MudTooltip>  
-             <MudTooltip Text="Add multiple transactions using import CSV.">
-                 <MudIconButton Icon="@Icons.Material.Filled.UploadFile" OnClick="UploadFile"></MudIconButton>
-             </MudTooltip>  
-            <MudTooltip Text="Currency Exchange">
-                <MudIconButton Icon="@Icons.Material.Filled.CurrencyExchange" OnClick="ConvertCurrency"></MudIconButton>
-            </MudTooltip>  
-            <MudTooltip Text="Edit Currency Account Name">
-                <MudIconButton Icon="@Icons.Material.Filled.EditNote" OnClick="EditCurrencyAccountName"></MudIconButton>
-            </MudTooltip>
-            <MudTooltip Text="Transaction History">
-            <MudIconButton Icon="@Icons.Material.Filled.History" OnClick="TransactionHistory"></MudIconButton>
-            </MudTooltip>
-            <MudTooltip Text="Budget">
-                <MudIconButton Icon="@Icons.Material.Filled.BarChart" OnClick="Budget"></MudIconButton>
-            </MudTooltip>
-            <MudTooltip Text="Remove Currency Account">
-                <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" OnClick="DeleteCurrencyAccount"></MudIconButton>
-            </MudTooltip>
+        <MudPaper Elevation="1" Class="px-4 py-4" Height="100%">
+            <MudText Typo="Typo.h3" Class="px-2 py-2">@Name</MudText>
+            @Balances
+            @NoBalances
         </MudPaper>
     </MudItem>
-    
-    @*<MudItem xs="12" sm="8">
-        
-        <MudPaper Elevation="2" Class="mx-4 my-4 px-4 py-4">
+    <MudItem xs="12" md="7">
+        <MudPaper Elevation="1" Class="px-4 py-4" Height="100%">
             <MudStack>
-                        <MudFab Label="Add new transaction" Icon="@Icons.Material.Filled.Add" OnClick="AddTransaction"></MudFab>
-                                    <MudFab Label="Currency Exchange" Icon="@Icons.Material.Filled.CurrencyExchange" OnClick="ConvertCurrency"/>
-                                    <MudFab Label="Edit Currency Account Name" Icon="@Icons.Material.Filled.EditNote" OnClick="EditCurrencyAccountName"/>
-                                    <MudFab Label="Transaction History" Icon="@Icons.Material.Filled.History" OnClick="TransactionHistory"/>
-                                    <MudFab Label="Budget" Icon="@Icons.Material.Filled.BarChart" OnClick="Budget"/>
-                                    <MudFab Label="Remove Currency Account" Icon="@Icons.Material.Filled.DeleteForever" OnClick="DeleteCurrencyAccount"/>
-                    </MudStack>
+                <MudFab Label="Currency Exchange" StartIcon="@Icons.Material.Filled.CurrencyExchange" OnClick="ConvertCurrency" Size="Size.Small"/>
+                <MudFab Label="Edit Currency Account Name" StartIcon="@Icons.Material.Filled.EditNote" OnClick="EditCurrencyAccountName" Size="Size.Small"/>
+                <MudFab Label="Budget" StartIcon="@Icons.Material.Filled.BarChart" OnClick="Budget" Size="Size.Small"/>
+                <MudFab Label="Remove Currency Account" StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="DeleteCurrencyAccount" Size="Size.Small"/>
+                @AddButton
+            </MudStack>
         </MudPaper>
-    </MudItem>*@
-    
-    
-   
+    </MudItem>
+    <MudItem xs="12">
+        @TransactionsTable
+    </MudItem>
 </MudGrid>
-
-
-
 
 @code {
     [Parameter] 
@@ -86,26 +44,23 @@
     private GetCurrencyAccountNamesResponse _response;
     private List<BalanceDto> _balances;
 
+    private bool show = false;
+    private MudTable<CurrencyTransactionDetailsDto> mudTable;
+    private int selectedRowNumber = -1;
+    private CurrencyTransactionDetailsDto? selectedModel = null;
+    private List<CurrencyTransactionDetailsDto> _transactions = new();
 
+    private RemoveIncomeRequest _incomeRequest;
+    private RemovePaymentRequest _paymentRequest;
 
-    private async Task AddTransaction()
-        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", _fullParameters);
     
-    private async Task UploadFile()
-    {
-        throw new NotImplementedException();
-    }
     private async Task ConvertCurrency()
     {
         throw new NotImplementedException();
     }
+    
     private async Task EditCurrencyAccountName()
         => await ShowDialogAsync<EditCurrencyAccountNameDialog>("Edit Currency Account", _parameters);
-
-    private async Task TransactionHistory()
-    {
-        NavigationManager.NavigateTo(PathBuilder.CurrencyTransactionHistoryPath(Name));
-    }
     
     private async Task Budget()
     {
@@ -119,31 +74,44 @@
     {
         await SetParams();
     }
+
+    private async Task AddTransactionDialog()
+        => await ShowDialogAsync<AddCurrencyTransactionDialog>("Add Transaction", _fullParameters);
+
+    private async Task RemoveTransactionDialog()
+    {
+        if(selectedModel is null)
+            return;
+        
+        _parameters.Add("TransactionDto", selectedModel);
+        
+        await ShowDialogAsync<RemoveCurrencyTransactionDialog>("Remove Transaction", _parameters);
+    }
     
     private async Task SetParams()
     {
-        var firstResult = await CurrencyService.GetCurrencyAccountMetadataByNameAsync(Name);
-        if (!firstResult.Succeeded)
+        var metadataResult = await CurrencyService.GetCurrencyAccountMetadataByNameAsync(Name);
+        if (!metadataResult.Succeeded)
         {
             _succeded = false;
-            _errors = firstResult.ErrorList;
+            _errors = metadataResult.ErrorList;
             return;
         }
 
-        CurrencyAccountId = firstResult.Response.Id;
+        CurrencyAccountId = metadataResult.Response.Id;
         
-        CurrencyAccountCreatedAt = firstResult.Response.CreatedAt;
+        CurrencyAccountCreatedAt = metadataResult.Response.CreatedAt;
 
-        var secondResult = await CurrencyService.GetCurrencyAccountBalancesAsync(CurrencyAccountId);
+        var balancesResult = await CurrencyService.GetCurrencyAccountBalancesAsync(CurrencyAccountId);
 
-        if (!secondResult.Succeeded)
+        if (!balancesResult.Succeeded)
         {
             _succeded = false;
-            _errors = secondResult.ErrorList;
+            _errors = balancesResult.ErrorList;
             return;
         }
 
-        _balances = secondResult.Response.Balances.ToList();
+        _balances = balancesResult.Response.Balances.ToList();
 
         _parameters = new DialogParameters()
         {
@@ -156,7 +124,139 @@
             { "CurrencyAccountCreatedAt", CurrencyAccountCreatedAt}
         };
 
+        var transactionsResult = await CurrencyService.GetCurrencyAccountTransactionsAsync(CurrencyAccountId);
+        
+        if (!transactionsResult.Succeeded)
+        {
+            _succeded = false;
+            _errors = transactionsResult.ErrorList;
+            return;
+        }
+
+        _transactions= transactionsResult.Response.Transactions.ToList();
+
         _succeded = true;
     }
+    
+         
+    private string SelectedRowClassFunc(CurrencyTransactionDetailsDto transaction, int rowNumber)
+    {
+        if (selectedRowNumber == rowNumber)
+        {
+            selectedRowNumber = -1;
+            return string.Empty;
+        }
+        
+        if (mudTable.SelectedItem != null && mudTable.SelectedItem.Equals(transaction))
+        {
+            selectedRowNumber = rowNumber;
+            return "selected";
+        }
+        
+        return string.Empty;
+        
+    }
+    
+    private void RowClickEvent(TableRowClickEventArgs<CurrencyTransactionDetailsDto> args)
+    {
+        if (selectedModel == args.Item)
+        {
+            selectedModel = null;
+            show = false;
+            StateHasChanged();
+            return;
+        }
 
+        selectedModel = args.Item;
+        show = selectedModel.Category is not null;
+        StateHasChanged();
+    }
+
+    #region Renders
+
+    RenderFragment TransactionsTable => _transactions.Any()
+        ? @<MudPaper>
+              <MudTooltip Text="Add transaction">
+                  <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTransactionDialog"></MudIconButton>
+              </MudTooltip>
+              <MudTooltip Text="Remove transaction">
+                  <MudIconButton Icon="@Icons.Material.Filled.Remove" OnClick="RemoveTransactionDialog"></MudIconButton>
+              </MudTooltip>
+              <MudPaper Elevation="2" Class="align-start d-flex">
+                  <MudGrid>
+                      <MudItem xs="12" md="5">
+                          <MudContainer Style="max-height: 600px;">
+                              <MudList T="string">
+                                  <MudListSubheader>
+                                      <MudText Typo="Typo.h5">Transaction Details</MudText>
+                                  </MudListSubheader>
+                                  <MudListItem>
+                                      <MudText>Transaction name: @selectedModel?.Name</MudText>
+                                  </MudListItem>
+                                  <MudListItem>
+                                      <MudText>Transaction date: @selectedModel?.Date</MudText>
+
+                                  </MudListItem>
+                                  @if (show && selectedModel is not null && selectedModel.Category is not null)
+                                  {
+
+                                      <MudListItem>
+                                          <MudText>Category: @selectedModel?.Category</MudText>
+                                      </MudListItem>
+                                  }
+                                  <MudListItem>
+                                      <MudText>Amount: @selectedModel?.Amount @selectedModel?.Currency</MudText>
+                                  </MudListItem>
+                              </MudList>
+                          </MudContainer>
+                      </MudItem>
+                      <MudItem xs="12" md="7">
+                          <MudContainer Style="max-height: 450px; overflow-y: scroll;">
+
+                              <MudTable Dense="true" T="CurrencyTransactionDetailsDto" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
+                                        RowClass="cursor-pointer" OnRowClick="RowClickEvent" RowClassFunc="@SelectedRowClassFunc" Class="d-inline">
+                                  <HeaderContent>
+                                      <MudTh>Amount</MudTh>
+                                      <MudTh>Currency</MudTh>
+                                      <MudTh>Date</MudTh>
+                                  </HeaderContent>
+                                  <RowTemplate>
+                                      <MudTd DataLabel="Amount">@context.Amount</MudTd>
+                                      <MudTd DataLabel="Currency">@context.Currency</MudTd>
+                                      <MudTd DataLabel="Date">@context.Date.ToString("dd-MM-yyyy")</MudTd>
+                                  </RowTemplate>
+                              </MudTable>
+                          </MudContainer>
+                      </MudItem>
+                  </MudGrid>
+
+              </MudPaper>
+          </MudPaper>
+        : null;
+
+
+    RenderFragment AddButton => !_transactions.Any()
+        ? @<MudFab Label="Add Transaction" StartIcon="@Icons.Material.Filled.Add" OnClick="AddTransactionDialog" Size="Size.Small"/>
+        : null;
+
+    RenderFragment Balances => _balances.Any()
+        ? @<MudPaper>
+              <MudText Typo="Typo.h5" Class="px-2 py-2">Available funds</MudText>
+              <MudStack>
+                  @foreach (var balance in _balances)
+                  {
+                      <MudStack Row="true" AlignItems="AlignItems.Center">
+                          <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet"/>
+                          <MudText>@($"{balance.Amount} {balance.Currency}")</MudText>
+                      </MudStack>
+                  }
+              </MudStack>
+          </MudPaper>
+        : null;
+    
+    RenderFragment NoBalances => !_balances.Any()
+        ? @<MudText Typo="Typo.h5" Class="px-2 py-2">No funds available yet. Add funds to get started.</MudText>
+        : null;
+    #endregion
+    
 }
