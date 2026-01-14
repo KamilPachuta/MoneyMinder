@@ -18,10 +18,6 @@ public interface IAccountService
     public Task<Result> ChangeAddress(ChangeAddressRequest request);
     
 
-    // Task<string> GetTokenAsync();
     Task<string> GetNameAsync();
-    // Task<Role> GetRoleAsync();
     Task<Result<GetUserDetailsResponse>> GetUserDetailsAsync();
-    // Task<Result<GetNotificationsResponse>> GetNotificationsAsync();
-    // Task<Result> ClearNotificationsAsync();
 }

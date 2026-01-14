@@ -114,10 +114,6 @@ public abstract class BaseService
         {
             var responseMessage = await _httpClient.GetAsync(url);
             var content = await responseMessage.Content.ReadAsStringAsync();
-
-            // if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
-            //     await _accountService.LogoutAsync();
-            
             
             if (!responseMessage.IsSuccessStatusCode)
                 return Result<TResponse>.Failure(

@@ -10,5 +10,5 @@ public interface IAccountFactory
         UserName name, UserPhoneNumber phoneNumber, UserBirthDate birthDate, UserGender gender, 
         AddressCountry country, AddressCity city, AddressPostalCode postalCode, AddressStreet street);
 
-    Account CreateAdmin(AccountEmail email, string password, IPasswordHasher<Account> passwordHasher);
+    // Account CreateAdmin(AccountEmail email, string password, IPasswordHasher<Account> passwordHasher);
 }

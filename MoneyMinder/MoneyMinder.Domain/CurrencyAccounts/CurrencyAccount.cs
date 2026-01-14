@@ -151,8 +151,10 @@ public class CurrencyAccount : AggregateRoot
         var payment = new Payment(new TransactionName("Currency Conversion"), DateTime.UtcNow, from, new Amount(-amount), new DefinedCategory(Category.Other));
 
         var convertedAmount = new Amount(amount * coefficient);
-
-        var income = new Income(new TransactionName("Currency conversion"), DateTime.UtcNow, to, new Amount(convertedAmount));
+        
+        var date = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 0, 0, 0, DateTimeKind.Utc);
+        
+        var income = new Income(new TransactionName("Currency conversion"), date, to, new Amount(convertedAmount));
 
         AddIncome(income);
         AddPayment(payment);

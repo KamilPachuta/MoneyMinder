@@ -14,7 +14,7 @@ public class Account : AggregateRoot
 {
     public AccountEmail Email { get; }
     
-    public AccountRole Role { get; }
+    // public AccountRole Role { get; }
     
     public CreatedAt CreatedAt { get; }
     
@@ -34,14 +34,14 @@ public class Account : AggregateRoot
         Guid id, 
         CreatedAt createdAt,
         AccountEmail email, 
-        AccountRole role, 
+        // AccountRole role, 
         string password, 
         IPasswordHasher<Account> passwordHasher)
         : base(id)
     {
         CreatedAt = createdAt;
         Email = email;
-        Role = role;
+        // Role = role;
         PasswordHash = new AccountPasswordHash(password, this, passwordHasher);
         
         RaiseDomainEvent(new AccountCreatedDomainEvent(DateTime.UtcNow, this));

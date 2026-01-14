@@ -17,7 +17,7 @@ internal sealed class AccountFactory : IAccountFactory
         
         var createdAt = DateTime.UtcNow;
         
-        var account = new Account(accountId, createdAt, email,  new AccountRole(Role.User), password, passwordHasher);
+        var account = new Account(accountId, createdAt, email/*,  new AccountRole(Role.User)*/, password, passwordHasher);
 
         var userId = Guid.NewGuid();
 
@@ -32,14 +32,14 @@ internal sealed class AccountFactory : IAccountFactory
         return account;
     }
 
-    public Account CreateAdmin(AccountEmail email, string password, IPasswordHasher<Account> passwordHasher)
-    {
-        var id = Guid.NewGuid();
-        
-        var createdAt = DateTime.UtcNow;
-        
-        var account = new Account(id, createdAt, email, new AccountRole(Role.Admin), password, passwordHasher);
-        
-        return account;
-    }
+    // public Account CreateAdmin(AccountEmail email, string password, IPasswordHasher<Account> passwordHasher)
+    // {
+    //     var id = Guid.NewGuid();
+    //     
+    //     var createdAt = DateTime.UtcNow;
+    //     
+    //     var account = new Account(id, createdAt, email, new AccountRole(Role.Admin), password, passwordHasher);
+    //     
+    //     return account;
+    // }
 }

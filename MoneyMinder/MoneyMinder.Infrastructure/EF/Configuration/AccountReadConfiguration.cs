@@ -23,8 +23,8 @@ public class AccountReadConfiguration :
         builder
             .Property(a => a.PasswordHash);
 
-        builder
-            .Property(a => a.Role);
+        // builder
+        //     .Property(a => a.Role);
 
         builder
             .HasOne(a => a.User)

@@ -23,5 +23,4 @@ public class Result<T> where T : class, IResponse
     public static Result<T> Success(HttpStatusCode statusCode, T response) => new Result<T> { Succeeded = true, StatusCode = statusCode, Response = response };
     public static Result<T> Failure(HttpStatusCode statusCode, params string[] errors) => new Result<T> { Succeeded = false, StatusCode = statusCode, ErrorList = errors.ToList() };
     
-   // public static Result<T> UnAuthorized(params string[] errors) => new Result<T> { Succeeded = false, ErrorList = errors.ToList() };
 }

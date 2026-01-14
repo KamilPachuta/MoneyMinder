@@ -98,9 +98,6 @@ public class CurrencyAccountService : BaseService, ICurrencyAccountService
         => await GetAsync<GetCurrencyAccountMonthPaymentsResponse>
             ($"api/CurrencyAccount/{id}/MonthPayments?month={month.ToString("yyyy-MM-dd")}&currency={currency.ToString()}");
     
-    
-    // public async Task<Result<GetCurrencyAccountTransactionsResponse>> GetCurrencyAccountTransactionsAsync(Guid id, DateTime startDate, DateTime endDate)
-    //     => await GetAsync<GetCurrencyAccountTransactionsResponse>($"api/CurrencyAccount/{id}/Transactions?startDate={startDate.ToString("yyyy-MM-dd")}&endDate={endDate.ToString("yyyy-MM-dd")}");
 
     #endregion
 }

@@ -11,14 +11,14 @@ namespace MoneyMinder.API.Endpoints.Account;
 
 internal static class AccountEndpoints
 {
-    [Authorize(Roles = "Admin")]
-    public static async Task<IResult> PostAdmin([FromBody]CreateAdminRequest request, [FromServices]ISender sender)
-    {
-        var command = new CreateAdminCommand(request.Email, request.Password);
-        
-        await sender.Send(command);
-        return Results.Ok();
-    }
+    // [Authorize(Roles = "Admin")]
+    // public static async Task<IResult> PostAdmin([FromBody]CreateAdminRequest request, [FromServices]ISender sender)
+    // {
+    //     var command = new CreateAdminCommand(request.Email, request.Password);
+    //     
+    //     await sender.Send(command);
+    //     return Results.Ok();
+    // }
     
     public static async Task<IResult> PostUser([FromBody]CreateUserRequest request, [FromServices]ISender sender)
     {

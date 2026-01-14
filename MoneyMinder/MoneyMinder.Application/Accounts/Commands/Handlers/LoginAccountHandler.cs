@@ -38,8 +38,8 @@ internal sealed class LoginAccountHandler : IRequestHandler<LoginAccountCommand,
         var claims = new List<Claim>()
         {
             new (ClaimTypes.NameIdentifier, account.Id.ToString()),
-            new (ClaimTypes.Email, account.Email),
-            new (ClaimTypes.Role, account.Role.ToString())
+            new (ClaimTypes.Email, account.Email)//,
+            // new (ClaimTypes.Role, account.Role.ToString())
         };
         if (account.User is not null)
         {

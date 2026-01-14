@@ -17,7 +17,7 @@ public class AccountModule : BaseModule
     {
         var group = app.MapGroup("").AddFluentValidationAutoValidation();
         
-        group.MapPost("/Admin/", AccountEndpoints.PostAdmin);
+        // group.MapPost("/Admin/", AccountEndpoints.PostAdmin);
 
         group.MapPost("/User/", AccountEndpoints.PostUser);
 

@@ -9,7 +9,7 @@ public class AccountReadModel
     public Guid Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public string Email { get; set; }
-    public Role Role { get; set; }
+    // public Role Role { get; set; }
     public string PasswordHash { get; set; }
 
     public UserReadModel? User { get; set; }
@@ -20,11 +20,11 @@ public class AccountReadModel
     {
     }
     
-    public AccountReadModel(Guid id, string email, Role role, DateTime createdAt, string passwordHash)
+    public AccountReadModel(Guid id, string email, /*Role role, */DateTime createdAt, string passwordHash)
     {
         Id = id;
         Email = email;
-        Role = role;
+        // Role = role;
         CreatedAt = createdAt;
         PasswordHash = passwordHash;
     }
