@@ -17,7 +17,9 @@ public interface ICurrencyAccountService
     public Task<Result> PostPaymentAsync(AddPaymentRequest request);
     public Task<Result> RemovePaymentAsync(RemovePaymentRequest request);
     
-    // public Task<Result> ImportCSVAsync(UploadCsvTransactionsRequest request);
+    public Task<Result> PostBudgetAsync(CreateBudgetRequest request);
+    public Task<Result> DeleteBudgetAsync(DeleteBudgetRequest request);
+    public Task<Result> PutLimitAsync(EditLimitRequest request);
     
     public Task<Result> ConvertCurrencyAsync(ConvertCurrencyRequest request);
     

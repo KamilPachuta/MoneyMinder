@@ -1,8 +1,10 @@
 ﻿@page "/CurrencyAccount/{Name}/Budget"
 @using MoneyMinderContracts.Responses.CurrencyAccounts
 @inject ICurrencyAccountService CurrencyService
+@inherits BasePage
 
-<h3>Budget</h3>
+
+
 <MudStack Style="width: 200px">
     <MudSelect Value="Month" ValueChanged="OnMonthChanged" Label="Select Month" T="DateTime">
         @foreach (var month in AvailableMonths)
@@ -14,6 +16,10 @@
     </MudSelect>
 </MudStack>
    
+
+@CreateButton
+@EditButton
+@DeleteButton
 @if (BarChart)
 {
     <MudPaper Class="doc-section-component-container">
@@ -29,7 +35,7 @@ else
     <MudGrid>
         @foreach (var chart in _pieCharts)
         {
-            <MudItem xs="12" sm="6" md="4"> <!-- 1 wykres = 1/3 szerokości -->
+            <MudItem xs="12" sm="6" md="4"> 
                 <MudPaper Class="pa-4">
                     <MudText Typo="Typo.h6" Class="mb-2">Payments in @chart.Key</MudText>
                     <MudChart 
@@ -48,11 +54,22 @@ else
 @code {
     [Parameter] 
     public string Name { get; set; }
+    
+    [CascadingParameter]
+    public Guid CurrencyAccountId { get; set; }
 
-    public Guid CurrencyAccountId;
+    private bool IsCurrentMonth = true;
+    
     public DateTime CurrencyAccountCreatedAt;
     
     public bool BarChart { get; set; } = false;
+    
+    private GetCurrencyAccountBudgetsResponse _budgetsResponse;
+    private GetCurrencyAccountMonthPaymentsResponse _paymentsResponse;
+    private BudgetDto selectedBudget = null;
+    private bool _succeded = false;
+    private List<string> _errors;
+    private DialogParameters _parameters = new DialogParameters();
 
     private string[] _xAxisLabels = Enum.GetNames(typeof(CategoryDto));
     private List<ChartSeries> _series;
@@ -67,13 +84,7 @@ else
     private int MonthsBetween(DateTime from, DateTime to)
         => (to.Year - from.Year) * 12 + (to.Month - from.Month);
     
-
-    private GetCurrencyAccountBudgetsResponse _budgetsResponse;
-    private GetCurrencyAccountMonthPaymentsResponse _paymentsResponse;
-    private BudgetDto selectedBudget = null;
-    private bool _succeded = false;
-    private List<string> _errors;
-
+    
     protected override async Task OnParametersSetAsync()
     {
         await SetParams();
@@ -81,11 +92,18 @@ else
 
     private async Task OnMonthChanged(DateTime newMonth)
     {
+        IsCurrentMonth = newMonth.Month == DateTime.Today.Month;
         Month = newMonth;
         await SetChart();
     }
 
-    private async Task SetParams()
+    protected override async Task RefreshDataAsync()
+    {
+        await LoadCurrencyAccountMetadata();
+        await LoadCurrencyAccountBudgets();
+    }
+
+    private async Task LoadCurrencyAccountMetadata()
     {
         var metadataResult = await CurrencyService.GetCurrencyAccountMetadataByNameAsync(Name);
         if (!metadataResult.Succeeded)
@@ -94,10 +112,12 @@ else
             _errors = metadataResult.ErrorList;
             return;
         }
-
+        
         CurrencyAccountId = metadataResult.Response.Id;
         CurrencyAccountCreatedAt = metadataResult.Response.CreatedAt;
-
+    }
+    private async Task LoadCurrencyAccountBudgets()
+    {
         var budgetsResult = await CurrencyService.GetCurrencyAccountBudgetsAsync(CurrencyAccountId);
         if (!budgetsResult.Succeeded)
         {
@@ -107,7 +127,18 @@ else
         }
 
         _budgetsResponse = budgetsResult.Response;
+    }
+
+    private async Task SetParams()
+    {
+        await RefreshDataAsync();
+        
         await SetChart();
+        
+        _parameters = new DialogParameters()
+        {
+            { "CurrencyAccountId", CurrencyAccountId }
+        };
     }
 
     private async Task SetChart()
@@ -116,7 +147,7 @@ else
             return;
 
         selectedBudget = _budgetsResponse.Budgets
-            .FirstOrDefault(b => b.Date.Month == Month.Month && b.Date.Year == Month.Year);
+            .FirstOrDefault(b => b.Date.Month == Month.Month && b.Date.Year == Month.Year)!;
 
         if (selectedBudget is not null)
         {
@@ -132,7 +163,7 @@ else
 
             _paymentsResponse = paymentsByCurrencyResult.Response;
             BarChart = true;
-            GenerateChartData(selectedBudget.Limits, _paymentsResponse.Payments);
+            GenerateBarChart(selectedBudget.Limits, _paymentsResponse.Payments);
             return;
         }
 
@@ -142,7 +173,7 @@ else
         GeneratePieCharts(_paymentsResponse.Payments);
     }
 
-    private void GenerateChartData(IEnumerable<LimitDto> limits, IEnumerable<CurrencyPaymentDto> payments)
+    private void GenerateBarChart(IEnumerable<LimitDto> limits, IEnumerable<CurrencyPaymentDto> payments)
     {
         var limitsByCategory = limits
             .OrderBy(l => l.CategoryDto)
@@ -200,26 +231,27 @@ else
                 });
     }
 
-    // private void GeneratePieCharts(IEnumerable<CurrencyPaymentDto> payments)
-    // {
-    //     _pieChartSeries = payments
-    //         .GroupBy(p => p.Currency)
-    //         .ToDictionary(
-    //             g => g.Key,
-    //             g => new List<ChartSeries>
-    //             {
-    //                 new ChartSeries
-    //                 {
-    //                     Name = $"Payments in {g.Key}",
-    //                     Data = Enum.GetValues<CategoryDto>()
-    //                         .OrderBy(c => c)
-    //                         .Select(c => g
-    //                             .Where(p => p.Category == c)
-    //                             .Select(p => Math.Abs((double)p.Amount))
-    //                             .Sum())
-    //                         .ToArray()
-    //                 }
-    //             });
-    // }
+    
+    
+    private async Task CreateBudget()
+        => await ShowDialogAsync<CreateBudgetDialog>("Create Budget", _parameters);
+    
+    private async Task EditLimit()
+        => await ShowDialogAsync<EditBudgetLimitDialog>("Edit Limit", _parameters);
+
+    private async Task DeleteBudget()
+        => await ShowDialogAsync<DeleteBudgetDialog>("Delete Budget", _parameters);
+
+    RenderFragment DeleteButton => (IsCurrentMonth && BarChart)
+        ? @<MudButton OnClick="DeleteBudget" StartIcon="@Icons.Material.Filled.Delete">Delete Budget</MudButton>
+        : null;
+    
+    RenderFragment CreateButton => (IsCurrentMonth && !BarChart)
+        ? @<MudButton OnClick="CreateBudget" StartIcon="@Icons.Material.Filled.Add">Create Budget</MudButton>
+        : null;
+    
+    RenderFragment EditButton => (IsCurrentMonth && BarChart)
+        ? @<MudButton OnClick="EditLimit" StartIcon="@Icons.Material.Filled.Edit">Edit Limit</MudButton>
+        : null;
 
 }

@@ -40,7 +40,15 @@ public class CurrencyAccountService : BaseService, ICurrencyAccountService
     public async Task<Result> RemovePaymentAsync(RemovePaymentRequest request)
         => await SendAsync("api/CurrencyAccount/Payment", HttpMethod.Delete, request);
 
+    public async Task<Result> PostBudgetAsync(CreateBudgetRequest request)
+        => await SendAsync("api/CurrencyAccount/Budget", HttpMethod.Post, request);
     
+    public async Task<Result> DeleteBudgetAsync(DeleteBudgetRequest request)
+        => await SendAsync("api/CurrencyAccount/Budget", HttpMethod.Delete, request);
+
+    public async Task<Result> PutLimitAsync(EditLimitRequest request)
+        => await SendAsync("api/CurrencyAccount/Budget/Limit", HttpMethod.Put, request);
+
     public async Task<Result> ConvertCurrencyAsync(ConvertCurrencyRequest request)
         => await SendAsync("api/CurrencyAccount/Convert", HttpMethod.Post, request);
 
