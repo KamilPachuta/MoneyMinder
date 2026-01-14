@@ -3,6 +3,8 @@ using MoneyMinder.Domain.CurrencyAccounts.DomainEvents;
 using MoneyMinder.Domain.CurrencyAccounts.Entities;
 using MoneyMinder.Domain.CurrencyAccounts.Exceptions;
 using MoneyMinder.Domain.CurrencyAccounts.ValueObjects;
+using MoneyMinder.Domain.Shared.Enums;
+using MoneyMinder.Domain.Shared.Exceptions;
 using MoneyMinder.Domain.Shared.Primitives;
 using MoneyMinder.Domain.Shared.ValueObjects;
 
@@ -139,46 +141,26 @@ public class CurrencyAccount : AggregateRoot
         RaiseDomainEvent(new BudgetDeletedDomainEvent(budget, this));
     }
     
-    /*public void ConvertCurrencyTo(Currency from, Currency to, decimal amount, decimal coefficient)
+    public void ConvertCurrency(DefinedCurrency from, DefinedCurrency to, Amount amount, Amount coefficient)
     {
         if (amount < 0)
         {
             throw new NegativeAmountException(amount);
         }
 
-        var income = new Income(new TransactionName("Currency conversion"), DateTime.UtcNow, to, new Amount(amount));
-
-        var convertedAmount = new Amount(-1*(amount / coefficient));
-
-        var payment = new Payment(new TransactionName("Currency Conversion"), DateTime.UtcNow, from, convertedAmount, Category.Other);
-
-
-        AddIncome(income);
-        AddPayment(payment);
-        
-        RaiseDomainEvent(new CurrencyConvertedToDomainEvent(from, to, amount, coefficient, this));
-    }
-    
-    public void ConvertCurrencyFrom(Currency from, Currency to, decimal amount, decimal coefficient)
-    {
-        if (amount < 0)
-        {
-            throw new NegativeAmountException(amount);
-        }
-
-        var payment = new Payment(new TransactionName("Currency Conversion"), DateTime.UtcNow, from, new Amount(-1 * amount),
-            Category.Entertainment);
+        var payment = new Payment(new TransactionName("Currency Conversion"), DateTime.UtcNow, from, new Amount(-amount), new DefinedCategory(Category.Other));
 
         var convertedAmount = new Amount(amount * coefficient);
-        
-        var income = new Income(new TransactionName("Currency conversion"), DateTime.UtcNow, to, convertedAmount);
 
+        var income = new Income(new TransactionName("Currency conversion"), DateTime.UtcNow, to, new Amount(convertedAmount));
 
         AddIncome(income);
         AddPayment(payment);
         
-        RaiseDomainEvent(new CurrencyConvertedFromDomainEvent(from, to, amount, coefficient, this));
-    }*/
+        RaiseDomainEvent(new CurrencyConvertedDomainEvent(from, to, amount, coefficient, this));
+    }
+    
+   
     
     
     private void ProcessTransaction(Transaction transaction)

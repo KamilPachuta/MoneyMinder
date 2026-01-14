@@ -147,12 +147,27 @@ internal static class CurrencyAccountEndpoints
     [Authorize]
     public static async Task<IResult> BudgetDelete(
         [FromBody]DeleteBudgetRequest request,
-        [FromServices] ISender sender,
-        [FromServices] IUserService userService)
+        [FromServices]ISender sender,
+        [FromServices]IUserService userService)
     {
         var accountId = userService.GetAccountId();
 
         var command = new DeleteBudgetCommand(accountId, request.CurrencyAccountId);
+
+        await sender.Send(command);
+                
+        return Results.Ok();
+    }
+    
+    [Authorize]
+    public static async Task<IResult> ConvertCurrency(
+        [FromBody]ConvertCurrencyRequest request,
+        [FromServices]ISender sender,
+        [FromServices]IUserService userService)
+    {
+        var accountId = userService.GetAccountId();
+
+        var command = new ConvertCurrencyCommand(accountId, request.CurrencyAccountId, (Currency)request.From, (Currency)request.To, request.Amount, request.Coefficient);
 
         await sender.Send(command);
                 

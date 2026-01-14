@@ -40,6 +40,8 @@ public class CurrencyAccountModule : BaseModule
         
         commands.MapDelete("/Budget", CurrencyAccountEndpoints.BudgetDelete);
         
+        commands.MapPost("/Convert", CurrencyAccountEndpoints.ConvertCurrency);
+        
 
         commands.MapPost("/PaymentsReport", CurrencyAccountEndpoints.PaymentsReport);
         
