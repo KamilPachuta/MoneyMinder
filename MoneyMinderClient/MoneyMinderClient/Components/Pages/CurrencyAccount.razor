@@ -2,6 +2,7 @@
 @using MoneyMinderContracts.Requests.CurrencyAccounts
 @using MoneyMinderContracts.Responses.CurrencyAccounts
 @inject ICurrencyAccountService CurrencyService
+@inject NavMenuState NavState
 @inherits BasePage
     
 <MudGrid>
@@ -15,11 +16,11 @@
     <MudItem xs="12" md="7">
         <MudPaper Elevation="1" Class="px-4 py-4" Height="100%">
             <MudStack>
+                @AddButton
                 <MudFab Label="Currency Exchange" StartIcon="@Icons.Material.Filled.CurrencyExchange" OnClick="ConvertCurrency" Size="Size.Small"/>
                 <MudFab Label="Edit Currency Account Name" StartIcon="@Icons.Material.Filled.EditNote" OnClick="EditCurrencyAccountName" Size="Size.Small"/>
                 <MudFab Label="Budget" StartIcon="@Icons.Material.Filled.BarChart" OnClick="Budget" Size="Size.Small"/>
                 <MudFab Label="Remove Currency Account" StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="DeleteCurrencyAccount" Size="Size.Small"/>
-                @AddButton
             </MudStack>
         </MudPaper>
     </MudItem>
@@ -42,7 +43,7 @@
 
     private List<string> _errors;
     private GetCurrencyAccountNamesResponse _response;
-    private List<BalanceDto> _balances;
+    private List<BalanceDto> _balances = new();
 
     private bool show = false;
     private MudTable<CurrencyTransactionDetailsDto> mudTable;
@@ -53,11 +54,10 @@
     private RemoveIncomeRequest _incomeRequest;
     private RemovePaymentRequest _paymentRequest;
 
-    
+
+
     private async Task ConvertCurrency()
-    {
-        throw new NotImplementedException();
-    }
+        => await ShowDialogAsync<ConvertCurrencyDialog>("Convert Currency", _parameters);
     
     private async Task EditCurrencyAccountName()
         => await ShowDialogAsync<EditCurrencyAccountNameDialog>("Edit Currency Account", _parameters);
@@ -68,7 +68,11 @@
     }
 
     private async Task DeleteCurrencyAccount()
-        => await ShowDialogAsync<DeleteCurrencyAccountDialog>("Delete Currency Account", _parameters);
+    {
+        await ShowDialogAsync<DeleteCurrencyAccountDialog>("Delete Currency Account", _parameters);
+        await NavState.RefreshCurrencyAsync();
+        NavigationManager.NavigateTo(PathBuilder.HomePath());
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -87,8 +91,7 @@
         
         await ShowDialogAsync<RemoveCurrencyTransactionDialog>("Remove Transaction", _parameters);
     }
-    
-    private async Task SetParams()
+    private async Task LoadCurrencyAccountMetadata()
     {
         var metadataResult = await CurrencyService.GetCurrencyAccountMetadataByNameAsync(Name);
         if (!metadataResult.Succeeded)
@@ -101,7 +104,9 @@
         CurrencyAccountId = metadataResult.Response.Id;
         
         CurrencyAccountCreatedAt = metadataResult.Response.CreatedAt;
-
+    }
+    private async Task LoadCurrencyAccountBalances()
+    {
         var balancesResult = await CurrencyService.GetCurrencyAccountBalancesAsync(CurrencyAccountId);
 
         if (!balancesResult.Succeeded)
@@ -112,18 +117,10 @@
         }
 
         _balances = balancesResult.Response.Balances.ToList();
+    }
 
-        _parameters = new DialogParameters()
-        {
-            { "CurrencyAccountId", CurrencyAccountId }
-        };
-        
-        _fullParameters = new DialogParameters()
-        {
-            { "CurrencyAccountId", CurrencyAccountId },
-            { "CurrencyAccountCreatedAt", CurrencyAccountCreatedAt}
-        };
-
+    private async Task LoadCurrencyAccountTransactions()
+    {
         var transactionsResult = await CurrencyService.GetCurrencyAccountTransactionsAsync(CurrencyAccountId);
         
         if (!transactionsResult.Succeeded)
@@ -134,11 +131,33 @@
         }
 
         _transactions= transactionsResult.Response.Transactions.ToList();
+    }
 
+    protected override async Task RefreshDataAsync()
+    {
+        await LoadCurrencyAccountMetadata();
+        await LoadCurrencyAccountBalances();
+        await LoadCurrencyAccountTransactions();
+    }
+
+    private async Task SetParams()
+    {
+        await RefreshDataAsync();
+        
+        _parameters = new DialogParameters()
+        {
+            { "CurrencyAccountId", CurrencyAccountId }
+        };
+        
+        _fullParameters = new DialogParameters()
+        {
+            { "CurrencyAccountId", CurrencyAccountId },
+            { "CurrencyAccountCreatedAt", CurrencyAccountCreatedAt}
+        };
+        
         _succeded = true;
     }
     
-         
     private string SelectedRowClassFunc(CurrencyTransactionDetailsDto transaction, int rowNumber)
     {
         if (selectedRowNumber == rowNumber)
@@ -240,7 +259,7 @@
         : null;
 
     RenderFragment Balances => _balances.Any()
-        ? @<MudPaper>
+        ? @<MudPaper Class="p-2">
               <MudText Typo="Typo.h5" Class="px-2 py-2">Available funds</MudText>
               <MudStack>
                   @foreach (var balance in _balances)
@@ -255,7 +274,7 @@
         : null;
     
     RenderFragment NoBalances => !_balances.Any()
-        ? @<MudText Typo="Typo.h5" Class="px-2 py-2">No funds available yet. Add funds to get started.</MudText>
+        ? @<MudText Typo="Typo.h6" Class="px-2 py-2">No funds available yet. Add funds to get started.</MudText>
         : null;
     #endregion
     

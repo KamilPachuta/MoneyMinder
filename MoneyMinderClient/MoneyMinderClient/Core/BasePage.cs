@@ -68,7 +68,7 @@ public class BasePage : ComponentBase
         if (dialogResult.Succeeded)
         {
             Snackbar.Add("Operation successful", Severity.Success);
-            //NavigationManager.Refresh();
+            await RefreshDataAsync();
         }
         else
         {
@@ -77,4 +77,7 @@ public class BasePage : ComponentBase
                 Snackbar.Add(error, Severity.Error);
         }
     }
+    
+    protected virtual Task RefreshDataAsync()
+        => Task.CompletedTask;
 }

@@ -3,27 +3,24 @@
 @using MoneyMinderContracts.Responses.SavingsAccounts
 @inject ICurrencyAccountService CurrencyService
 @inject ISavingsAccountService SavingsService
+@inject NavMenuState NavState
 @inherits BasePage
 
 
-
+<MudGrid>
 @if (_currencySucceded)
     {
-        
-            <MudPaper Elevation="2">
-                <MudGrid>
                     <MudItem xs="12" md="3">
                         <MudList T="string" @bind-SelectedItem="currencySelectedValue" SelectionMode="SelectionMode.SingleSelection" SelectedValueChanged="OnCurrencySelectedValueChanged">
                             <MudListSubheader>
-                                <MudPaper Elevation="0" Class="mx-1 my-0 px-1 py-0 align-start d-flex">
-                                    <MudPaper Elevation="0" Class="align-start d-flex">
-                                        <MudText Typo="Typo.h5">Currency Accounts</MudText>
-                                    </MudPaper>
-                                    <MudSpacer/>
-                                    <MudPaper Elevation="0" Class="align-end d-flex">
-                                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateCurrencyAccount"></MudIconButton>
-                                    </MudPaper>
-                                </MudPaper>
+                                <MudStack>
+                                    <MudText Typo="Typo.h5" Align="Align.Center">Currency Accounts</MudText>
+                                    <MudTooltip Text="Create Currency Account">
+                                        <MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="CreateCurrencyAccount">Create</MudButton>
+                                    </MudTooltip> 
+                                </MudStack>
+                                <MudSpacer/>
+
                             </MudListSubheader>
                             @if (_currencyAccountNames.Any())
                             {
@@ -37,107 +34,123 @@
                     @if (_currencyDetails is not null)
                     {
                         <MudItem xs="12" md="9">
-                            <MudPaper Width="100%" Class="px-4 py-4" Elevation="3">
-                                <MudText Typo="Typo.h4">@_currencyDetails.Name</MudText>
-                                <MudGrid>
+                            <MudCard Elevation="1">
+                                <MudCardHeader>
+                                    <MudText Typo="Typo.h4">@_currencyDetails.Name</MudText>
+                                </MudCardHeader>
+                                <MudCardContent>
+<MudGrid>
+
                                     <MudItem xs="12" md="4">
-                                        
+
                                             @if (_currencyDetails.Balances is not null && _currencyDetails.Balances.Any())
                                             {
-                                                <MudPaper Class="px-4 py-4" Elevation="2">
-                                                    <MudText Typo="Typo.h6">Balances:</MudText>
+                                                <MudText Typo="Typo.h5" Class="p-2">Available funds</MudText>
+                                                <MudStack>
                                                     @foreach (var balance in _currencyDetails.Balances)
                                                     {
-                                                        if (balance.Amount != 0)
-                                                        {
-                                                            <MudText Typo="Typo.body1">@balance.Amount @balance.Currency</MudText>
-                                                        }
+                                                        if (balance.Amount == 0)
+                                                            continue;
+                                                        
+                                                        <MudStack Row="true" AlignItems="AlignItems.Center">
+                                                            <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet"/>
+                                                            <MudText>@($"{balance.Amount} {balance.Currency}")</MudText>
+                                                        </MudStack>
                                                     }
-                                                </MudPaper>
+                                                </MudStack>
                                             }
-                                        
                                     </MudItem>
                                     @if (_currencyDetails.Transactions is not null && _currencyDetails.Transactions.Any())
                                     {
                                         <MudItem xs="12" md="8">
-                                            <MudContainer Style="max-height: 600px; overflow-y: scroll;">
-                                                <MudText Typo="Typo.h5">Transactions history</MudText>
 
-                                                <MudTable T="CurrencyTransactionDetailsDto" Items="@_currencyDetails.Transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTableTransactions"
-                                                          RowClass="cursor-pointer" Class="d-inline">
-                                                    <HeaderContent>
-                                                        <MudTh>Name</MudTh>
-                                                        <MudTh>Date</MudTh>
-                                                        <MudTh>Amount</MudTh>
-                                                        <MudTh>Currency</MudTh>
-                                                    </HeaderContent>
-                                                    <RowTemplate>
-                                                        <MudTd DataLabel="Name">@context.Name</MudTd>
-                                                        <MudTd DataLabel="Date">@context.Date.ToString("dd-MM-yyyy")</MudTd>
-                                                        <MudTd DataLabel="Amount">@context.Amount</MudTd>
-                                                        <MudTd DataLabel="Currency">@context.Currency</MudTd>
-                                                    </RowTemplate>
-                                                </MudTable>
-                                            </MudContainer>
+                                                    <MudText Typo="Typo.h5">Last Transactions</MudText>
+
+                                                    <MudTable T="CurrencyTransactionDetailsDto" Dense="true" Items="@_currencyDetails.Transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTableTransactions"
+                                                              RowClass="cursor-pointer" Class="d-inline">
+                                                        <HeaderContent>
+                                                            <MudTh>Amount</MudTh>
+                                                            <MudTh>Currency</MudTh>
+                                                            <MudTh>Date</MudTh>
+                                                        </HeaderContent>
+                                                        <RowTemplate>
+                                                            <MudTd DataLabel="Amount">@context.Amount</MudTd>
+                                                            <MudTd DataLabel="Currency">@context.Currency</MudTd>
+                                                            <MudTd DataLabel="Date">@context.Date.ToString("dd-MM-yyyy")</MudTd>
+                                                        </RowTemplate>
+                                                    </MudTable>
                                         </MudItem>
                                     }
+
                                 </MudGrid>
-                            </MudPaper>
+                                </MudCardContent>
+                            </MudCard>
                         </MudItem>
                     }
-                </MudGrid>
-            </MudPaper>
+             
        
     }
 @if(_savingsSucceded)
 {
-    <MudItem xs="12" sm="7">
-        <MudPaper Elevation="2" Class="px-4 py-4 align-start d-flex">
-            <MudStack>
-                <MudText Typo="Typo.h5">Savings Accounts</MudText>
-                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateSavingsAccount"></MudIconButton>
-            </MudStack>
-
-            <MudTable Items="@_savingsDetails.SavingsAccounts" Dense="true" Bordered="true" Elevation="0">
-                <HeaderContent>
-                    <MudTh>Name</MudTh>
-                    <MudTh>Actual Amount</MudTh>
-                    <MudTh>Planned Amount</MudTh>
-                    <MudTh>Currency</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Name">@context.Name</MudTd>
-                    <MudTd DataLabel="Actual Amount">@context.CurrentAmount</MudTd>
-                    <MudTd DataLabel="Planned Amount">@context.PlannedAmount</MudTd>
-                    <MudTd DataLabel="Currency">@context.Currency</MudTd>
-                </RowTemplate>
-            </MudTable>
-        </MudPaper>
+    <MudItem xs="12" md="3">
+        <MudStack>
+            <MudText Typo="Typo.h5" Align="Align.Center">Savings Accounts</MudText>
+            <MudTooltip Text="Create Savings Account">
+                <MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="CreateSavingsAccount">Create</MudButton>
+            </MudTooltip> 
+        </MudStack>
     </MudItem>
-    }
     
+    <MudItem xs="12" md="9">
+        <MudTable Items="@_savingsDetails.SavingsAccounts" Bordered="true">
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Actual Amount</MudTh>
+                <MudTh>Planned Amount</MudTh>
+                <MudTh>Currency</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Actual Amount">@context.CurrentAmount</MudTd>
+                <MudTd DataLabel="Planned Amount">@context.PlannedAmount</MudTd>
+                <MudTd DataLabel="Currency">@context.Currency</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudItem>
+    
+    
+    }
+</MudGrid>
 
 
 
 
 @code {
-    //MudListItem selectedItem;
     string currencySelectedValue = String.Empty;
-    // string savingsSelectedValue = String.Empty;
     
     private bool _savingsSucceded = false;
     private bool _currencySucceded = false;
     private List<string> _errors;
     
     private MudTable<CurrencyTransactionDetailsDto> mudTableTransactions;
-
     
     private List<string> _currencyAccountNames = new(); 
     private List<string> _savingsAccountNames = new();
     private GetCurrencyAccountDetailsResponse _currencyDetails;
     private GetSavingsAccountsDetailsResponse _savingsDetails;
 
+    private async Task CreateCurrencyAccount()
+    { 
+        await ShowDialogAsync<CreateCurrencyAccountDialog>("Create Currency Account");
+        await NavState.RefreshCurrencyAsync();
+    }
 
+
+    private async Task CreateSavingsAccount()
+    {
+        await ShowDialogAsync<CreateSavingsAccountDialog>("Create Savings Account");
+        await NavState.RefreshSavingsAsync();
+    } 
 
     private async Task GetCurrencyAccountDetails(string name)
     {
@@ -145,7 +158,7 @@
         _currencyDetails = scopeResult.Response;
     }
 
-    private async Task SetCurrencyParams()
+    private async Task LoadCurrencyData()
     {
         var responseCurrency = await CurrencyService.GetCurrencyAccountNamesAsync();
 
@@ -167,8 +180,13 @@
         
         _currencySucceded = true;
     }
+    protected override async Task RefreshDataAsync()
+    {
+        await LoadCurrencyData();
+        await LoadSavingsData();
+    }
     
-    private async Task SetSavingsParams()
+    private async Task LoadSavingsData()
     {
         var responseSavings = await SavingsService.GetSavingsAccountNames();
         
@@ -182,10 +200,8 @@
         if(responseSavings.Response is not null)
         {
             _savingsAccountNames = responseSavings.Response.Names.ToList();
-            // var name = _savingsAccountNames.First();
             var scopeResult = await SavingsService.GetSavingsAccountsDetailsAsync();
             _savingsDetails = scopeResult.Response;
-            // savingsSelectedValue = name;
         }
         
         _savingsSucceded = true;
@@ -194,19 +210,12 @@
     
     protected async override Task OnParametersSetAsync()
     {
-        await SetCurrencyParams();
-        await SetSavingsParams();
-}
+        await RefreshDataAsync();
+    }
     
     private async Task OnCurrencySelectedValueChanged(object value)
     {
         currencySelectedValue = (string)value;
         await GetCurrencyAccountDetails(currencySelectedValue);
     }
-
-    private async Task CreateCurrencyAccount()
-        => await ShowDialogAsync<CreateCurrencyAccountDialog>("Create Currency Account");
-
-    private async Task CreateSavingsAccount()
-        => await ShowDialogAsync<CreateSavingsAccountDialog>("Create Savings Account");
 }

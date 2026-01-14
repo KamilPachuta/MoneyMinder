@@ -1,7 +1,7 @@
 ﻿@page "/Profile"
 @using MoneyMinderContracts.Responses.Accounts
 @inject IAccountService AccountService
-@inherits MoneyMinderClient.Core.BasePage
+@inherits BasePage
 
 <PageTitle>Profile</PageTitle>
 
@@ -44,8 +44,11 @@
     private async Task EditAddress()
         => await ShowDialogAsync<EditAddressDialog>("Edit Address");
     
-    
-    private async Task SetParams()
+    protected override async Task RefreshDataAsync()
+    {
+        await LoadData();
+    }
+    private async Task LoadData()
     {
         var firstResult = await AccountService.GetUserDetailsAsync();
         if (!firstResult.Succeeded)
@@ -62,7 +65,7 @@
     
     protected async override Task OnParametersSetAsync()
     {
-        await SetParams();
+        await RefreshDataAsync();
     }
 
     

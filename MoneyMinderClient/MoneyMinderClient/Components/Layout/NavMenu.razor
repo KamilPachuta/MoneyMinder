@@ -1,7 +1,4 @@
-﻿@inject IAccountService AccountService
-@inject ICurrencyAccountService CurrencyService
-@inject ISavingsAccountService SavingsService
-@using System.Net
+﻿@inject NavMenuState NavState
 @inherits BasePage
 
 
@@ -10,22 +7,15 @@
 
 <AuthorizeView>
     <Authorized>
-        @if (!string.IsNullOrWhiteSpace(_name))
-        {
-            <MudDrawerHeader>
-                <MudText Typo="Typo.h6">@_name</MudText>
-            </MudDrawerHeader>
-        }
         <MudNavMenu>
             <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Home</MudNavLink> 
             <MudNavLink Href="/Profile" Icon="@Icons.Material.Filled.AccountCircle">Profile</MudNavLink> 
             <MudNavGroup Title="CurrencyAccounts" Icon="@Icons.Material.Filled.AccountBalance" Expanded="false">
-                @foreach (var name in _currencyAccountNames)
+                @foreach (var name in NavState.CurrencyAccountNames)
                 {
                     <MudPaper Outlined="true" Class="px-3 py-1" Elevation="5">
                         <MudNavGroup Title="@name" Icon="@Icons.Material.Filled.AccountBalanceWallet" Expanded="false" Class="">
                             <MudNavLink Href="@PathBuilder.CurrencyAcountPath(name)" Icon="@Icons.Material.Filled.CreditCard">Account</MudNavLink>
-                            <MudNavLink Href="@PathBuilder.CurrencyTransactionHistoryPath(name)" Icon="@Icons.Material.Filled.History">Transaction History</MudNavLink>
                             <MudNavLink Href="@PathBuilder.BudgetPath(name)" Icon="@Icons.Material.Filled.BarChart">Budget</MudNavLink>
                         </MudNavGroup>
                     </MudPaper>
@@ -33,7 +23,7 @@
                 <MudNavLink Icon="@Icons.Material.Filled.AddCard" OnClick="CreateCurrencyAccount">Create</MudNavLink>
             </MudNavGroup>
             <MudNavGroup Title="SavingsAccounts" Icon="@Icons.Material.Filled.Shield" Expanded="false">
-                @foreach (var name in _savingsAccountNames)
+                @foreach (var name in NavState.SavingsAccountNames)
                 {
                     <MudPaper Outlined="true" Class="px-3 py-1" Elevation="5">
                         <MudNavLink Href="@PathBuilder.SavingsAccountPath(name)" Icon="@Icons.Material.Filled.Savings">@name</MudNavLink>
@@ -47,62 +37,30 @@
 </AuthorizeView>
 
 @code {
-    private string _name = "";
-    private List<string> _errorList = new();
-    private List<string> _currencyAccountNames = new(); 
-    private List<string> _savingsAccountNames = new();
-
-
-
 
     private async Task CreateCurrencyAccount()
-        => await ShowDialogAsync<CreateCurrencyAccountDialog>("Create Currency Account");
-
+    {
+        await ShowDialogAsync<CreateCurrencyAccountDialog>("Create Currency Account");
+        await NavState.RefreshCurrencyAsync();
+    }
+    
     private async Task CreateSavingsAccount()
-        => await ShowDialogAsync<CreateSavingsAccountDialog>("Create Savings Account");
-
-
-    
-    private async Task SetParams()
     {
-        var responseCurrencyAccounts = await CurrencyService.GetCurrencyAccountNamesAsync();
-        
-        if (responseCurrencyAccounts.Succeeded)
-        {
-            _currencyAccountNames = responseCurrencyAccounts.Response.Names.ToList();
-        }
-        else
-        {
-            if (responseCurrencyAccounts.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                await AccountService.LogoutAsync();
-                NavigationManager.NavigateTo("/login/", true);
-            }
-            
-            _errorList = responseCurrencyAccounts.ErrorList;
-        }
-
-
-        var responseSavings = await SavingsService.GetSavingsAccountNames();
-
-        if (responseSavings.Succeeded)
-        {
-            _savingsAccountNames = responseSavings.Response.Names.ToList();
-        }
-        else
-        {
-            _errorList = responseSavings.ErrorList;
-        }
-        
-        _name = await AccountService.GetNameAsync();
-        
+        await ShowDialogAsync<CreateSavingsAccountDialog>("Create Savings Account");
+        await NavState.RefreshSavingsAsync();
     }
-    
+
     protected override async Task OnInitializedAsync()
-    {
-        await SetParams();
+    { 
+        await NavState.LoadCurrencyAsync();
+        await NavState.LoadSavingsAsync();
+        
+        NavState.OnChange += StateHasChanged;
     }
 
-
+    public void Dispose()
+    {
+        NavState.OnChange -= StateHasChanged;
+    }
 
 }

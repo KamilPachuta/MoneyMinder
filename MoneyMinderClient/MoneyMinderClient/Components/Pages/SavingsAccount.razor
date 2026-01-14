@@ -2,6 +2,7 @@
 @using MoneyMinderContracts.Responses.SavingsAccounts
 @inject ISavingsAccountService SavingsService
 @inject NavigationManager NavManager
+@inject NavMenuState NavState
 @inherits BasePage
 
 <style>
@@ -16,8 +17,7 @@
 <MudGrid>
         <MudItem xs="12" sm="12">
                  <MudPaper Elevation="2" Class="align-start px-4 py-4">
-                                <MudText Typo="Typo.h3">Savings Account</MudText>
-                                <MudText Typo="Typo.h5">@Name</MudText>
+                                <MudText Typo="Typo.h3">@Name</MudText>
                                 <MudText Typo="Typo.h6">@Currency</MudText>
                             </MudPaper>
             </MudItem>
@@ -30,18 +30,27 @@
                                             <MudText Typo="Typo.body1">@_response.CurrentAmount / @_response.PlannedAmount</MudText>
                                         }
                                     </MudPaper>
-                                    <MudPaper Elevation="2" Class="px-4 py-4">
-                                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="ProcessTransaction"></MudIconButton>
-                                        <MudIconButton Icon="@Icons.Material.Filled.EditNote" OnClick="EditSavingsAccountName"></MudIconButton>
-                                        <MudIconButton Icon="@Icons.Material.Filled.Edit"OnClick="ChangePlannedAmount"></MudIconButton>
-                                        <MudIconButton Icon="@Icons.Material.Filled.Remove"OnClick="RemoveSavingsAccount"></MudIconButton>
-                                    </MudPaper>
+                    <MudPaper Elevation="2" Class="px-4 py-4">
+                        
+                        <MudTooltip Text="Add transaction">
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="ProcessTransaction"></MudIconButton>
+                        </MudTooltip>
+                        <MudTooltip Text="Edit name">
+                            <MudIconButton Icon="@Icons.Material.Filled.EditNote" OnClick="EditSavingsAccountName"></MudIconButton>
+                        </MudTooltip>
+                        <MudTooltip Text="Edit planned amount">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"OnClick="ChangePlannedAmount"></MudIconButton>
+                        </MudTooltip>
+                        <MudTooltip Text="Delete savings account">
+                            <MudIconButton Icon="@Icons.Material.Filled.Remove"OnClick="RemoveSavingsAccount"></MudIconButton>
+                        </MudTooltip>
+                    </MudPaper>
                 </MudPaper>
             </MudItem>
     <MudItem xs="12" sm="8">
             <MudPaper Elevation="2" Class="align-start d-flex">
                                 <MudPaper Elevation="0" Width="100%" MinWidth="300px">
-                                    <MudContainer Style="max-height: 800px; overflow-y: scroll;"  Class="px-0">                                                 
+                                    <MudContainer Style="max-height: 450px; overflow-y: scroll;"  Class="px-0">                                                 
                                         <MudTable T="SavingsTransactionDetailsDto" Items="@_transactions" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
                                                   RowClass="cursor-pointer">
                                             <HeaderContent>
@@ -86,9 +95,8 @@
 
     private bool _succeded = false;
     private List<string> _errors;
-    
-    
-    private async Task SetParams()
+
+    private async Task LoadData()
     {
         var result = await SavingsService.GetSavingsAccountDetailsAsync(Name);
         
@@ -108,6 +116,11 @@
         Currency = _response.Currency;
 
         SavingsAccountCreatedAt = _response.CreatedAt;
+    }
+    
+    private async Task SetParams()
+    {
+        await LoadData();
 
         _parameters = new DialogParameters
         {
@@ -141,11 +154,19 @@
     
     private async Task ChangePlannedAmount()
         => await ShowDialogAsync<EditSavingsAccountPlannedAmountDialog>("Edit Savings Account Planned Amount", _parameters);
-    
+
     private async Task RemoveSavingsAccount()
-        => await ShowDialogAsync<DeleteSavingsAccountDialog>("Delete Savings Account", _parameters);
-    
-    
+    {
+    await ShowDialogAsync<DeleteSavingsAccountDialog>("Delete Savings Account", _parameters);
+    await NavState.RefreshSavingsAsync();
+        NavManager.NavigateTo(PathBuilder.HomePath());
+            
+    }
+
+    private async Task RefreshDataAsync()
+    {
+        await LoadData();
+    }
 
     private string SelectedRowClassFunc(SavingsTransactionDetailsDto transaction, int rowNumber)
     {
