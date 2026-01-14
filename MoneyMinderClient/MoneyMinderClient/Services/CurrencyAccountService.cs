@@ -41,6 +41,9 @@ public class CurrencyAccountService : BaseService, ICurrencyAccountService
         => await SendAsync("api/CurrencyAccount/Payment", HttpMethod.Delete, request);
 
     
+    public async Task<Result> ConvertCurrencyAsync(ConvertCurrencyRequest request)
+        => await SendAsync("api/CurrencyAccount/Convert", HttpMethod.Post, request);
+
     public async Task<Result<GetCurrencyAccountReportPaymentsResponse>> PostPaymentsReportAsync(PostPaymentsReportRequest request)
         => await PostReportAsync<PostPaymentsReportRequest, GetCurrencyAccountReportPaymentsResponse>("api/CurrencyAccount/PaymentsReport", request);
 

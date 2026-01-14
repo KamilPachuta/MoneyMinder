@@ -1,0 +1,107 @@
+﻿@using MoneyMinderContracts.Requests.CurrencyAccounts.Validators
+@using MoneyMinderContracts.Requests.CurrencyAccounts
+@inject ICurrencyAccountService CurrencyService
+
+
+<MudDialog>
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
+            <MudCard Elevation="0">
+                <MudCardContent>
+                        <MudForm Model="_request" @ref="@form" Validation="@ValidationAdapter.ValidateValue(_validator)" ValidationDelay="0">
+                            <MudSelect @bind-Value="_request.From"
+                                       Label="Currency From"
+                                       Variant="Variant.Outlined"
+                                       For="(() => _request.From)">
+                                <MudSelectItem Value="CurrencyDto.USD">USD</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.EUR">EUR</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.GBP">GBP</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.CHF">CHF</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.JPY">JPY</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.AUD">AUD</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.CAD">CAD</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.CNY">CNY</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.SEK">SEK</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.PLN">PLN</MudSelectItem>
+                            </MudSelect>
+                            
+                            <MudSelect @bind-Value="_request.To"
+                                       Label="Currency To"
+                                       Variant="Variant.Outlined"
+                                       For="(() => _request.To)">
+                                <MudSelectItem Value="CurrencyDto.USD">USD</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.EUR">EUR</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.GBP">GBP</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.CHF">CHF</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.JPY">JPY</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.AUD">AUD</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.CAD">CAD</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.CNY">CNY</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.SEK">SEK</MudSelectItem>
+                                <MudSelectItem Value="CurrencyDto.PLN">PLN</MudSelectItem>
+                            </MudSelect>
+                            
+                            <MudNumericField @bind-Value="_request.Amount" 
+                                             Label="Amount" 
+                                             For="(() => _request.Amount)"
+                                             Min="0"
+                                             Variant="Variant.Outlined" 
+                                             Step="10M" 
+                                             DebounceInterval="500"/>
+                            
+                            <MudNumericField @bind-Value="_request.Coefficient" 
+                                             Label="Coefficient" 
+                                             For="(() => _request.Coefficient)"
+                                             Min="0"
+                                             Variant="Variant.Outlined" 
+                                             Step="0.01M" 
+                                             DebounceInterval="500"/>
+                        </MudForm>
+                            @Preview
+                </MudCardContent>
+                <MudCardActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
+                </MudCardActions>
+            </MudCard>
+        </MudContainer>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    IMudDialogInstance MudDialog { get; set; }
+    
+    [Parameter]
+    public Guid CurrencyAccountId { get; set; }
+
+    MudForm form = new();
+    
+    ConvertCurrencyRequest _request = new();
+    ConvertCurrencyValidator _validator = new();
+
+
+    RenderFragment Preview => (_request.From != 0 && _request.To != 0) ?
+        @<MudText Typo="Typo.subtitle2">@_request.Amount @_request.From = @(_request.Amount*_request.Coefficient) @_request.To</MudText> 
+        : null;
+
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+    
+    private async Task Submit()
+    {
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            _request.CurrencyAccountId = CurrencyAccountId;
+            
+            var result = await CurrencyService.ConvertCurrencyAsync(_request);
+            
+            MudDialog.Close(DialogResult.Ok(result));
+        }
+    }
+    
+}}

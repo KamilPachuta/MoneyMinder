@@ -19,8 +19,7 @@ public interface ICurrencyAccountService
     
     // public Task<Result> ImportCSVAsync(UploadCsvTransactionsRequest request);
     
-    // public Task<Result> ConvertToAsync(ConvertCurrencyToRequest request);
-    // public Task<Result> ConvertFromAsync(ConvertCurrencyFromRequest request);
+    public Task<Result> ConvertCurrencyAsync(ConvertCurrencyRequest request);
     
     public Task<Result<GetCurrencyAccountReportPaymentsResponse>> PostPaymentsReportAsync(PostPaymentsReportRequest request);
     public Task<Result<GetCurrencyAccountReportPaymentsResponse>> PostAllTimePaymentsReportAsync(PostAllTimePaymentsReportRequest request);
