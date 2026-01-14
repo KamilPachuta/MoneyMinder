@@ -6,11 +6,6 @@
 <MudDialog DisableSidePadding="true">
     <DialogContent>
         <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
-            <MudCard Elevation="4">
-                <MudCardHeader>
-                        <MudText Typo="Typo.h5">Add Savings Transaction</MudText>
-                </MudCardHeader>
-                <MudCardContent>
                  
                     <MudForm Model="_request" @ref="@form" Validation="@ValidationAdapter.ValidateValue(_validator)" ValidationDelay="0">
                         <MudTextField @bind-Value="_request.Name"
@@ -36,20 +31,10 @@
                                          Step="10M"
                                          DebounceInterval="500"/>
                     </MudForm>
-                                   
-                    
-                </MudCardContent>
-                <MudCardActions>
                     <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
                     <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
-                </MudCardActions>
-    
-            </MudCard>
-
-
         </MudContainer>
     </DialogContent>
-
 </MudDialog>
 
 @code {
@@ -70,10 +55,7 @@
         Date = DateTime.UtcNow
     };
     ProcessSavingsTransactionValidator _validator = new();
-
-
-
-
+    
     private void CloseDialog()
     {
         MudDialog.Close(DialogResult.Cancel());
@@ -85,8 +67,6 @@
 
         if (form.IsValid)
         {
-
-            
             if (_request.Amount < 0)
             {
                 _request.TransactionType = TransactionTypeDto.Withdraw;
@@ -103,7 +83,7 @@
             
             var result = await SavingsService.PostSavingsTransactionAsync(_request);
                 
-            
+           
             MudDialog.Close(DialogResult.Ok(result));
         }
     }

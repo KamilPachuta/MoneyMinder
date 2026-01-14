@@ -3,18 +3,11 @@
 @inject ICurrencyAccountService CurrencyService
 
 
-<MudDialog DisableSidePadding="true">
+<MudDialog>
     <DialogContent>
         <MudContainer Style="max-height: 500px; overflow-y: scroll; width:  350px; overflow-x:auto ">
-            <MudCard Elevation="4">
-                <MudCardHeader>
-                        <MudText Typo="Typo.h5">@(type ? "New Income" : "New Payment")</MudText>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudPaper MaxWidth="true">
-                        <MudButton Variant="@_firstVariant" Color="Color.Primary" OnClick="IncomeChangeVariant">Income</MudButton>
-                        <MudButton Variant="@_secondVariant" Color="Color.Primary" OnClick="PaymentChangeVariant">Payment</MudButton>
-                    </MudPaper>
+                <MudButton Variant="@_firstVariant" Color="Color.Primary" OnClick="IncomeChangeVariant">Income</MudButton>
+                <MudButton Variant="@_secondVariant" Color="Color.Primary" OnClick="PaymentChangeVariant">Payment</MudButton>
                     @if (type)
                     {
                         <MudForm Model="_requestIncome" @ref="@form" Validation="@ValidationAdapter.ValidateValue(_validatorIncome)" ValidationDelay="0">
@@ -38,6 +31,7 @@
                             <MudNumericField @bind-Value="_requestIncome.Amount" 
                                              Label="Outlined" 
                                              For="(() => _requestIncome.Amount)"
+                                             Min="0"
                                              Variant="Variant.Outlined" 
                                              Step="10M" 
                                              DebounceInterval="500"/>
@@ -56,10 +50,7 @@
                                 <MudSelectItem Value="CurrencyDto.SEK">SEK</MudSelectItem>
                                 <MudSelectItem Value="CurrencyDto.PLN">PLN</MudSelectItem>
                             </MudSelect>
-
-                            
                         </MudForm>
-                                   
                     }
                     else
                     {
@@ -84,6 +75,7 @@
                                                     <MudNumericField @bind-Value="_requestPayment.Amount" 
                                                                      Label="Outlined" 
                                                                      For="(() => _requestPayment.Amount)"
+                                                                     Max="0"
                                                                      Variant="Variant.Outlined" 
                                                                      Step="10M" 
                                                                      DebounceInterval="500"/>
@@ -117,21 +109,14 @@
                                                         <MudSelectItem Value="CategoryDto.Education">Education</MudSelectItem>
                                                         <MudSelectItem Value="CategoryDto.Other">Other</MudSelectItem>
                                                     </MudSelect>
-                                                    
                                                 </MudForm>
                     }
-                </MudCardContent>
                 <MudCardActions>
                     <MudIconButton Icon="@Icons.Material.Filled.DoneOutline" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="Submit"/>
                     <MudIconButton Icon="@Icons.Material.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large" OnClick="CloseDialog"/>
                 </MudCardActions>
-    
-            </MudCard>
-
-
         </MudContainer>
     </DialogContent>
-
 </MudDialog>
 
 @code {

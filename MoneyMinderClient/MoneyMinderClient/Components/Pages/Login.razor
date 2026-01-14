@@ -7,42 +7,37 @@
 
 <MudGrid>
     <MudItem xs="12" sm="8">
-        <MudText Typo="Typo.h4">Welcome to MoneyMinder Application</MudText>
+        <MudPaper Elevation="0" Class="m-6">
+            <MudText Typo="Typo.h4">Welcome to MoneyMinder Application</MudText>
+        </MudPaper>
     </MudItem>
-
     <MudItem xs="12" sm="4">
-        <MudPaper Elevation="3" Class="mx-4 my-4">
-            <MudPaper Elevation="2">
-                <MudText Class="px-4 py-4">Enter your email and password</MudText>
+        <MudCard Elevation="3" Class="m-4 p-4">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6" Class="m-4">Enter your email and password</MudText>
+            </MudCardHeader>
+            <MudCardContent>
                 <MudForm Model="_loginUserRequest" @ref="_form" Validation="@ValidationAdapter.ValidateValue(_loginValidator)" ValidationDelay="0">
-                    <MudCardContent>
-                        <MudTextField @bind-Value="_loginUserRequest.Email"
-                                      For="@(() => _loginUserRequest.Email)"
-                                     
-                                      Label="Email" />
-                        <MudTextField @bind-Value="_loginUserRequest.Password"
-                                      For="@(() => _loginUserRequest.Password)"
-                                      InputType="InputType.Password"
-                                     
-                                      Label="Password"
-                                      HelperText="ex. abc132Das" />
-                    </MudCardContent>
-                    <MudCardActions>
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mx-4 my-4"
-                                   OnClick="SubmitLogin">Login</MudButton>
-                    </MudCardActions>
+                    <MudTextField @bind-Value="_loginUserRequest.Email"
+                                  For="@(() => _loginUserRequest.Email)"
+                                  Label="Email"/>
+                    <MudTextField @bind-Value="_loginUserRequest.Password"
+                                  For="@(() => _loginUserRequest.Password)"
+                                  InputType="InputType.Password"
+                                  Label="Password"
+                                  HelperText="ex. abc123XYZ"/>
                 </MudForm>
-            </MudPaper>
-
-            <MudDivider />
-
-            <MudPaper Elevation="2">
-                <MudPaper Class="pe-2 mx-4 my-4">
-                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" FullWidth="true"
+            </MudCardContent>
+            <MudCardActions Class="justify-content-center">
+                <MudPaper Class="p-2 justify-content-center" Elevation="0" Width="300px">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="my-4"
+                               OnClick="SubmitLogin">Login</MudButton>
+                    <MudDivider/>
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" FullWidth="true" Class="my-4"
                                OnClick="RegisterDialog">Register</MudButton>
                 </MudPaper>
-            </MudPaper>
-        </MudPaper>
+            </MudCardActions>
+        </MudCard>
     </MudItem>
 </MudGrid>
 
@@ -58,7 +53,6 @@
         NavigationManager.NavigateTo("/");
 
     }
-    
     
     private async Task SubmitLogin()
     {

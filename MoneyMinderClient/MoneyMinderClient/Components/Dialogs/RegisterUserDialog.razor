@@ -3,10 +3,9 @@
 @inject IAccountService AccountService
 
 
-<MudDialog DisableSidePadding="true">
+<MudDialog>
     <DialogContent>
         <MudContainer Style="max-height: 500px; overflow-y: scroll">
-            <MudPaper Class="mx-4 my-4" Elevation="2">
             
             <MudForm Model="_request" @ref="@_form" Validation="@ValidationAdapter.ValidateValue(_validator)" ValidationDelay="0">
                 <MudCardContent>
@@ -49,6 +48,7 @@
 
                     <MudDatePicker @bind-Date="_request.BirthDate"
                                    Label="Birth Date"
+                                   MaxDate="DateTime.Today.AddYears(-18)"
                                    For="@(() => _request.BirthDate)"/>
 
                     <MudTextField @bind-Value="_request.Country"
@@ -74,11 +74,8 @@
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="RegisterAsync">Register</MudButton>
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="CloseDialog">Cancel</MudButton>
                     </MudCardActions>
-
                 </MudCardContent>
-
             </MudForm>
-            </MudPaper>
         </MudContainer>
     </DialogContent>
 

@@ -4,6 +4,8 @@
 
 public static class PathBuilder
 {
+    public static string HomePath() => "/";
+    
     public static string CurrencyAcountPath(string name) => $"/CurrencyAccount/{name}";
             
     public static string BudgetPath(string name) => $"/CurrencyAccount/{name}/Budget";
