@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -73,11 +74,98 @@ public class BasePage : ComponentBase
         else
         {
             Snackbar.Add("Operation failed", Severity.Error);
+
             foreach (var error in dialogResult.ErrorList)
-                Snackbar.Add(error, Severity.Error);
+            {
+                if (error.Contains("Content"))
+                {
+                    var er = ExtractError(error);
+                    var (e,m) = ExtractSimple(er);
+                    
+                    Snackbar.Add(m, Severity.Error);
+                }
+                else
+                {
+                    Snackbar.Add(error, Severity.Error);
+                }
+                    
+                
+            }
         }
     }
     
     protected virtual Task RefreshDataAsync()
         => Task.CompletedTask;
+    
+        
+
+  
+    private static (string ExceptionName, string Message) ExtractSimple(string text)
+    {
+        // usuń początek
+        text = text.Replace("Exception occurred:", "").Trim();
+
+        // podziel po ".Message:"
+        var parts = text.Split(".Message:");
+
+        var exceptionName = parts[0]
+            .Replace("'", "")
+            .Trim();
+
+        var message = parts.Length > 1
+            ? parts[1].Replace("'", "").Trim()
+            : "";
+
+        return (exceptionName, message);
+    }
+
+
+    private static string ExtractError(string raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+            return raw;
+
+        // Wytnij sam JSON z tekstu (np. gdy masz "Content:\n{...}")
+        var first = raw.IndexOf('{');
+        var last  = raw.LastIndexOf('}');
+
+        if (first >= 0 && last > first)
+        {
+            var jsonPart = raw.Substring(first, last - first + 1);
+
+            try
+            {
+                using var doc = JsonDocument.Parse(jsonPart);
+
+                if (doc.RootElement.TryGetProperty("detail", out var detail))
+                    return detail.GetString() ?? raw;
+
+                if (doc.RootElement.TryGetProperty("title", out var title))
+                    return title.GetString() ?? raw;
+
+                return raw;
+            }
+            catch
+            {
+                // jakby ten środek też nie był JSON-em
+            }
+        }
+
+        // Fallback: spróbuj wyciągnąć tekst między "detail":" ... "
+        // (gdyby JSON był np. uszkodzony/ucięty)
+        var marker = "\"detail\":\"";
+        var start = raw.IndexOf(marker, StringComparison.Ordinal);
+        if (start >= 0)
+        {
+            start += marker.Length;
+            var end = raw.IndexOf("\"", start, StringComparison.Ordinal);
+            if (end > start)
+                return raw.Substring(start, end - start);
+        }
+
+        return raw;
+    }
+
+
+    
 }

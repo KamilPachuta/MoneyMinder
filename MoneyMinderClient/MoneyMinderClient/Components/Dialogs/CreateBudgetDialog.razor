@@ -24,9 +24,8 @@
                 </MudSelect>
                 @foreach (var l in _request.Limits)
                 {
-                    <MudText>@l.CategoryDto</MudText>
-                    <MudNumericField @bind-Value="l.Amount"
-                                     Label="Outlined"
+                               <MudNumericField @bind-Value="l.Amount"
+                                     Label="@l.CategoryDto.ToString()"
                                      For="(() => l.Amount)"
                                      Min="0"
                                      Variant="Variant.Outlined"

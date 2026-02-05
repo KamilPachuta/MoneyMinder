@@ -46,21 +46,4 @@ public static class Extensions
 
 
 
-    /*public static void AddAdapters()
-    {
-        TypeAdapterConfig<MonthlyIncome, MonthlyTransactionModel>
-            .NewConfig()
-            .Map(dest => dest.Month, src => src.Month.Date);
-        
-        TypeAdapterConfig<AccountReadModel, PersonalInfoModel>
-            .NewConfig()
-            .Map(dest => dest.Name, src => src.User.Name)
-            .Map(dest => dest.Name, src => src.User.PhoneNumber.ToString())
-            .Map(dest => dest.Name, src => src.User.BirthDate)
-            .Map(dest => dest.Name, src => src.User.Gender)
-            .Map(dest => dest.Name, src => src.User.Address.Country.ToString())
-            .Map(dest => dest.Name, src => src.User.Address.City)
-            .Map(dest => dest.Name, src => src.User.Address.PostalCode)
-            .Map(dest => dest.Name, src => src.User.Address.Street);
-    }*/
 }

@@ -101,6 +101,7 @@ else
     {
         await LoadCurrencyAccountMetadata();
         await LoadCurrencyAccountBudgets();
+        await SetChart();
     }
 
     private async Task LoadCurrencyAccountMetadata()
@@ -132,13 +133,11 @@ else
     private async Task SetParams()
     {
         await RefreshDataAsync();
-        
-        await SetChart();
-        
         _parameters = new DialogParameters()
         {
             { "CurrencyAccountId", CurrencyAccountId }
         };
+       
     }
 
     private async Task SetChart()
@@ -231,8 +230,8 @@ else
                 });
     }
 
-    
-    
+
+
     private async Task CreateBudget()
         => await ShowDialogAsync<CreateBudgetDialog>("Create Budget", _parameters);
     

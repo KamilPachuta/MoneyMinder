@@ -120,7 +120,7 @@
     
     private async Task SetParams()
     {
-        await LoadData();
+        await RefreshDataAsync();
 
         _parameters = new DialogParameters
         {
@@ -163,7 +163,7 @@
             
     }
 
-    private async Task RefreshDataAsync()
+    protected override async Task RefreshDataAsync()
     {
         await LoadData();
     }

@@ -29,7 +29,7 @@
                                            MinDate="CurrencyAccountCreatedAt.AddDays(-1)"/>
                             
                             <MudNumericField @bind-Value="_requestIncome.Amount" 
-                                             Label="Outlined" 
+                                             Label="Amount" 
                                              For="(() => _requestIncome.Amount)"
                                              Min="0"
                                              Variant="Variant.Outlined" 
@@ -73,7 +73,7 @@
                                                                    MaxDate="DateTime.UtcNow"/>
                                                     
                                                     <MudNumericField @bind-Value="_requestPayment.Amount" 
-                                                                     Label="Outlined" 
+                                                                     Label="Amount" 
                                                                      For="(() => _requestPayment.Amount)"
                                                                      Max="0"
                                                                      Variant="Variant.Outlined" 

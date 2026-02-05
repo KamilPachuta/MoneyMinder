@@ -16,7 +16,7 @@
     <MudItem xs="12" md="7">
         <MudPaper Elevation="1" Class="px-4 py-4" Height="100%">
             <MudStack>
-                @AddButton
+                <MudFab Label="Add Transaction" StartIcon="@Icons.Material.Filled.Add" OnClick="AddTransactionDialog" Size="Size.Small"/>
                 <MudFab Label="Currency Exchange" StartIcon="@Icons.Material.Filled.CurrencyExchange" OnClick="ConvertCurrency" Size="Size.Small"/>
                 <MudFab Label="Edit Currency Account Name" StartIcon="@Icons.Material.Filled.EditNote" OnClick="EditCurrencyAccountName" Size="Size.Small"/>
                 <MudFab Label="Budget" StartIcon="@Icons.Material.Filled.BarChart" OnClick="Budget" Size="Size.Small"/>
@@ -213,7 +213,7 @@
                                       <MudText>Transaction name: @selectedModel?.Name</MudText>
                                   </MudListItem>
                                   <MudListItem>
-                                      <MudText>Transaction date: @selectedModel?.Date</MudText>
+                                      <MudText>Transaction date: @selectedModel?.Date.ToString("dd-MM-yyyy")</MudText>
 
                                   </MudListItem>
                                   @if (show && selectedModel is not null && selectedModel.Category is not null)
@@ -254,9 +254,6 @@
         : null;
 
 
-    RenderFragment AddButton => !_transactions.Any()
-        ? @<MudFab Label="Add Transaction" StartIcon="@Icons.Material.Filled.Add" OnClick="AddTransactionDialog" Size="Size.Small"/>
-        : null;
 
     RenderFragment Balances => _balances.Any()
         ? @<MudPaper Class="p-2">

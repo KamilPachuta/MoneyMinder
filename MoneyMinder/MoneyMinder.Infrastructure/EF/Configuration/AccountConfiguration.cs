@@ -31,13 +31,7 @@ internal sealed class AccountConfiguration :
             .Property(a => a.PasswordHash)
             .HasConversion(ph => ph.Password, ph => AccountPasswordHash.Create(ph))
             .IsRequired();
-
-        // builder
-        //     .Property(a => a.Role)
-        //     .HasConversion(r => r.Role, r => new AccountRole(r))
-        //     .IsRequired();
-
-
+        
         builder
             .HasOne(a => a.User)
             .WithOne()
